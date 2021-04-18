@@ -16,3 +16,4 @@ There are more information in instruction.pdf or example.txt .
 
 To download windows graphical release use the link:
 
+https://github.com/Kaifolog/TME/raw/master/graph-portable-release-winx64/TME(beta).zip
