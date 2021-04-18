@@ -10,7 +10,7 @@ cmake ./bin && cmake --build ./bin && start ./bin/Debug/main.exe
 
 Linux 
 
-cmake /bin && cmake --build /bin && ./bin/main.exe
+cmake /bin && cmake --build /bin && ./bin/main
 
 There are more information in instruction.pdf or example.txt .
 
