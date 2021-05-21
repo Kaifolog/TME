@@ -1,0 +1,7 @@
+section .data
+|1|
+
+section .text
+start, 1 -> start1, 1, r
+;start, 0 -> start, 0, r
+start1, lambda -> end, lambda, s

@@ -1,16 +1,23 @@
-TME - Turing machine emulator (or just "cringe").
+TME - Turing machine emulator.
 
-To build it you have to use CMake, or Bash for Linux.
+To build it you have to use CMake, or Bash.
 
 (execute it from project folder)
 
+
+Get to /bin folder, then:
+
 Windows:
 
+cmake ../
+cd ../
 cmake ./bin && cmake --build ./bin && start ./bin/Debug/main.exe
 
 Linux 
 
-cmake /bin && cmake --build /bin && ./bin/main.exe
+cmake ../
+cd ../
+cmake /bin && cmake --build /bin && ./bin/main
 
 There are more information in instruction.pdf or example.txt .
 
