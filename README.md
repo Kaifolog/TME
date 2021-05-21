@@ -10,16 +10,18 @@ Get to /bin folder, then:
 Windows:
 
 cmake ../
+
 cd ../
+
 cmake ./bin && cmake --build ./bin && start ./bin/Debug/main.exe
 
 Linux 
 
-<<<<<<< HEAD
+
 cmake ../
+
 cd ../
-=======
->>>>>>> 68dca3af586a1c3beb0d5494c07419542b803453
+
 cmake /bin && cmake --build /bin && ./bin/main
 
 There are more information in instruction.pdf or example.txt .
