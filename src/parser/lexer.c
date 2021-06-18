@@ -58,85 +58,15 @@ void command_destructor(struct Command *c)
 
 char *define_fsm(char *line_v) //define final-state machine
 {
-    int statement = 0;
     int i;
-    for (i = 0; i < svwm_size(line_v); i++)
+    if (strstr(line_v, "#define ") == NULL)
     {
-        if (statement != 7)
-            switch (line_v[i])
-            {
-            case '#':
-                if (statement == 0)
-                    statement++;
-                else
-                {
-                    error("parse error at line #", line_counter);
-                    return 0;
-                }
-                break;
-            case 'd':
-                if (statement == 1)
-                    statement++;
-                else
-                {
-                    error("parse error at line #", line_counter);
-                    return 0;
-                }
-                break;
-            case 'e':
-                if (statement == 2 || statement == 6)
-                    statement++;
-                else
-                {
-                    error("parse error at line #", line_counter);
-                    return 0;
-                }
-                break;
-            case 'f':
-                if (statement == 3)
-                    statement++;
-                else
-                {
-                    error("parse error at line #", line_counter);
-                    return 0;
-                }
-                break;
-            case 'i':
-                if (statement == 4)
-                    statement++;
-                else
-                {
-                    error("parse error at line #", line_counter);
-                    return 0;
-                }
-                break;
-            case 'n':
-                if (statement == 5)
-                    statement++;
-                else
-                {
-                    error("parse error at line #", line_counter);
-                    return 0;
-                }
-                break;
-            case ' ':
-                if (statement == 7)
-                    statement++;
-                else
-                {
-                    error("parse error at line #", line_counter);
-                    return 0;
-                }
-                break;
-            default:
-                error("parse error at line #", line_counter);
-                return 0;
-            }
-        else
-        {
-            i++;
-            break;
-        }
+        error("parse error at line #", line_counter);
+        return 0;
+    }
+    else
+    {
+        i = 8;
     }
 
     //стоим на пробеле и точно знаем что у нас сзади 6 знаков нужного идентифиатора
