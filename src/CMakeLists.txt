@@ -16,10 +16,10 @@ add_subdirectory(vendor)
 
 add_library(TuringMachine STATIC TuringMachine.cpp)
 
-add_executable(main main.cpp text_functions.cpp App.cpp)
+add_executable(TME main.cpp text_functions.cpp App.cpp)
+
+target_link_libraries(TME PARSER LIBS VENDOR TuringMachine )
 
 if (UNIX)
-    target_link_libraries(${PROJECT_NAME} dl pthread)
+    target_link_libraries(TME dl pthread)
 endif (UNIX)
-
-target_link_libraries(main PARSER LIBS VENDOR TuringMachine )

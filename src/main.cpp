@@ -93,4 +93,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-//cmake ./bin && cmake --build ./bin && start ./bin/Debug/main.exe
+//cmake ./bin && cmake --build ./bin && start ./bin/Debug/TME.exe

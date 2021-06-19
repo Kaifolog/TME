@@ -111,9 +111,6 @@ struct Command *command_fsm(char *line_v) //command final-state machine
         int m_len = 0, st = -1;
         for (int p = 0; p < svwm_size(line_v) - 1; p++)
         {
-            //printf("%s\n", macros[1]);
-            // if (line_v[p] == ',' || line_v[p] == '-' || line_v[p] == '>')
-            //     printf("%c|%c || %d ||#%d\n__\n", line_v[p], macros[0][m_len], m_len, line_counter);
             if (line_v[p] == macros[0][m_len])
             {
                 m_len++;
@@ -139,14 +136,12 @@ struct Command *command_fsm(char *line_v) //command final-state machine
         }
     }
 
-    //printf("%s\n", line_v);
-
     struct Command *command;
     command = malloc(sizeof(struct Command));
     command->initial_state = svwm_vector(0, sizeof(char));
     int i = 0;
 
-    for (; i < svwm_size(line_v) - 1 && line_v[i] != ','; i++)
+    for (; i < svwm_size(line_v) - 1 && line_v[i] != ','; i++) //st1
     {
         if (isalnum(line_v[i]) || line_v[i] == '_')
             command->initial_state = svwm_pb_char(command->initial_state, line_v[i]);
@@ -160,13 +155,13 @@ struct Command *command_fsm(char *line_v) //command final-state machine
     command->initial_state = svwm_pb_char(command->initial_state, '\0');
     i++;
     command->initial_word = svwm_vector(0, sizeof(char));
-    for (; i < svwm_size(line_v) - 1 && line_v[i] != '-' && line_v[i] != '>'; i++)
+    for (; i < svwm_size(line_v) - 1 && !(line_v[i] == '-' && line_v[i + 1] == '>'); i++) //w1
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/')
+        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&')
             command->initial_word = svwm_pb_char(command->initial_word, line_v[i]);
         else
         {
-            error("parse error at line #", line_counter);
+            error("parse error at line # *13* ", line_counter);
             return 0;
         }
     }
@@ -174,7 +169,7 @@ struct Command *command_fsm(char *line_v) //command final-state machine
     i++;
     i++;
     command->final_state = svwm_vector(0, sizeof(char));
-    for (; i < svwm_size(line_v) - 1 && line_v[i] != ','; i++)
+    for (; i < svwm_size(line_v) - 1 && line_v[i] != ','; i++) //st2
     {
         if (isalnum(line_v[i]) || line_v[i] == '_')
             command->final_state = svwm_pb_char(command->final_state, line_v[i]);
@@ -187,9 +182,9 @@ struct Command *command_fsm(char *line_v) //command final-state machine
     command->final_state = svwm_pb_char(command->final_state, '\0');
     i++;
     command->final_word = svwm_vector(0, sizeof(char));
-    for (; i < svwm_size(line_v) - 1 && line_v[i] != ','; i++)
+    for (; i < svwm_size(line_v) - 1 && line_v[i] != ','; i++) //w2
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/')
+        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&')
             command->final_word = svwm_pb_char(command->final_word, line_v[i]);
         else
         {
@@ -299,7 +294,7 @@ char *data_preprocessor(char *line_v)
             svwm_erase(line_v, i);
             i--;
         }
-        if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ' ') && !(line_v[i] == '\0' && line_v[i] != '+' && line_v[i] != '-' && line_v[i] != '*' && line_v[i] != '=' && line_v[i] != '/'))
+        if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') && !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') && !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') && !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?'))
             error("parse error at data section (you have to use only numbers, letters and \"_\") at char #", i);
     }
     return line_v;
@@ -342,7 +337,7 @@ struct Command *lexer(const char *line, int linec)
         for (int i = 0; i < linec; i++)
             line_v[i] = line[i];
 
-        svwm_pb_char(line_v, '\0'); //не уверен что stdlib будет работать, хуй знает как чел до вызова ее отрезал
+        svwm_pb_char(line_v, '\0');
 
         switch (line_v[0]) //тк наш язык довольно прост, у нас есть всего 3 варианта событий. (1)описание макропеременной, (2)обозначение секции, (3)логических выражений,
                            //все они имеют малую вариативность, откуда нам потребуется 3 конечных автомата.
