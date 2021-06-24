@@ -35,7 +35,7 @@ vector<string> split(const string &s)
     return ret;
 }
 
-bool TuringMachine::is_end(string dir)
+bool TuringMachine::is_end(string dir, bool lambda)
 {
     if (statement == "end")
     {
@@ -44,7 +44,7 @@ bool TuringMachine::is_end(string dir)
 
         for (int i = 0; i < strip.size(); i++)
         {
-            if (strip[i] == "lambda")
+            if (strip[i] == "lambda" && lambda)
                 strip[i] = " ";
             if (i != cursor)
             {

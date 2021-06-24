@@ -5,7 +5,7 @@ using namespace std;
 
 void text_v_func()
 {
-     cout << tm_pic << "TME - Turing Machine Emulator V0.1\n\n"
+     cout << tm_pic << "TME - Turing Machine Emulator V0.11\n\n"
           << "(c)"
           << "Bulak A.S." << endl;
 }
@@ -29,11 +29,13 @@ void text_start_func()
          << "\t\"-g\" - generate db and temporary data files," << endl
          << "\t\"-a\" - analysis, really recommend once before \"-e\". Can help you to find some logical gaps," << endl
          << "\t\"-e\" - emulate (u have to use \"-g\" at least one time before emulating)," << endl
-         << "\t\"-d\" - debug, executing your programm step by step." << endl;
+         << "\t\"-d\" - debug, executing your programm step by step," << endl
+         << "\t\"-l\" - this one gonna change all \"lambda\" to \" \"." << endl;
 
-     cout << endl
-          << endl
-          << endl
-          << "(c)"
-          << "Bulak A.S." << endl;
+     cout
+         << endl
+         << endl
+         << endl
+         << "(c)"
+         << "Bulak A.S." << endl;
 }

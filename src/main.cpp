@@ -37,7 +37,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    App app;
+    App app(argc, argv);
     if (argc > 1)
     {
         if (!strcmp(argv[1], "-v")) //говорим про версию
@@ -66,24 +66,24 @@ int main(int argc, char *argv[])
                 error("There are no such file!", 0);
             }
 
-            if (app.check_arguments(argc, argv, "-d"))
+            if (app.check_arguments("-d"))
             {
-                app.context_free_analysis_and_parsing(argc, argv);
-                app.semantic_analysis(argc, argv);
-                app.emulator_executing_procedure(argc, argv, 1);
+                app.context_free_analysis_and_parsing();
+                app.semantic_analysis();
+                app.emulator_executing_procedure(1);
             }
 
-            if (app.check_arguments(argc, argv, "-g"))
-                app.context_free_analysis_and_parsing(argc, argv);
-            if (app.check_arguments(argc, argv, "-a"))
-                app.semantic_analysis(argc, argv);
-            if (app.check_arguments(argc, argv, "-e"))
-                app.emulator_executing_procedure(argc, argv, 0);
+            if (app.check_arguments("-g"))
+                app.context_free_analysis_and_parsing();
+            if (app.check_arguments("-a"))
+                app.semantic_analysis();
+            if (app.check_arguments("-e"))
+                app.emulator_executing_procedure(0);
             if (argc == 2)
             {
-                app.context_free_analysis_and_parsing(argc, argv);
-                app.semantic_analysis(argc, argv);
-                app.emulator_executing_procedure(argc, argv, 0);
+                app.context_free_analysis_and_parsing();
+                app.semantic_analysis();
+                app.emulator_executing_procedure(0);
             }
         }
     }
@@ -93,4 +93,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-//cmake ./bin && cmake --build ./bin && start ./bin/Debug/TME.exe

@@ -19,7 +19,7 @@ class TuringMachine
     }
 
 public:
-    bool is_end(string dir);
+    bool is_end(string dir, bool lambda);
     bool load_strip(string dir);
     string get_current_state();
     string get_current_word();

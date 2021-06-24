@@ -21,28 +21,24 @@ SOFTWARE.
 // The official repository: <https://github.com/Kaifolog/TME>.
 
 #include "App.hpp"
-extern "C"
-{
-#include "parser/lexer.h"
-}
+
+#include "parser/lexer.hpp"
 
 using namespace std;
 
-void App::command_to_sqlite3(sqlite3 *db, struct Command *current_command, sqlite3_stmt *ppStmt)
+void App::command_to_sqlite3(sqlite3 *db, Command *current_command, sqlite3_stmt *ppStmt)
 {
-    sqlite3_bind_text(ppStmt, 1, current_command->initial_state, -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 2, current_command->initial_word, -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 3, current_command->final_state, -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 4, current_command->final_word, -1, SQLITE_STATIC);
-    string sLastName;
-    sLastName.insert(sLastName.size(), 1, current_command->direction);
-    sqlite3_bind_text(ppStmt, 5, sLastName.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(ppStmt, 1, current_command->initial_state.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(ppStmt, 2, current_command->initial_word.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(ppStmt, 3, current_command->final_state.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(ppStmt, 4, current_command->final_word.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(ppStmt, 5, current_command->direction.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(ppStmt);
     sqlite3_clear_bindings(ppStmt);
     sqlite3_reset(ppStmt);
 }
 
-bool App::check_arguments(int argc, char *argv[], char *search)
+bool App::check_arguments(char *search)
 {
     bool res = 0;
     for (int i = 0; i < argc; i++)
@@ -50,7 +46,7 @@ bool App::check_arguments(int argc, char *argv[], char *search)
     return res;
 }
 
-void App::context_free_analysis_and_parsing(int argc, char *argv[])
+void App::context_free_analysis_and_parsing()
 {
     string dir;
     dir = argv[1];
@@ -89,8 +85,9 @@ void App::context_free_analysis_and_parsing(int argc, char *argv[])
     }
     /***************************/
     a.clear();
-    macros_table = (char ***)svwm_vector(0, sizeof(char **));
-    struct Command *current_command;
+
+    Parser *p = new Parser;
+    Command *current_command;
 
     log_message("Starting Parsing");
     sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
@@ -102,20 +99,21 @@ void App::context_free_analysis_and_parsing(int argc, char *argv[])
     {
         string buffer;
         getline(fin, buffer);
-        if (current_command = lexer(buffer.c_str(), buffer.size()))
+        current_command = new Command(buffer, p);
+        if (!current_command->is_empty())
         {
             command_to_sqlite3(db, current_command, ppStmt);
-            command_destructor(current_command);
         }
+        delete current_command;
     }
     sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
     sqlite3_close(db);
     fin.close();
-    macros_table_destructor();
+    delete p;
     log_message("Parsing ended.");
 }
 
-void App::emulator_executing_procedure(int argc, char *argv[], bool debug_statement)
+void App::emulator_executing_procedure(bool debug_statement)
 {
 
     sqlite3 *db = 0;
@@ -147,7 +145,7 @@ void App::emulator_executing_procedure(int argc, char *argv[], bool debug_statem
         sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO FUCKING RISKY
         sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
         string select_command;
-        while (!tm.is_end(dir))
+        while (!tm.is_end(dir, check_arguments("-l")))
         {
             select_command = "SELECT *FROM commands WHERE initial_state=\"" + tm.get_current_state() + "\" AND initial_word=\"" + tm.get_current_word() + "\"";
             sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
@@ -184,7 +182,7 @@ bool App::check_str_in_vec(vector<string> v, string s)
 {
     return find(v.begin(), v.end(), s) == v.end();
 }
-void App::semantic_analysis(int argc, char *argv[])
+void App::semantic_analysis()
 {
     sqlite3 *db = 0;
     char *err = 0;
