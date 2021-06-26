@@ -1,9 +1,9 @@
 extern "C"
 {
 #include <stdio.h>
-#include "lib/logging.h"
-#include "vendor/sqlite3.h"
+#include "vendor/sqlite3/sqlite3.h"
 }
+#include "vendor/easyloggingpp/easylogging++.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,7 +11,7 @@ extern "C"
 #include <chrono>
 #include <algorithm>
 #include "TuringMachine.hpp"
-#include "text_functions.hpp"
+#include "libs/text_functions.hpp"
 
 using namespace std;
 

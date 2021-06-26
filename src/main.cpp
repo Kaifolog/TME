@@ -26,6 +26,7 @@ SOFTWARE.
 #include <fstream>
 #include <chrono>
 #include <algorithm>
+#include <exception>
 #include "App.hpp"
 
 extern "C"
@@ -34,6 +35,8 @@ extern "C"
 }
 
 using namespace std;
+
+INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char *argv[])
 {
@@ -46,44 +49,77 @@ int main(int argc, char *argv[])
         }
         else //понимаем что следующее это адрес
         {
+            string dir = argv[1];
+            string logs_path = argv[1];
 
-            string dir;
-            dir = argv[1];
-            ifstream fin;
-            fin.open(dir);
-            if (dir.substr(dir.find_last_of(".") + 1) == "tme")
+            if (logs_path.substr(logs_path.find_last_of(".") + 1) == "tme" || logs_path.substr(logs_path.find_last_of(".") + 1) == "txt")
             {
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
+                logs_path.pop_back();
+                logs_path.pop_back();
+                logs_path.pop_back();
+                logs_path.pop_back();
             }
-            string a = dir;
-            a.append("_log.txt");
-            log_init(a.c_str());
+
+            logs_path.append("_log.txt");
+
+            //logger configuring
+            el::Configurations defaultConf;
+            defaultConf.setToDefault();
+            defaultConf.setGlobally(
+                el::ConfigurationType::Format, "%datetime :: %level %msg");
+            //      defaultConf.setGlobally(
+            //          el::ConfigurationType::ToStandardOutput, "false");
+            defaultConf.setGlobally(
+                el::ConfigurationType::ToFile, "true");
+            defaultConf.setGlobally(
+                el::ConfigurationType::Filename, logs_path);
+
+            //logs file clearing
+            defaultConf.setGlobally(
+                el::ConfigurationType::MaxLogFileSize, "1");
+            el::Loggers::reconfigureLogger("default", defaultConf);
+            LOG(INFO) << "Log file cleared";
+            defaultConf.setGlobally(
+                el::ConfigurationType::MaxLogFileSize, "104857600");
+            el::Loggers::reconfigureLogger("default", defaultConf);
+
+            ifstream fin(dir);
             if (!fin.is_open())
             {
-                error("There are no such file!", 0);
+                LOG(ERROR) << "File opening exception";
+                cin.get();
+                return -1;
             }
+            fin.close();
+            LOG(INFO) << "File opened";
 
-            if (app.check_arguments("-d"))
+            try
             {
-                app.context_free_analysis_and_parsing();
-                app.semantic_analysis();
-                app.emulator_executing_procedure(1);
+
+                if (app.check_arguments("-d"))
+                {
+                    app.context_free_analysis_and_parsing();
+                    app.semantic_analysis();
+                    app.emulator_executing_procedure(1);
+                }
+
+                if (app.check_arguments("-g"))
+                    app.context_free_analysis_and_parsing();
+                if (app.check_arguments("-a"))
+                    app.semantic_analysis();
+                if (app.check_arguments("-e"))
+                    app.emulator_executing_procedure(0);
+                if (argc == 2 || (argc == 3 && string(argv[2]) == "-l"))
+                {
+                    app.context_free_analysis_and_parsing();
+                    app.semantic_analysis();
+                    app.emulator_executing_procedure(0);
+                }
             }
-
-            if (app.check_arguments("-g"))
-                app.context_free_analysis_and_parsing();
-            if (app.check_arguments("-a"))
-                app.semantic_analysis();
-            if (app.check_arguments("-e"))
-                app.emulator_executing_procedure(0);
-            if (argc == 2)
+            catch (...)
             {
-                app.context_free_analysis_and_parsing();
-                app.semantic_analysis();
-                app.emulator_executing_procedure(0);
+                cin.get();
+                return 1;
             }
         }
     }

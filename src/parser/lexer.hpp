@@ -1,8 +1,4 @@
-extern "C"
-{
-#include "../lib/logging.h"
-}
-
+#include "../vendor/easyloggingpp/easylogging++.h"
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>

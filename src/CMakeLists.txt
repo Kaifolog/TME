@@ -10,15 +10,15 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 
 add_subdirectory(parser) 
 
-add_subdirectory(lib) 
+add_subdirectory(libs)
 
 add_subdirectory(vendor) 
 
 add_library(TuringMachine STATIC TuringMachine.cpp)
 
-add_executable(TME main.cpp text_functions.cpp App.cpp)
+add_executable(TME main.cpp App.cpp)
 
-target_link_libraries(TME PARSER LIBS VENDOR TuringMachine )
+target_link_libraries(TME PARSER VENDOR LIBS TuringMachine )
 
 if (UNIX)
     target_link_libraries(TME dl pthread)

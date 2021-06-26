@@ -1,4 +1,4 @@
-#include "lib/tm_pic.h"
+#include "tm_pic.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -14,7 +14,7 @@ void text_start_func()
 {
      cout << "CTRL+C OR CTRL+D TO CLOSE" << endl
           << endl
-          << "TME - Turing Machine Emulator V0.1\n\n";
+          << "TME - Turing Machine Emulator V0.11\n\n";
 
      cout << "How to?" << endl
           << "Link to github repository with documentation and examples: https://github.com/Kaifolog/TME" << endl

@@ -1,5 +1,8 @@
 #include "lexer.hpp"
 
+#include <iostream>
+#include <exception>
+
 using namespace std;
 
 void Command::define_fsm(string line_v)
@@ -7,8 +10,8 @@ void Command::define_fsm(string line_v)
     int i;
     if (strstr(line_v.c_str(), "#define ") == NULL)
     {
-        error("parse error at line #", parser->line_counter);
-        return;
+        LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
+        throw std::exception();
     }
     else
     {
@@ -91,9 +94,8 @@ void Command::command_fsm(string line_v)
             this->initial_state.push_back(line_v[i]);
         else
         {
-            log_message((char *)line_v.c_str());
-            error("parse error at line #", parser->line_counter);
-            return;
+            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
+            throw std::exception();
         }
     }
     this->initial_state.push_back('\0');
@@ -105,8 +107,8 @@ void Command::command_fsm(string line_v)
             this->initial_word.push_back(line_v[i]);
         else
         {
-            error("parse error at line #", parser->line_counter);
-            return;
+            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
+            throw std::exception();
         }
     }
     this->initial_word.push_back('\0');
@@ -119,8 +121,8 @@ void Command::command_fsm(string line_v)
             this->final_state.push_back(line_v[i]);
         else
         {
-            error("parse error at line #", parser->line_counter);
-            return;
+            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
+            throw std::exception();
         }
     }
     this->final_state.push_back('\0');
@@ -131,8 +133,8 @@ void Command::command_fsm(string line_v)
             this->final_word.push_back(line_v[i]);
         else
         {
-            error("parse error at line #", parser->line_counter);
-            return;
+            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
+            throw std::exception();
         }
     }
     this->final_word.push_back('\0');
@@ -141,8 +143,8 @@ void Command::command_fsm(string line_v)
         this->direction = line_v[i];
     else
     {
-        error("parse error at line #", parser->line_counter);
-        return;
+        LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
+        throw std::exception();
     }
 }
 
@@ -171,7 +173,8 @@ int Command::datasection_fsm(string line_v)
         fclose(datasection);
         return '\0';
     }
-    error("Temple file error;", 0);
+    LOG(ERROR) << "Temple file error";
+    throw std::exception();
 }
 
 string Command::preprocessor(string line_v)
@@ -228,7 +231,9 @@ string Command::data_preprocessor(string line_v)
             i--;
         }
         if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') && !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') && !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') && !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?'))
-            error("parse warning at data section (you have to use only allowed symbols) at char #", i + 1);
+        {
+            LOG(WARNING) << ("at data section (you have to use only allowed symbols) at char #" + to_string(i + 1));
+        }
     }
     return line_v;
 }

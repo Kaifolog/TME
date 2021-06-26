@@ -1,8 +1,5 @@
 #include "TuringMachine.hpp"
-extern "C"
-{
-#include "lib/logging.h"
-}
+#include "vendor/easyloggingpp/easylogging++.h"
 
 using namespace std;
 
@@ -145,7 +142,8 @@ bool TuringMachine::get_step(char a)
         }
         break;
     default:
-        error("direction arg error", 0);
+        LOG(ERROR) << "direction arg error";
+        throw std::exception();
         break;
     }
     // for (int i = 0; i < strip.size(); i++)
