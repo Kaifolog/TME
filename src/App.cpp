@@ -173,6 +173,7 @@ void App::emulator_executing_procedure(bool debug_statement)
             throw std::exception();
         }
         string select_command;
+        int debug_number = 0;
         while (!tm.is_end(dir, check_arguments("-l")))
         {
             select_command = "SELECT *FROM commands WHERE initial_state=\"" + tm.get_current_state() + "\" AND initial_word=\"" + tm.get_current_word() + "\"";
@@ -181,7 +182,13 @@ void App::emulator_executing_procedure(bool debug_statement)
             {
                 cout << tm.get_strip() << endl;
                 cout << "Current data: " << tm.get_current_state() << " " << tm.get_current_word() << endl;
-                getchar();
+                if (debug_number)
+                    debug_number--;
+                else
+                {
+                    cin >> debug_number;
+                    debug_number--;
+                }
             }
 
             if (sqlite3_step(ppStmt) != SQLITE_DONE)
@@ -219,7 +226,7 @@ void App::semantic_analysis()
     char *err = 0;
     sqlite3_stmt *ppStmt;
 
-    LOG(INFO) << "Starting analiser...";
+    LOG(INFO) << "Starting analyser...";
     TuringMachine tm;
     string dir;
     dir = argv[1];
@@ -267,7 +274,7 @@ void App::semantic_analysis()
                 statements.push_back(string((char *)sqlite3_column_text(ppStmt, 0)));
             else
             {
-                LOG(ERROR) << "ANALISER FATAL ERROR! There are \"end\" at the left side of command.";
+                LOG(ERROR) << "ANALYSER FATAL ERROR! There are \"end\" at the left side of command.";
                 throw std::exception();
             }
         }
@@ -278,13 +285,13 @@ void App::semantic_analysis()
 
     if (check_str_in_vec(statements, "start"))
     {
-        LOG(ERROR) << "ANALISER FATAL ERROR! There are no \"start\" command.";
+        LOG(ERROR) << "ANALYSER FATAL ERROR! There are no \"start\" command.";
         throw std::exception();
     }
 
     if (check_str_in_vec(statements, "end"))
     {
-        LOG(ERROR) << "ANALISER FATAL ERROR! There are no \"end\" command.";
+        LOG(ERROR) << "ANALYSER FATAL ERROR! There are no \"end\" command.";
         throw std::exception();
     }
 
@@ -305,7 +312,7 @@ void App::semantic_analysis()
             {
                 if (sqlite3_step(ppStmt) != SQLITE_DONE)
                 {
-                    string a = "ANALISER FATAL ERROR!!! There are two or more commands with same left side. " + string((char *)sqlite3_column_text(ppStmt, 0)) + " " + string((char *)sqlite3_column_text(ppStmt, 1));
+                    string a = "ANALYSER FATAL ERROR!!! There are two or more commands with same left side. " + string((char *)sqlite3_column_text(ppStmt, 0)) + " " + string((char *)sqlite3_column_text(ppStmt, 1));
                     LOG(ERROR) << a;
                     throw std::exception();
                 }
@@ -318,5 +325,5 @@ void App::semantic_analysis()
         }
 
     sqlite3_close(db);
-    LOG(INFO) << "Analisys complete";
+    LOG(INFO) << "Analysis complete";
 }
