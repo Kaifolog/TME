@@ -33,12 +33,13 @@ void App::command_to_sqlite3(sqlite3 *db, Command *current_command, sqlite3_stmt
     sqlite3_bind_text(ppStmt, 3, current_command->final_state.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(ppStmt, 4, current_command->final_word.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(ppStmt, 5, current_command->direction.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(ppStmt, 6, current_command->debug.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(ppStmt);
     sqlite3_clear_bindings(ppStmt);
     sqlite3_reset(ppStmt);
 }
 
-bool App::check_arguments(char *search)
+bool App::check_arguments(char *search, int argc, char **argv)
 {
     bool res = 0;
     for (int i = 0; i < argc; i++)
@@ -49,7 +50,7 @@ bool App::check_arguments(char *search)
 void App::context_free_analysis_and_parsing()
 {
     string dir;
-    dir = argv[1];
+    dir = path;
     ifstream fin;
     fin.open(dir);
     if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
@@ -83,7 +84,7 @@ void App::context_free_analysis_and_parsing()
         throw std::exception();
     }
     const char *create_table_query =
-        "CREATE TABLE IF NOT EXISTS commands(initial_state,initial_word,final_state, final_word,  direction)";
+        "CREATE TABLE IF NOT EXISTS commands(initial_state,initial_word,final_state, final_word,direction,debug)";
     if (sqlite3_exec(db, create_table_query, 0, 0, &err))
     {
         LOG(ERROR) << err;
@@ -100,7 +101,7 @@ void App::context_free_analysis_and_parsing()
     sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
     char insert_bind[256];
     sqlite3_stmt *ppStmt;
-    sprintf(insert_bind, "INSERT INTO commands VALUES (?,?,?,?,?)");
+    sprintf(insert_bind, "INSERT INTO commands VALUES (?,?,?,?,?,?)");
     sqlite3_prepare_v2(db, insert_bind, 256, &ppStmt, NULL);
     while (!fin.eof())
     {
@@ -126,7 +127,7 @@ void App::context_free_analysis_and_parsing()
     LOG(INFO) << "Parsing ended.";
 }
 
-void App::emulator_executing_procedure(bool debug_statement)
+void App::emulator_executing_procedure()
 {
 
     sqlite3 *db = 0;
@@ -139,7 +140,7 @@ void App::emulator_executing_procedure(bool debug_statement)
     if (tm.load_strip("datasection.tmp"))
     {
         string dir;
-        dir = argv[1];
+        dir = path;
         ifstream fin;
         fin.open(dir);
         if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
@@ -173,23 +174,12 @@ void App::emulator_executing_procedure(bool debug_statement)
             throw std::exception();
         }
         string select_command;
-        int debug_number = 0;
-        while (!tm.is_end(dir, check_arguments("-l")))
+        string debug_line;
+        int linebyline = 0;
+        while (!tm.is_end(dir, lambda))
         {
             select_command = "SELECT *FROM commands WHERE initial_state=\"" + tm.get_current_state() + "\" AND initial_word=\"" + tm.get_current_word() + "\"";
             sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-            if (debug_statement)
-            {
-                cout << tm.get_strip() << endl;
-                cout << "Current data: " << tm.get_current_state() << " " << tm.get_current_word() << endl;
-                if (debug_number)
-                    debug_number--;
-                else
-                {
-                    cin >> debug_number;
-                    debug_number--;
-                }
-            }
 
             if (sqlite3_step(ppStmt) != SQLITE_DONE)
             {
@@ -202,6 +192,20 @@ void App::emulator_executing_procedure(bool debug_statement)
                 LOG(ERROR) << "EMULATING ERROR : CANT FIND NEXT COMMAND";
                 throw std::exception();
             }
+
+            if (debug_statement && (linebyline || string((char *)sqlite3_column_text(ppStmt, 5)) == "1"))
+            {
+                linebyline = 1;
+                cout << tm.get_strip() << endl;
+                cout << "Current data: " << tm.get_current_state() << " " << tm.get_current_word() << endl;
+
+                getline(cin, debug_line);
+                if (debug_line.length())
+                {
+                    linebyline = 0;
+                }
+            }
+
             sqlite3_finalize(ppStmt);
         }
         sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
@@ -229,7 +233,7 @@ void App::semantic_analysis()
     LOG(INFO) << "Starting analyser...";
     TuringMachine tm;
     string dir;
-    dir = argv[1];
+    dir = path;
     if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
     {
         dir.pop_back();

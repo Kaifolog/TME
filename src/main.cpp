@@ -40,14 +40,13 @@ INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char *argv[])
 {
-    App app(argc, argv);
     if (argc > 1)
     {
-        if (!strcmp(argv[1], "-v")) //говорим про версию
+        if (!strcmp(argv[1], "-v"))
         {
             text_v_func();
         }
-        else //понимаем что следующее это адрес
+        else
         {
             string dir = argv[1];
             string logs_path = argv[1];
@@ -80,7 +79,7 @@ int main(int argc, char *argv[])
             el::Loggers::reconfigureLogger("default", defaultConf);
             LOG(INFO) << "Log file cleared";
             defaultConf.setGlobally(
-                el::ConfigurationType::MaxLogFileSize, "104857600");
+                el::ConfigurationType::MaxLogFileSize, "104857600"); // 100mb
             el::Loggers::reconfigureLogger("default", defaultConf);
 
             ifstream fin(dir);
@@ -95,25 +94,27 @@ int main(int argc, char *argv[])
 
             try
             {
-
-                if (app.check_arguments("-d"))
+                App app(dir);
+                if (app.check_arguments("-d", argc, argv))
                 {
+                    app.setDebug(1);
                     app.context_free_analysis_and_parsing();
                     app.semantic_analysis();
-                    app.emulator_executing_procedure(1);
+                    app.emulator_executing_procedure();
+                    cin.get();
                 }
-
-                if (app.check_arguments("-g"))
+                if (app.check_arguments("-g", argc, argv))
                     app.context_free_analysis_and_parsing();
-                if (app.check_arguments("-a"))
+                if (app.check_arguments("-a", argc, argv))
                     app.semantic_analysis();
-                if (app.check_arguments("-e"))
-                    app.emulator_executing_procedure(0);
+                if (app.check_arguments("-e", argc, argv))
+                    app.emulator_executing_procedure();
                 if (argc == 2 || (argc == 3 && string(argv[2]) == "-l"))
                 {
+                    app.setLambda(1);
                     app.context_free_analysis_and_parsing();
                     app.semantic_analysis();
-                    app.emulator_executing_procedure(0);
+                    app.emulator_executing_procedure();
                 }
             }
             catch (...)
@@ -125,7 +126,7 @@ int main(int argc, char *argv[])
     }
     else
         text_start_func();
-    getchar();
+    cin.get();
 
     return 0;
 }

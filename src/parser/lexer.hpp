@@ -32,7 +32,8 @@ class Command
     void command_fsm(string line_v);
     void sector_fsm(string line_v);
     int datasection_fsm(string line_v);
-    string preprocessor(string line_v);
+    string command_preprocessor(string line_v);
+    string sector_preprocessor(string line_v);
     string data_preprocessor(string line_v);
     string define_preprocessor(string line_v);
 
@@ -42,6 +43,7 @@ public:
     string final_state;
     string final_word;
     string direction;
+    string debug;
 
     Command(string command, Parser *parser_);
     bool is_empty() // 0 if empty

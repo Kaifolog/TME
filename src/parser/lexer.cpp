@@ -46,12 +46,6 @@ void Command::command_fsm(string line_v)
         return;
     }
 
-    for (int i = 0; i < line_v.size(); i++) //удалим все пробелы
-        if (line_v[i] == ' ')
-        {
-            line_v.erase(i, 1);
-            i--;
-        }
     //теперь нужно придумать как передать строки обратно, желательно, в структурированном виде, именно структуру мы и напишем
     //макроподстановки
 
@@ -139,12 +133,21 @@ void Command::command_fsm(string line_v)
     }
     this->final_word.push_back('\0');
     i++;
-    if (isalnum(line_v[i]))
+    if (line_v[i] == 'r' || line_v[i] == 'R' || line_v[i] == 's' || line_v[i] == 'S' || line_v[i] == 'l' || line_v[i] == 'L')
         this->direction = line_v[i];
     else
     {
         LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
         throw std::exception();
+    }
+    i++;
+    if (line_v[i] == '\0')
+    {
+        this->debug = "0";
+    }
+    else
+    {
+        this->debug = "1";
     }
 }
 
@@ -160,7 +163,6 @@ void Command::sector_fsm(string line_v)
         parser->section = 't';
         return;
     }
-    command_fsm(line_v);
 }
 
 int Command::datasection_fsm(string line_v)
@@ -177,7 +179,37 @@ int Command::datasection_fsm(string line_v)
     throw std::exception();
 }
 
-string Command::preprocessor(string line_v)
+string Command::command_preprocessor(string line_v)
+{
+    for (int i = 0; i < line_v.size(); i++)
+    {
+        if (line_v[i] == ' ')
+        {
+            line_v.erase(i, 1);
+            i--;
+        }
+    }
+    for (int i = 0; i < line_v.size(); i++) //thats shit
+    {
+        if (line_v[i] == ';')
+        {
+            if (line_v.size() >= i + 3 && line_v[i + 1] == '#' && line_v[i + 2] == 'd' && line_v[i + 3] == '\0')
+            {
+                break;
+            }
+            else
+            {
+                while (line_v[i] != '\0')
+                {
+                    line_v.erase(i, 1);
+                }
+            }
+        }
+    }
+    return line_v;
+}
+
+string Command::sector_preprocessor(string line_v)
 {
     for (int i = 0; i < line_v.size(); i++)
     {
@@ -287,7 +319,7 @@ Command::Command(string command, Parser *parser_)
         case 's':
             if (parser->section == "")
             {
-                line_v = preprocessor(line_v);
+                line_v = sector_preprocessor(line_v);
                 sector_fsm(line_v);
                 break;
             }
@@ -300,7 +332,7 @@ Command::Command(string command, Parser *parser_)
             }
             if (parser->section == "t" || parser->section == "")
             {
-                line_v = preprocessor(line_v);
+                line_v = command_preprocessor(line_v);
                 command_fsm(line_v);
             }
         };

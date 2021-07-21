@@ -17,19 +17,30 @@ using namespace std;
 
 class App
 {
-    int argc;
-    char **argv;
+    string path;
+    bool lambda;
+    bool debug_statement;
     void command_to_sqlite3(sqlite3 *db, struct Command *current_command, sqlite3_stmt *ppStmt);
     bool check_str_in_vec(vector<string> v, string s);
+    App(){};
 
 public:
+    App(string path_)
+    {
+        path = path_;
+        lambda = 0;
+        debug_statement = 0;
+    };
+    void setLambda(bool lambda_)
+    {
+        lambda = lambda_;
+    };
+    void setDebug(bool debug_)
+    {
+        debug_statement = debug_;
+    };
     void semantic_analysis();
     void context_free_analysis_and_parsing();
-    void emulator_executing_procedure(bool debug_statement);
-    bool check_arguments(char *search);
-    App(int argc_, char **argv_)
-    {
-        argc = argc_;
-        argv = argv_;
-    }
+    void emulator_executing_procedure();
+    bool check_arguments(char *search, int argc, char **argv);
 };

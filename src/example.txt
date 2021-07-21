@@ -2,6 +2,10 @@ section .data
 |1|
 
 section .text
-start, 1 -> start1, 1, r
-;start, 0 -> start, 0, r
-start1, lambda -> end, lambda, s
+start, 1 -> start1, 1, r ;#d
+start1, lambda -> start2, 1, r 
+start2, lambda -> start3, 1, r 
+start3, lambda -> start4, 1, r 
+start4, lambda -> start5, 1, r  ;#d
+start5, lambda -> start6, 1, r 
+start6, lambda -> end, lambda, s 
