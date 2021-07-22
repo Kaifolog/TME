@@ -163,6 +163,9 @@ void Command::sector_fsm(string line_v)
         parser->section = 't';
         return;
     }
+
+    LOG(ERROR) << ("SECTION parse error at line #" + to_string(parser->line_counter));
+    throw std::exception();
 }
 
 int Command::datasection_fsm(string line_v)

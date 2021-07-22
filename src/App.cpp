@@ -299,14 +299,6 @@ void App::semantic_analysis()
         throw std::exception();
     }
 
-    // for (int i = 0; i < statements.size(); i++)
-    //     for (int j = 0; j < alphabet.size(); j++)
-    //     {
-    //         string a = "You might have to create command with state =  " + statements[i] + ",\tword = " + alphabet[j];
-    //         LOG(WARNING) << a;
-    //     }
-    // cout << statements[i] << " " << alphabet[j] << endl;
-
     for (int i = 0; i < statements.size(); i++)
         for (int j = 0; j < alphabet.size(); j++)
         {

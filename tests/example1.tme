@@ -164,7 +164,7 @@ xor::num1, 0 -> xor::start, 1, r
 
 
 
-loop::afterxor_ret, lambda -> loop::afterxor_ret ,  lambda         ,l
+loop::afterxor_ret, lambda -> loop::afterxor_ret ,  lambda         ,l ;#d
 loop::afterxor_ret, 1 -> loop::afterxor_ret, 1, l
 loop::afterxor_ret, 0 -> loop::afterxor_ret, 0, l
 loop::afterxor_ret, * -> loop::afterxor_ret, *, l

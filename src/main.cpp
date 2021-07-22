@@ -101,7 +101,6 @@ int main(int argc, char *argv[])
                     app.context_free_analysis_and_parsing();
                     app.semantic_analysis();
                     app.emulator_executing_procedure();
-                    cin.get();
                 }
                 if (app.check_arguments("-g", argc, argv))
                     app.context_free_analysis_and_parsing();
