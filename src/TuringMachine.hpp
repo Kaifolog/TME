@@ -24,6 +24,7 @@ public:
     string get_current_state();
     string get_current_word();
     string get_strip();
+    string get_strip(bool lambda);
     void set_current_state(string a);
     void set_current_word(string a);
     bool get_step(char a);

@@ -34,6 +34,7 @@ void App::command_to_sqlite3(sqlite3 *db, Command *current_command, sqlite3_stmt
     sqlite3_bind_text(ppStmt, 4, current_command->final_word.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(ppStmt, 5, current_command->direction.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(ppStmt, 6, current_command->debug.c_str(), -1, SQLITE_STATIC);
+    sqlite3_bind_text(ppStmt, 7, current_command->lineNumber.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(ppStmt);
     sqlite3_clear_bindings(ppStmt);
     sqlite3_reset(ppStmt);
@@ -75,20 +76,21 @@ void App::context_free_analysis_and_parsing()
         throw std::exception();
     }
 
-    //sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO RISKY
     const char *drop_table_query = "DROP TABLE IF EXISTS commands";
     if (sqlite3_exec(db, drop_table_query, 0, 0, &err))
     {
         LOG(ERROR) << err;
         sqlite3_free(err);
+        sqlite3_close(db);
         throw std::exception();
     }
     const char *create_table_query =
-        "CREATE TABLE IF NOT EXISTS commands(initial_state,initial_word,final_state, final_word,direction,debug)";
+        "CREATE TABLE IF NOT EXISTS commands(initial_state,initial_word,final_state, final_word,direction,debug,line)";
     if (sqlite3_exec(db, create_table_query, 0, 0, &err))
     {
         LOG(ERROR) << err;
         sqlite3_free(err);
+        sqlite3_close(db);
         throw std::exception();
     }
     /***************************/
@@ -101,13 +103,24 @@ void App::context_free_analysis_and_parsing()
     sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
     char insert_bind[256];
     sqlite3_stmt *ppStmt;
-    sprintf(insert_bind, "INSERT INTO commands VALUES (?,?,?,?,?,?)");
+    sprintf(insert_bind, "INSERT INTO commands VALUES (?,?,?,?,?,?,?)");
     sqlite3_prepare_v2(db, insert_bind, 256, &ppStmt, NULL);
     while (!fin.eof())
     {
         string buffer;
         getline(fin, buffer);
-        current_command = new Command(buffer, p);
+        try
+        {
+            current_command = new Command(buffer, p);
+        }
+        catch (...)
+        {
+            sqlite3_free(err);
+            sqlite3_close(db);
+            fin.close();
+            delete p;
+            throw;
+        }
         if (!current_command->is_empty())
         {
             command_to_sqlite3(db, current_command, ppStmt);
@@ -118,8 +131,10 @@ void App::context_free_analysis_and_parsing()
     {
         LOG(ERROR) << err;
         sqlite3_free(err);
+        sqlite3_close(db);
         throw std::exception();
     }
+    sqlite3_free(err);
     sqlite3_close(db);
     LOG(INFO) << "Database closed";
     fin.close();
@@ -171,6 +186,7 @@ void App::emulator_executing_procedure()
         {
             LOG(ERROR) << err;
             sqlite3_free(err);
+            sqlite3_close(db);
             throw std::exception();
         }
         string select_command;
@@ -190,6 +206,10 @@ void App::emulator_executing_procedure()
             else
             {
                 LOG(ERROR) << "EMULATING ERROR : CANT FIND NEXT COMMAND";
+                sqlite3_finalize(ppStmt);
+                sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
+                sqlite3_close(db);
+                LOG(INFO) << "Database closed";
                 throw std::exception();
             }
 
@@ -198,6 +218,7 @@ void App::emulator_executing_procedure()
                 linebyline = 1;
                 cout << tm.get_strip() << endl;
                 cout << "Current data: " << tm.get_current_state() << " " << tm.get_current_word() << endl;
+                cout << "On string number: " << string((char *)sqlite3_column_text(ppStmt, 6)) << endl;
 
                 getline(cin, debug_line);
                 if (debug_line.length())

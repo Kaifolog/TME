@@ -1,11 +1,14 @@
+#define :: _ppp_
+#define >>> ->
 section .data
 |1|
 
 section .text
-start, 1 -> start1, 1, r ;#d
-start1, lambda -> start2, 1, r 
-start2, lambda -> start3, 1, r 
-start3, lambda -> start4, 1, r 
-start4, lambda -> start5, 1, r  ;#d
-start5, lambda -> start6, 1, r 
-start6, lambda -> end, lambda, s 
+start, 1 -> s1::start1, 1, r ;#d
+s1::start1, lambda >>> s1::start2, 1, r 
+s1::start2, lambda >>> s1::start3, 1, r
+    ;#d
+s1::start3, lambda >>> s1::start4, 1, r 
+s1::start4, lambda >>> s1::start5, 1, r
+s1::start5, lambda >>> s1::start6, 1, r
+s1::start6, lambda >>> end, lambda, s 

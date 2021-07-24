@@ -96,6 +96,31 @@ string TuringMachine::get_strip()
     }
     return res;
 }
+string TuringMachine::get_strip(bool lambda)
+{
+    if (!lambda)
+        return get_strip();
+
+    string res;
+    for (int i = 0; i < strip.size(); i++)
+    {
+        if (i != cursor)
+        {
+            if (strip[i] == "lambda")
+                res = res + " " + " ";
+            else
+                res = res + strip[i] + " ";
+        }
+        else
+        {
+            if (strip[i] == "lambda")
+                res = res + "|" + " " + "|" + " ";
+            else
+                res = res + "|" + strip[i] + "|" + " ";
+        }
+    }
+    return res;
+}
 string TuringMachine::get_current_state()
 {
     return statement;
@@ -146,17 +171,4 @@ bool TuringMachine::get_step(char a)
         throw std::exception();
         break;
     }
-    // for (int i = 0; i < strip.size(); i++)
-    // {
-    //     if (i != cursor)
-    //     {
-    //         cout << strip[i] << " ";
-    //     }
-    //     else
-    //     {
-    //         cout << "|" << strip[i] << "|"
-    //              << " ";
-    //     }
-    // }
-    // cout << endl;
 }

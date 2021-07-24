@@ -44,6 +44,7 @@ public:
     string final_word;
     string direction;
     string debug;
+    string lineNumber;
 
     Command(string command, Parser *parser_);
     bool is_empty() // 0 if empty

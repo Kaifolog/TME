@@ -6,8 +6,8 @@ https://github.com/Kaifolog/TME/raw/master/instruction.pdf
 
 ---
 ## Build
->To build it you have to use CMake.
-(execute it from **$project folder$/bin !!!**)
+>To build it you have to use CMake, or Bash.
+(execute it from **$project folder$/bin** )
 
 
 #### **Windows:**

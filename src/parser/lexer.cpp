@@ -31,7 +31,6 @@ void Command::define_fsm(string line_v)
     {
         macros_value->push_back(line_v[i++]);
     }
-    //macros_value->push_back('\0');
     vector<string *> *macros = new vector<string *>;
     macros->push_back(macros_name);
     macros->push_back(macros_value);
@@ -41,43 +40,10 @@ void Command::define_fsm(string line_v)
 
 void Command::command_fsm(string line_v)
 {
+
     if (line_v.size() == 0)
     {
         return;
-    }
-
-    //теперь нужно придумать как передать строки обратно, желательно, в структурированном виде, именно структуру мы и напишем
-    //макроподстановки
-
-    for (int k = 0; k != parser->macros_table.size(); k++)
-    {
-        vector<string *> macros = parser->macros_table[k][0];
-        int m_len = 0, st = -1;
-        for (int p = 0; p < line_v.size() - 1; p++)
-        {
-            if (line_v[p] == macros[0][0][m_len])
-            {
-                m_len++;
-                if (st == -1)
-                    st = p;
-                if (m_len == macros[0][0].size() - 1)
-                    break;
-            }
-            else
-            {
-                st = -1;
-                m_len = 0;
-            }
-        }
-        if (m_len == macros[0][0].size() - 1)
-        {
-
-            for (int m = 0; m < m_len; m++)
-                line_v.erase(st, 1);
-            for (int m = 0; m < macros[1][0].size() - 1; m++)
-                line_v = line_v.insert(st++, &macros[1][0][m]);
-            k = -1;
-        }
     }
 
     int i = 0;
@@ -149,6 +115,7 @@ void Command::command_fsm(string line_v)
     {
         this->debug = "1";
     }
+    this->lineNumber = to_string(parser->line_counter);
 }
 
 void Command::sector_fsm(string line_v)
@@ -186,7 +153,7 @@ string Command::command_preprocessor(string line_v)
 {
     for (int i = 0; i < line_v.size(); i++)
     {
-        if (line_v[i] == ' ')
+        if (line_v[i] == ' ' || line_v[i] == '	')
         {
             line_v.erase(i, 1);
             i--;
@@ -209,6 +176,48 @@ string Command::command_preprocessor(string line_v)
             }
         }
     }
+
+    if (line_v == ";#d")
+    {
+        line_v = "";
+    }
+
+    if (line_v.size() == 0)
+    {
+        return line_v;
+    }
+
+    //теперь нужно придумать как передать строки обратно, желательно, в структурированном виде, именно структуру мы и напишем
+    //макроподстановки
+
+    for (int k = 0; k != parser->macros_table.size(); k++)
+    {
+        vector<string *> macros = parser->macros_table[k][0];
+        int m_len = 0, st = -1;
+        for (int p = 0; p < line_v.size() - 1; p++)
+        {
+            if (line_v[p] == macros[0][0][m_len])
+            {
+                m_len++;
+                if (st == -1)
+                    st = p;
+                if (m_len == macros[0][0].size() - 1)
+                    break;
+            }
+            else
+            {
+                st = -1;
+                m_len = 0;
+            }
+        }
+        if (m_len == macros[0][0].size() - 1)
+        {
+            line_v.erase(st, m_len);
+            line_v = line_v.insert(st++, macros[1][0]);
+            k = k - 1;
+        }
+    }
+
     return line_v;
 }
 
