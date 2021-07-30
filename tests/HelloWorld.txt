@@ -1,0 +1,7 @@
+section .data
+|lambda|
+section .text
+start, lambda    	 ->  world, Hello,r	;#d
+world, lambda -> name, World,r
+name, lambda -> exclamation, %username%, r
+exclamation, lambda -> end, !, r

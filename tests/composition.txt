@@ -1,0 +1,18 @@
+#define :: _ppp_
+
+section .data
+|lambda| a a b
+
+section .text
+start, lambda -> m1::start, lambda, s 		; старт
+
+m1::start, lambda -> m1::start, lambda, r 	;робота першої машини
+m1::start, a -> m1::a, a, r			;пишемо 3*b
+m1::a, a -> m1::a, a, r
+m1::a, b -> m1::a, a, r
+m1::a, lambda -> m2::start, lambda, l
+
+m2::start, a -> m2::start, b, l 		;робота другої машини
+					;повертаємося
+			
+m2::start, lambda -> end, lambda,s 		;кінець

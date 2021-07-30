@@ -1,0 +1,20 @@
+;Коментарі виконані в ассемблерному стилі
+section .data
+|lambda|
+
+
+;Багаторядкових коментарів не існує
+;Вони працюють у будь-якій точці програми
+		;Можуть мати отступи та будь-які символи ~!@#$%^&*()_+
+
+section .text
+start, lambda ->  world, Hello, r		;#d 	printing Hello
+world, lambda -> name, World, r		;	printing World
+name, lambda -> exclamation, %username%, r	;	printing username
+exclamation, lambda -> end, !<3, r		;	printing exclamation sign and ending
+
+
+;У світі asm прийнято
+;використовувати Tab
+;та писати коментарі до кожного рядка,
+;рівняючи всі "колонкою".
