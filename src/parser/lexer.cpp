@@ -63,7 +63,7 @@ void Command::command_fsm(string line_v)
 
     for (; i < line_v.size() - 1 && !(line_v[i] == '-' && line_v[i + 1] == '>'); i++) //w1
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&')
+        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%')
             this->initial_word.push_back(line_v[i]);
         else
         {
@@ -89,7 +89,7 @@ void Command::command_fsm(string line_v)
     i++;
     for (; i < line_v.size() - 1 && line_v[i] != ','; i++) //w2
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&')
+        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%')
             this->final_word.push_back(line_v[i]);
         else
         {
@@ -151,21 +151,17 @@ int Command::datasection_fsm(string line_v)
 
 string Command::command_preprocessor(string line_v)
 {
-    for (int i = 0; i < line_v.size(); i++)
-    {
-        if (line_v[i] == ' ' || line_v[i] == '	')
-        {
-            line_v.erase(i, 1);
-            i--;
-        }
-    }
     for (int i = 0; i < line_v.size(); i++) //thats shit
     {
         if (line_v[i] == ';')
         {
             if (line_v.size() >= i + 3 && line_v[i + 1] == '#' && line_v[i + 2] == 'd' && line_v[i + 3] == '\0')
             {
-                break;
+                i += 3;
+                while (line_v[i] != '\0')
+                {
+                    line_v.erase(i, 1);
+                }
             }
             else
             {
@@ -174,6 +170,11 @@ string Command::command_preprocessor(string line_v)
                     line_v.erase(i, 1);
                 }
             }
+        }
+        if (line_v[i] == ' ' || line_v[i] == '	')
+        {
+            line_v.erase(i, 1);
+            i--;
         }
     }
 
@@ -187,7 +188,6 @@ string Command::command_preprocessor(string line_v)
         return line_v;
     }
 
-    //теперь нужно придумать как передать строки обратно, желательно, в структурированном виде, именно структуру мы и напишем
     //макроподстановки
 
     for (int k = 0; k != parser->macros_table.size(); k++)
@@ -261,6 +261,7 @@ string Command::sector_preprocessor(string line_v)
 
 string Command::data_preprocessor(string line_v)
 {
+    int cursor_char = 0;
     for (int i = 0; i < line_v.size(); i++)
     {
         if (line_v[i] == ';') //comments
@@ -274,10 +275,25 @@ string Command::data_preprocessor(string line_v)
             line_v.erase(i, 1);
             i--;
         }
-        if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') && !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') && !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') && !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?'))
+        if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') && !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') && !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') && !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?') && !(line_v[i] == '>') && !(line_v[i] == '<') && !(line_v[i] == '%'))
         {
             LOG(WARNING) << ("at data section (you have to use only allowed symbols) at char #" + to_string(i + 1));
         }
+        if (line_v[i] == '|')
+            if (i < line_v.size() && i > 0)
+                if (line_v[i + 1] != ' ' && line_v[i - 1] != ' ' && line_v[i + 1] != '\0')
+                {
+                    LOG(ERROR) << ("parse error (check space splits)  at line #" + to_string(parser->line_counter));
+                    throw std::exception();
+                }
+    }
+    for (int i = 0; i < line_v.length(); i++)
+        if (line_v[i] == '|')
+            cursor_char++;
+    if (cursor_char != 2)
+    {
+        LOG(ERROR) << ("parse error at (data section) line #" + to_string(parser->line_counter));
+        throw std::exception();
     }
     return line_v;
 }

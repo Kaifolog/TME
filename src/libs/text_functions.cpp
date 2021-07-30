@@ -5,7 +5,7 @@ using namespace std;
 
 void text_v_func()
 {
-     cout << tm_pic << "TME - Turing Machine Emulator V1.001\n\n"
+     cout << tm_pic << "TME - Turing Machine Emulator V1.002\n\n"
           << "(c)"
           << "Bulak A.S." << endl;
 }
@@ -14,7 +14,7 @@ void text_start_func()
 {
      cout << "CTRL+C OR CTRL+D TO CLOSE" << endl
           << endl
-          << "TME - Turing Machine Emulator V1.001\n\n";
+          << "TME - Turing Machine Emulator V1.002\n\n";
 
      cout << "How to?" << endl
           << "Link to github repository with documentation and examples: https://github.com/Kaifolog/TME" << endl

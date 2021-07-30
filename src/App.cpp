@@ -115,6 +115,8 @@ void App::context_free_analysis_and_parsing()
         }
         catch (...)
         {
+            sqlite3_finalize(ppStmt);
+            sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
             sqlite3_free(err);
             sqlite3_close(db);
             fin.close();
@@ -134,6 +136,8 @@ void App::context_free_analysis_and_parsing()
         sqlite3_close(db);
         throw std::exception();
     }
+    sqlite3_finalize(ppStmt);
+    sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
     sqlite3_free(err);
     sqlite3_close(db);
     LOG(INFO) << "Database closed";
