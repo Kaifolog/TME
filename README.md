@@ -9,14 +9,8 @@
 <img src="./logo.jpg" width="30%">
 </p>
 
-
-
-## **First of all**
-You **have to** read <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. Which describes emulator command language, building and many other important aspects.
-
-
 ## Motivation
-
+TME is designed to work efficiently with a Turing machine.
 There are several similar emulators. What are their pros and cons?
 
 | Features       | TME                | Dickarev | Onishenko |
@@ -29,6 +23,12 @@ There are several similar emulators. What are their pros and cons?
 | Stable         | +                  |     +    |     -     |
 | Open source    | +                  |     -    |     -     |
 | Software maintenance  | +                  |     -    |     -     |
+
+As you see,a large number of drawbacks of its counterparts is fixed.
+
+## **First of all**
+You **have to** read the <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
+
 
 
 ## Example
