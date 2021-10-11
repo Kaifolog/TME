@@ -6,7 +6,8 @@
 </p>
 
 <p align="center">
-<center><img src="./logo.jpg" width="80%"></center>
+<img src="./logo.jpg" width="30%">
+</p>
 
 
 
