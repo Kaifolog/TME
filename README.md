@@ -1,19 +1,16 @@
-# <center>TME - Turing machine emulator.</center>
+# <h1 align="center">TME - Turing machine emulator</h1>
 
-<center>
+<p align="center">
 <img src="https://img.shields.io/badge/C%2B%2B-11-ff69b4">
 <img src="https://img.shields.io/badge/License-MIT-brightgreen">
-</center>
+</p>
 
-<center><img src="./logo.jpg" width="30%"></center>
-
-
-## **First of all**
-You **have to** read <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. Which describes emulator command language, building and many other important aspects.
-
+<p align="center">
+<img src="./logo.jpg" width="30%">
+</p>
 
 ## Motivation
-
+TME is designed to work efficiently with a Turing machine.
 There are several similar emulators. What are their pros and cons?
 
 | Features       | TME                | Dickarev | Onishenko |
@@ -26,6 +23,12 @@ There are several similar emulators. What are their pros and cons?
 | Stable         | +                  |     +    |     -     |
 | Open source    | +                  |     -    |     -     |
 | Software maintenance  | +                  |     -    |     -     |
+
+As you see,a large number of drawbacks of its counterparts is fixed.
+
+## **First of all**
+You **have to** read the <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
+
 
 
 ## Example
