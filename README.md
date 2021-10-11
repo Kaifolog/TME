@@ -1,8 +1,7 @@
 # <center>TME - Turing machine emulator.</center>
 
 <center>
-<img src="https://img.shields.io/badge/C%2B%2B-11-ff69b4">
-<img src="https://img.shields.io/badge/License-MIT-brightgreen">
+<img src="https://img.shields.io/badge/C%2B%2B-11-ff69b4"><img src="https://img.shields.io/badge/License-MIT-brightgreen">
 </center>
 
 <center><img src="./logo.jpg" width="30%"></center>
