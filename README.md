@@ -8,14 +8,12 @@
 <p align="center">
 <center><img src="./logo.jpg" width="30%"></center>
 </p>
+<div style="text-align:center"><img src="./logo.jpg" width="30%" /></div>
 
 
 ## **First of all**
 You **have to** read <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. Which describes emulator command language, building and many other important aspects.
 
-<p align="center">
-<center><img src="./logo.jpg" width="30%"></center>
-</p>
 
 ## Motivation
 
