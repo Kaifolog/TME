@@ -54,6 +54,10 @@ void App::context_free_analysis_and_parsing()
     dir = path;
     ifstream fin;
     fin.open(dir);
+    if (!fin.is_open())
+    {
+        std::cerr << "gg" << std::endl;
+    }
     if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
     {
         dir.pop_back();
@@ -105,10 +109,10 @@ void App::context_free_analysis_and_parsing()
     sqlite3_stmt *ppStmt;
     sprintf(insert_bind, "INSERT INTO commands VALUES (?,?,?,?,?,?,?)");
     sqlite3_prepare_v2(db, insert_bind, 256, &ppStmt, NULL);
-    while (!fin.eof())
+
+    string buffer;
+    while (getline(fin, buffer))
     {
-        string buffer;
-        getline(fin, buffer);
         try
         {
             current_command = new Command(buffer, p);
@@ -252,7 +256,6 @@ bool App::check_str_in_vec(vector<string> v, string s)
 void App::semantic_analysis()
 {
     sqlite3 *db = 0;
-    char *err = 0;
     sqlite3_stmt *ppStmt;
 
     LOG(INFO) << "Starting analyser...";
@@ -276,7 +279,7 @@ void App::semantic_analysis()
         LOG(ERROR) << "UNDEFINED ERROR : DATABASE UNAVAILABLE";
         throw std::exception();
     }
-    //sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO FUCKING RISKY
+    // sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO FUCKING RISKY
     string select_command;
     select_command = "SELECT *FROM commands";
     sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
@@ -297,30 +300,37 @@ void App::semantic_analysis()
     vector<string> statements;
     while (sqlite3_step(ppStmt) != SQLITE_DONE)
     {
+        if (check_str_in_vec(statements, string((char *)sqlite3_column_text(ppStmt, 2))))
+        {
+            statements.push_back(string((char *)sqlite3_column_text(ppStmt, 2)));
+        }
         if (check_str_in_vec(statements, string((char *)sqlite3_column_text(ppStmt, 0))))
         {
             if (string((char *)sqlite3_column_text(ppStmt, 0)) != "end")
+            {
                 statements.push_back(string((char *)sqlite3_column_text(ppStmt, 0)));
+            }
             else
             {
                 LOG(ERROR) << "ANALYSER FATAL ERROR! There are \"end\" at the left side of command.";
+                sqlite3_close(db);
                 throw std::exception();
             }
         }
-        if (check_str_in_vec(statements, string((char *)sqlite3_column_text(ppStmt, 2))))
-            statements.push_back(string((char *)sqlite3_column_text(ppStmt, 2)));
     }
     sqlite3_finalize(ppStmt);
 
     if (check_str_in_vec(statements, "start"))
     {
         LOG(ERROR) << "ANALYSER FATAL ERROR! There are no \"start\" command.";
+        sqlite3_close(db);
         throw std::exception();
     }
 
     if (check_str_in_vec(statements, "end"))
     {
         LOG(ERROR) << "ANALYSER FATAL ERROR! There are no \"end\" command.";
+        sqlite3_close(db);
         throw std::exception();
     }
 
@@ -335,6 +345,7 @@ void App::semantic_analysis()
                 {
                     string a = "ANALYSER FATAL ERROR!!! There are two or more commands with same left side. " + string((char *)sqlite3_column_text(ppStmt, 0)) + " " + string((char *)sqlite3_column_text(ppStmt, 1));
                     LOG(ERROR) << a;
+                    sqlite3_close(db);
                     throw std::exception();
                 }
             }

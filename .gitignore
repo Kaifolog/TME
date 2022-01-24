@@ -1,0 +1,6 @@
+build
+.vscode
+CMakeLists.txt.user
+*.db
+*_log.txt
+*_out.txt

@@ -16,13 +16,15 @@ There are several similar emulators. What are their pros and cons?
 | Features       | TME                | Dickarev | Onishenko |
 | -------------- |:------------------:| --------:| ---------:|
 | Comments       | +                  |     +    |     -     |
-| UNIX version   | +                  |     -    |     -     |
 | Breakpoints    | +                  |     +    |     -     |
 | Macros         | +                  |     -    |     -     |
 | Dark theme     | +                  |     -    |     -     |
 | Stable         | +                  |     +    |     -     |
 | Open source    | +                  |     -    |     -     |
 | Software maintenance  | +                  |     -    |     -     |
+| UNIX version   | +                  |     -    |     -     |
+| console version   | +                  |     -    |     -     |
+| UNIX console version   | +                  |     -    |     -     |
 
 As you see,a large number of drawbacks of its counterparts is fixed.
 
@@ -48,18 +50,27 @@ exclamation, lambda -> end, !, r
 Hello World %username% !
 ```
 
+## Requirements
+#### **Windows:**
+MinGW toolchain (gcc, g++, mingw32-make) with setted environmental variables, cmake, and QT in dynamic linking distribution (optional, only when gui is necessary).
+
+#### **Linux and Mac:**
+GNU gcc, g++, make; cmake, and QT in dynamic linking distribution (optional, only for gui version).
+
 ## Build
->To build it you have to use CMake with g++.<p>
-You have to execute commands from __\$project folder\$/bin__ folder.
 
+You probably want to keep cleanness on your file system. So, you should make a directory ```build``` to separate source and temporary files.
 
+Moreover, you can choose between console and gui version by -DIS_GUI=(True or False) flag. If you choose gui version, so, you have to set qt binary path by flag -DCMAKE_PREFIX_PATH.
 
 #### **Windows:**
 ```
-cmake ../ && cmake --build ./ && start ./Debug/TME.exe
+mkdir build && cd build
+cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/Qt/5.15.2/mingw81_64" -DIS_GUI=True
+mingw32-make
 ```
 
-#### **UNIX-like:**
+#### **Linux and Mac:**
 ```
-cmake ../ && cmake --build ./ && ./TME
+mkdir build && cd build && cmake .. && make
 ```

@@ -1,25 +1,43 @@
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+if(IS_GUI)
 
-project(TME VERSION 0.1)
+        set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+        set(CMAKE_AUTOUIC ON)
+        set(CMAKE_AUTOMOC ON)
+        set(CMAKE_AUTORCC ON)
 
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED True)
+        set(CMAKE_CXX_STANDARD 11)
+        set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(parser) 
+#include_directories(${CMAKE_SOURCE_DIR}/include)
+#link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-add_subdirectory(libs)
+# QtCreator supports the following variables for Android, which are identical to qmake Android variables.
+# Check https://doc.qt.io/qt/deployment-android.html for more information.
+# They need to be set before the find_package( ...) calls below.
 
-add_subdirectory(vendor) 
+        find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
+        find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
-add_library(TuringMachine STATIC TuringMachine.cpp)
+        set(PROJECT_SOURCES
+                ui/main.cpp
+                ui/mainwindow.cpp
+                ui/mainwindow.h
+                ui/mainwindow.ui
+        )
+        if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+        qt_add_executable(TME
+                ${PROJECT_SOURCES}
+        )
+        else()
+        add_executable(TME WIN32
+                ${PROJECT_SOURCES}
+        )
+        endif()
 
-add_executable(TME main.cpp App.cpp)
+        add_subdirectory(tme)
 
-target_link_libraries(TME PARSER VENDOR LIBS TuringMachine )
-
-if (UNIX)
-    target_link_libraries(TME dl pthread)
-endif (UNIX)
+        target_link_libraries( TME PRIVATE APP PARSER LIBS VENDOR TuringMachine  Qt${QT_VERSION_MAJOR}::Widgets ${CMAKE_DL_LIBS} pthread )
+else()
+        add_subdirectory(tme)
+endif()
