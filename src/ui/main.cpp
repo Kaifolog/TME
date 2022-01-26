@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "../tme/App.hpp"
+#include "../emulator/App.hpp"
 #include <iostream>
 
 #include <QApplication>

@@ -35,9 +35,9 @@ if(IS_GUI)
         )
         endif()
 
-        add_subdirectory(tme)
+        add_subdirectory(emulator)
 
         target_link_libraries( TME PRIVATE APP PARSER LIBS VENDOR TuringMachine  Qt${QT_VERSION_MAJOR}::Widgets ${CMAKE_DL_LIBS} pthread )
 else()
-        add_subdirectory(tme)
+        add_subdirectory(emulator)
 endif()
