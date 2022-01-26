@@ -5,8 +5,8 @@
 #include <QTextStream>
 #include <QFile>
 #include <fstream>
-#include "../tme/App.hpp"
-#include "../tme/vendor/sqlite3/sqlite3.h"
+#include "../emulator/App.hpp"
+#include "../emulator/vendor/sqlite3/sqlite3.h"
 #include <QMessageBox>
 #include <iostream>
 #include <unistd.h>
