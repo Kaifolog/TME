@@ -876,7 +876,6 @@ void MainWindow::on_debugnextbtn_clicked()
     }
     if (debug == 1)
     {
-
         ui->debugnextbtn->setEnabled(false);
 
         if (fileName.size())
@@ -954,13 +953,12 @@ void MainWindow::on_debugnextbtn_clicked()
                         return;
                     }
                     ui->debugnextbtn->setEnabled(true);
-                    sqlite3_finalize(ppStmt);
 
                     sqlite3_finalize(ppStmt);
-                    sqlite3_close(db);
 
                     ui->debuglineEdit->setReadOnly(0);
                 }
+                sqlite3_close(db);
             }
             else
             {
@@ -971,8 +969,6 @@ void MainWindow::on_debugnextbtn_clicked()
                 return;
             }
             ui->debugnextbtn->setEnabled(true);
-            sqlite3_finalize(ppStmt);
-            sqlite3_close(db);
         }
     }
     /*************************************************************************************************************************/
@@ -1066,7 +1062,6 @@ void MainWindow::on_skipButton_clicked()
 
                         currentLineHighlight(currentline);
 
-                        sqlite3_finalize(ppStmt);
                         sqlite3_close(db);
                         ui->skipButton->setEnabled(true);
                         return; //сюда ебашить подсветку
@@ -1076,7 +1071,6 @@ void MainWindow::on_skipButton_clicked()
                 }
                 ui->skipButton->setEnabled(true);
                 sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-                sqlite3_finalize(ppStmt);
                 sqlite3_close(db);
             }
             ui->debuglineEdit->setText(tm.get_strip((int)ui->lambdacheckBox->isChecked()).c_str());
