@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-<img src="./logo.jpg" width="30%">
+<img src="./assets/logo.jpg" width="30%">
 </p>
 
 ## Motivation
@@ -34,7 +34,7 @@ You **have to** read the <a href="https://github.com/Kaifolog/TME/raw/master/ins
 
 
 ## Example
-[ [`tests/HelloWorld.txt`](tests/HelloWorld.txt) ]
+[ [`examples/HelloWorld.txt`](examples/HelloWorld.txt) ]
 ```
 section .data
 |lambda|
@@ -59,7 +59,7 @@ GNU gcc, g++, make; cmake, and QT in dynamic linking distribution (optional, onl
 
 ## Build
 
-You probably want to keep cleanness on your file system. So, you should make a directory ```build``` to separate source and temporary files.
+You probably want to keep your file system neet. So, you should make a directory ```build``` to separate source and temporary files.
 
 Moreover, you can choose between console and gui version by -DIS_GUI=(True or False) flag. If you choose gui version, so, you have to set qt binary path by flag -DCMAKE_PREFIX_PATH.
 
@@ -70,7 +70,12 @@ cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/Qt/5.15.2/mingw81_64" -DIS
 mingw32-make
 ```
 
-#### **Linux and Mac:**
+#### **Linux:**
 ```
+sudo apt install qt5-default
 mkdir build && cd build && cmake .. && make
+```
+#### **MacOS:**
+```
+Coming soon ;(
 ```

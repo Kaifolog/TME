@@ -5,19 +5,29 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Flag for cleaning temporary files after closing.
 - clang-format, clang-tidy.
-- LaTeX files.
 - Linux&Mac gui version support.
 - Tests
+- Logo for executable file.
 
 ### Changed
 - Code refactoring.
+- instruction.pdf
+- README.md
+
+### Removed
+-
+
+## [1.2.1] - ```Unreleased```
+### Added
+- LaTeX files.
+- Linux&Mac gui version support.
+
+### Changed
 - Fix bug that change main text input color to dark gray.
 - instruction.pdf
 - README.md
 - In-programm "how to".
-
-### Removed
--
+- Fix user interface faults.
 
 ## [1.2] - 26-01-2022
 ### Added
