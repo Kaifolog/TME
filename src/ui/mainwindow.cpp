@@ -435,7 +435,7 @@ void MainWindow::on_analisysbtn_clicked()
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
-            QString text = "ddfdf";
+            QString text = "ddfdf"; // ?)
             text = file.readAll();
             ui->debuglineEdit->clear();
             ui->logwindow->clear();
@@ -510,7 +510,7 @@ void MainWindow::on_emulationbtn_clicked()
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
-            QString text = "ddfdf";
+            QString text = "ddfdf"; // ?)
             text = file.readAll();
             ui->logwindow->clear();
             ui->logwindow->appendPlainText(text);
@@ -696,7 +696,14 @@ void MainWindow::currentLineHighlight(int line)
     for (int i = 0; i < highlighedLine - 1; i++)
         cur.movePosition(QTextCursor::Down);
     QTextBlockFormat f;
-    f.setBackground(QBrush("#2a2931"));
+    if (isDarkMode)
+    {
+        f.setBackground(QBrush("#2a2931"));
+    }
+    else
+    {
+        f.setBackground(QBrush("#ffffff"));
+    }
     cur.select(QTextCursor::LineUnderCursor);
     cur.setBlockFormat(f);
 
@@ -730,7 +737,15 @@ void MainWindow::breakpointHighlightOFF()
     cursor.select(QTextCursor::Document);
     QTextBlockFormat f1;
     // f.setBackground(Qt::red);
-    f1.setBackground(QBrush("#2a2931")); // 550e12 //4b4b18
+    if (isDarkMode)
+    {
+        f1.setBackground(QBrush("#2a2931"));
+    }
+    else
+    {
+        f1.setBackground(QBrush("#ffffff"));
+    }
+    // f1.setBackground(QBrush("#2a2931")); // 550e12 //4b4b18
     // cur1.select(QTextCursor::LineUnderCursor);
     cursor.setBlockFormat(f1);
 }

@@ -4,3 +4,8 @@ CMakeLists.txt.user
 *.db
 *_log.txt
 *_out.txt
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc

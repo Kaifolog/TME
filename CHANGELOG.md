@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - README.md
 - In-programm "how to".
 - Fix user interface faults.
+- Starts file opening procedure from root directory of the disc.
 
 ## [1.2] - 26-01-2022
 ### Added

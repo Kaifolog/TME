@@ -9,6 +9,7 @@ INITIALIZE_EASYLOGGINGPP
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    MainWindow w;
 
     // setting style
     QFile styleSheetFile("./MaterialDark.qss");
@@ -17,9 +18,9 @@ int main(int argc, char *argv[])
     {
         QString styleSheet = QLatin1String(styleSheetFile.readAll());
         a.setStyleSheet(styleSheet);
+        w.isDarkMode = 1;
     }
 
-    MainWindow w;
     w.show();
     return a.exec();
 }

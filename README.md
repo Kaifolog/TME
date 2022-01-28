@@ -32,13 +32,6 @@ As you see,a large number of drawbacks of its counterparts is fixed.
 You **have to** read the <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
 
 
-As you see,a large number of drawbacks of its counterparts is fixed.
-
-## **First of all**
-You **have to** read the <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
-
-
-
 ## Example
 [ [`examples/HelloWorld.txt`](examples/HelloWorld.txt) ]
 ```

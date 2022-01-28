@@ -5,11 +5,12 @@
 #include <QtGui>
 
 #include <QMainWindow>
-//#include "include/Qsci/qsciscintilla.h"
-//#include "include/Qsci/qscilexercpp.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui
+{
+    class MainWindow;
+}
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -21,6 +22,7 @@ public:
     ~MainWindow();
     int argc;
     char **argv;
+    bool isDarkMode = 0;
 
 private slots:
     void slotShortcutCtrlS();
@@ -69,7 +71,7 @@ private slots:
 
     void breakpointHighlightOFF();
 
-//    void on_autoDebuggerPushButton_clicked();
+    //    void on_autoDebuggerPushButton_clicked();
 
     void on_skipButton_clicked();
 
@@ -79,21 +81,18 @@ private slots:
 
 private:
     QString fileName;
-    bool debug=0;
-    int highlighedLine=0;
+    bool debug = 0;
+    int highlighedLine = 0;
 
     Ui::MainWindow *ui;
 
-    QShortcut       *keyCtrlS;  // объект сочетания клавиш Ctrl + D
-    QShortcut       *CtrlD;  // объект сочетания клавиш Ctrl + D
-    QShortcut       *keyCtrlN;  // объект сочетания клавиш Ctrl + D
-    QShortcut       *keyCtrlO;  // объект сочетания клавиш Ctrl + D
-    QShortcut       *CtrlShiftX;  // объект сочетания клавиш Ctrl + D
-    QShortcut       *CtrlTab;  // объект сочетания клавиш Ctrl + D
-    QShortcut       *CtrlSpace;  // объект сочетания клавиш Ctrl + D
-
-
+    QShortcut *keyCtrlS;   // объект сочетания клавиш Ctrl + D
+    QShortcut *CtrlD;      // объект сочетания клавиш Ctrl + D
+    QShortcut *keyCtrlN;   // объект сочетания клавиш Ctrl + D
+    QShortcut *keyCtrlO;   // объект сочетания клавиш Ctrl + D
+    QShortcut *CtrlShiftX; // объект сочетания клавиш Ctrl + D
+    QShortcut *CtrlTab;    // объект сочетания клавиш Ctrl + D
+    QShortcut *CtrlSpace;  // объект сочетания клавиш Ctrl + D
 };
-
 
 #endif // MAINWINDOW_H
