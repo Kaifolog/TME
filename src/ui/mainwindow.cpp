@@ -191,14 +191,15 @@ void MainWindow::on_datacheckBox_clicked()
 void MainWindow::on_actionOpen_triggered()
 {
     QString newFile;
-    if (!fileName.length())
-        newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));
-    else
-    {
-        newFile = fileName;
-        QString file__ = newFile.left(newFile.lastIndexOf(QChar('/')));
-        newFile = QFileDialog::getOpenFileName(this, tr("Open File"), file__, tr("Documents (*.tme *.txt)"));
-    }
+    newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));
+    // if (!fileName.length())
+    //     newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));           // ??))
+    // else
+    // {
+    //     newFile = fileName;
+    //     QString file__ = newFile.left(newFile.lastIndexOf(QChar('/')));
+    //     newFile = QFileDialog::getOpenFileName(this, tr("Open File"), file__, tr("Documents (*.tme *.txt)"));
+    // }
     if (newFile.length())
         fileName = newFile;
     QFile file(fileName);
@@ -1111,7 +1112,7 @@ void MainWindow::on_action_triggered()
     QMessageBox::about(0,
                        "Про мову цього емулятора",
                        "Синтаксис:\n"
-                       "Має два заразервованих стану, 3 ключові вирази та один символ.\n"
+                       "Має два заразервованих стани, 3 ключові вирази та один символ.\n"
                        "В мові елементарною одиницею є рядок, який завжди має вид: \n\n statement1, word1->statement2, word2, direction\n\n"
                        "В ідентифікаторах станів та алфавіту допустимі лише латинські букви будь-якого регістру, цифри та нижні підкреслення \"_\"\n"
                        "Мова не має обмежень двжини ідентификаторів, рядків та не залежить від кількости чи наявності відступів, табуляцій, пропусків.\n\n\n"
@@ -1122,7 +1123,7 @@ void MainWindow::on_action_triggered()
                        "Остаточно про виконання мови:\nВиконання завжди починається за стану \"start\" та слова, що було виділено курсором, кінець - стан \"end\", lambda - зарезервоване слово, що позначає пустий символ."
                        "\n\nДетальніше на гітхаб Kaifolog/TME,\nтам є ціла нормальна інструкція!");
     QMessageBox msgBox;
-    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:white\">Інструкція та актуальна версія</a>");
+    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Інструкція та актуальна версія</a>");
     msgBox.exec();
 }
 void MainWindow::on_action_2_triggered()
@@ -1132,14 +1133,14 @@ void MainWindow::on_action_2_triggered()
                        "Синтаксис:\n"
                        "Ctrl+S - save\nCtrl+N - New\nCtrl+O - open\nCtrl+Shift+X - Quick Start\nCtrl+Tab - підстановка розділових знаків до форми команди \",->,,\"\nCtrl+Space - Робить 1 ітерацію у debug режимі");
     QMessageBox msgBox;
-    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:white\">Інструкція та актуальна версія</a>");
-    msgBox.exec();
+    // msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Інструкція та актуальна версія</a>");
+    // msgBox.exec();
 }
 
 void MainWindow::on_action_3_triggered()
 {
     QMessageBox::about(this,
-                       "Приколад програми.",
+                       "Приклад програми.",
                        "Виконаємо порт з Оніщенка:\n\n"
                        "#define ,: ,lambda: ; на нашому емуляторі недопустимі пусті строки\n"
                        "#define ,, ,lambda, ; на нашому компіляторі недопустимі пусті строки\n"
@@ -1158,7 +1159,7 @@ void MainWindow::on_action_3_triggered()
                        "q5,:q6,e,r\n"
                        "q6,:!,,r\n");
     QMessageBox msgBox;
-    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:white\">Інструкція та актуальна версія</a>");
+    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Інструкція та актуальна версія</a>");
     msgBox.exec();
 }
 
@@ -1166,7 +1167,7 @@ void MainWindow::on_action_5_triggered()
 {
     QMessageBox::about(this,
                        "Про емулятор\n\n",
-                       "Єдина неприємність - інпут рядок з графічного інтерфейсу є аналогом section .data, куди він і збережується.\n"
+                       "Єдина неприємність - верхній рядок з графічного інтерфейсу є аналогом section .data, куди він і збережується.\n"
                        "При відкритті ви побачите, що він в головному полі тексту. Можете сам рядок рядок без вказання секції переписати в інпут рядок граф. інтерфейсу. Якщо він пустий - він не буде записаний.\n"
                        "Щоб дізнатися деталі чи зв'язатися з розробником - відкрийте вкладку \"Про программу\""
                        "Читайте інструкцію.");
@@ -1176,10 +1177,10 @@ void MainWindow::on_action_4_triggered()
 {
     QMessageBox::about(this,
                        "Про программу\n\n",
-                       "Присвячено Україні та всім моїм друзям і подругам, Кані Весту. Якщо мене ще не відрахували та мені ще цікавий Qt - я буду продовжувати розробляти її, маєш якісь ідеї або хочеш допомогти? Хочеш отримати консольну версію?\n\n"
-                       "Знайди на гітхаб Kaifolog/TME\n");
+                       "Присвячено Україні та всім моїм друзям і подругам, Kanye \"Ye\" West'у.\n"
+                       "Якщо мене ще не відрахували та мені ще цікаво - я буду продовжувати розробляти емулятор, маєш якісь ідеї або хочеш допомогти? Хочеш отримати консольну версію?\n\n");
     QMessageBox msgBox;
-    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:white\">Мій Github</a>");
+    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Мій Github</a>");
     msgBox.exec();
 }
 

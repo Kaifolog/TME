@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Linux&Mac gui version support.
 - Tests
 - Logo for executable file.
+- .pro file.
 
 ### Changed
 - Code refactoring.
