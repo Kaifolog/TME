@@ -41,8 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
     // подключаем обработчик нажатия клавиши
     connect(CtrlTab, SIGNAL(activated()), this, SLOT(slotShortcutCtrlTab()));
 
-    CtrlSpace = new QShortcut(this);             // Инициализируем объект
-    CtrlSpace->setKey(Qt::CTRL + Qt::Key_Space); // Устанавливаем сочетание клавиш
+    CtrlSpace = new QShortcut(this); // Инициализируем объект
+    CtrlSpace->setKey(Qt::Key_F5);   // CTRL + Qt::Key_Space); // Устанавливаем сочетание клавиш
     // подключаем обработчик нажатия клавиши
     connect(CtrlSpace, SIGNAL(activated()), this, SLOT(slotShortcutCtrlSpace()));
 
@@ -1131,7 +1131,7 @@ void MainWindow::on_action_2_triggered()
     QMessageBox::about(this,
                        "Гарячі клавіші.",
                        "Синтаксис:\n"
-                       "Ctrl+S - save\nCtrl+N - New\nCtrl+O - open\nCtrl+Shift+X - Quick Start\nCtrl+Tab - підстановка розділових знаків до форми команди \",->,,\"\nCtrl+Space - Робить 1 ітерацію у debug режимі");
+                       "Ctrl+S - save\nCtrl+N - New\nCtrl+O - open\nCtrl+Shift+X - Quick Start\nCtrl+Tab - підстановка розділових знаків до форми команди \",->,,\"\n F5 - Робить 1 ітерацію у debug режимі");
     QMessageBox msgBox;
     // msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Інструкція та актуальна версія</a>");
     // msgBox.exec();
