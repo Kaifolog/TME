@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 -
 
-## [1.2.1] - ```Unreleased```
+## [1.2.1] - 31-01-2022
 ### Added
 - LaTeX files.
 - Linux&Mac gui version support.
@@ -30,6 +30,8 @@ All notable changes to this project will be documented in this file.
 - In-programm "how to".
 - Fix user interface faults.
 - Starts file opening procedure from root directory of the disc.
+- Debug Next button binded on F5.
+- Font changed to arial.
 
 ## [1.2] - 26-01-2022
 ### Added
