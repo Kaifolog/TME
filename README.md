@@ -9,7 +9,7 @@
 <img src="./assets/logo.jpg" width="30%">
 </p>
 
-## Motivation
+# Motivation
 TME is designed to work efficiently with a Turing machine.
 There are several similar emulators. What are their pros and cons?
 
@@ -28,11 +28,11 @@ There are several similar emulators. What are their pros and cons?
 
 As you see,a large number of drawbacks of its counterparts is fixed.
 
-## **First of all**
-You **have to** read the <a href="https://github.com/Kaifolog/TME/raw/master/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
+# **First of all**
+You **have to** read the <a href="https://github.com/Kaifolog/TME/blob/master/assets/LaTeX/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
 
 
-## Example
+# Example
 [ [`examples/HelloWorld.txt`](examples/HelloWorld.txt) ]
 ```
 section .data
@@ -48,33 +48,72 @@ exclamation, lambda -> end, !, r
 ```
 Hello World %username% !
 ```
-
-## Requirements
-#### **Windows:**
-MinGW toolchain (gcc, g++, mingw32-make) with setted environmental variables, cmake, and QT in dynamic linking distribution (optional, only when gui is necessary).
-
-#### **Linux and Mac:**
-GNU gcc, g++, make; cmake, and QT in dynamic linking distribution (optional, only for gui version).
-
-## Build
+# Build & Launch
 
 You probably want to keep your file system neet. So, you should make a directory ```build``` to separate source and temporary files.
 
-Moreover, you can choose between console and gui version by -DIS_GUI=(True or False) flag. If you choose gui version, so, you have to set qt binary path by flag -DCMAKE_PREFIX_PATH.
+Moreover, you can choose between console and GUI version by -D IS_GUI=(True or False) flag. If you choose GUI version, you should set qt binary path by flag -D CMAKE_PREFIX_PATH.
 
-#### **Windows:**
+## **Windows:**
+### **Requirements**
+- MinGW toolchain
+- Cmake
+- Qt5
+### **Building**
 ```
 mkdir build && cd build
 cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/Qt/5.15.2/mingw81_64" -DIS_GUI=True
 mingw32-make
 ```
 
-#### **Linux:**
+## **Linux:**
+### **Requirements**
+- GNU gcc, g++, make
+- Cmake
+- Qt5
+#### **Qt5 Installation**
 ```
 sudo apt install qt5-default
+```
+### **Building**
+```
 mkdir build && cd build && cmake .. && make
 ```
-#### **MacOS:**
+## **MacOS:**
+To begin with, you need to install brew on your mac.
 ```
-Coming soon ;(
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+### **Requirements**
+- Clang
+- Cmake
+- Qt5
+#### **Qt5 Installation**
+```
+brew install qt@5
+```
+The next step we need to do is to find Qt5 folder.
+```
+-> brew --cellar qt@5
+   /opt/homebrew/Cellar/qt@5
+-> cd /opt/homebrew/Cellar/qt@5
+-> ls
+   5.15.2_1
+-> cd 5.15.2_1
+-> pwd
+   /opt/homebrew/Cellar/qt@5/5.15.2_1
+```
+**USE YOUR OWN QT5 PATH AND VERSION NUMER**
+
+Copy this path.
+### **Building**
+Let's start building:
+```
+mkdir -p build && cd build && cmake .. -DIS_GUI=True -DCMAKE_PREFIX_PATH="$" && make
+```
+**INSTEAD OF $ SIGN YOU NEED TO PASTE THE QT5 PATH**
+
+Now you can run the program:
+```
+cd src && ./TME
 ```
