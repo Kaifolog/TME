@@ -1078,6 +1078,7 @@ void MainWindow::on_skipButton_clicked()
 
                         currentLineHighlight(currentline);
 
+                        sqlite3_finalize(ppStmt);
                         sqlite3_close(db);
                         ui->skipButton->setEnabled(true);
                         return; //сюда ебашить подсветку
