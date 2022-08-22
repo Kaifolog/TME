@@ -28,4 +28,5 @@ public:
     void set_current_state(string a);
     void set_current_word(string a);
     bool get_step(char a);
+    int execute(string &path, bool lambda);
 };

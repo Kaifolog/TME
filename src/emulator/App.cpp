@@ -152,13 +152,30 @@ void App::context_free_analysis_and_parsing()
 
 void App::emulator_executing_procedure()
 {
+    TuringMachine tm;
+
+    LOG(INFO) << "Starting emulator...";
+
+    if (!debug_statement)
+    {
+        try
+        {
+            cout << 1 << endl;
+            tm.execute(path, lambda);
+        }
+        catch (const char *message)
+        {
+            LOG(ERROR) << message;
+            return;
+        }
+
+        LOG(INFO) << "Run complete";
+        return;
+    }
 
     sqlite3 *db = 0;
     char *err = 0;
     sqlite3_stmt *ppStmt;
-
-    LOG(INFO) << "Starting emulator...";
-    TuringMachine tm;
 
     if (tm.load_strip("datasection.tmp"))
     {
@@ -241,18 +258,21 @@ void App::emulator_executing_procedure()
         sqlite3_close(db);
         LOG(INFO) << "Database closed";
         fin.close();
-        LOG(INFO) << "Run complete";
     }
     else
     {
         LOG(ERROR) << "there are some troubles with .data file";
         throw std::exception();
     }
+
+    LOG(INFO) << "Run complete";
 }
+
 bool App::check_str_in_vec(vector<string> v, string s)
 {
     return find(v.begin(), v.end(), s) == v.end();
 }
+
 void App::semantic_analysis()
 {
     sqlite3 *db = 0;

@@ -1,5 +1,9 @@
 #include "TuringMachine.hpp"
 #include "vendor/easyloggingpp/easylogging++.h"
+extern "C"
+{
+#include "vendor/sqlite3/sqlite3.h"
+}
 
 using namespace std;
 
@@ -170,5 +174,78 @@ bool TuringMachine::get_step(char a)
         LOG(ERROR) << "direction arg error";
         throw std::exception();
         break;
+    }
+}
+
+int TuringMachine::execute(string &path, bool lambda)
+{
+    sqlite3 *db = 0;
+    char *err = 0;
+    sqlite3_stmt *ppStmt;
+
+    if (this->load_strip("datasection.tmp"))
+    {
+        string dir;
+        dir = path;
+        ifstream fin;
+        fin.open(dir);
+        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
+        {
+            dir.pop_back();
+            dir.pop_back();
+            dir.pop_back();
+            dir.pop_back();
+        }
+
+        /**************/
+        string a = dir;
+        a.append(".db");
+
+        if (sqlite3_open(a.c_str(), &db))
+        {
+            throw "UNDEFINED ERROR : DATABASE UNAVAILABLE";
+        }
+        if (sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err))
+        {
+            sqlite3_free(err);
+            throw err;
+        }
+        if (sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err))
+        {
+            sqlite3_free(err);
+            sqlite3_close(db);
+            throw err;
+        }
+        string select_command;
+        string debug_line;
+        int linebyline = 0;
+        while (!this->is_end(dir, lambda))
+        {
+            select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
+            sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
+
+            if (sqlite3_step(ppStmt) != SQLITE_DONE)
+            {
+                this->set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
+                this->set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
+                this->get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
+            }
+            else
+            {
+                sqlite3_finalize(ppStmt);
+                sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
+                sqlite3_close(db);
+                throw "EMULATING ERROR : CANT FIND NEXT COMMAND";
+            }
+
+            sqlite3_finalize(ppStmt);
+        }
+        sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
+        sqlite3_close(db);
+        fin.close();
+    }
+    else
+    {
+        throw "there are some troubles with .data file";
     }
 }
