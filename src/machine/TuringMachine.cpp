@@ -1,5 +1,5 @@
 #include "TuringMachine.hpp"
-#include "vendor/easyloggingpp/easylogging++.h"
+#include "../emulator/vendor/easyloggingpp/easylogging++.h"
 
 using namespace std;
 

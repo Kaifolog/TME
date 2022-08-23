@@ -15,9 +15,9 @@ extern "C"
 }
 #include "vendor/easyloggingpp/easylogging++.h"
 
-#include "TuringMachine.hpp"
+#include "../machine/TuringMachine.hpp"
 #include "libs/text_functions.hpp"
-#include "MachineState.hpp"
+#include "../machine/MachineState.hpp"
 
 using namespace std;
 
