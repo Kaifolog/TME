@@ -1,9 +1,5 @@
 #include "TuringMachine.hpp"
 #include "vendor/easyloggingpp/easylogging++.h"
-extern "C"
-{
-#include "vendor/sqlite3/sqlite3.h"
-}
 
 using namespace std;
 
@@ -177,17 +173,14 @@ bool TuringMachine::get_step(char a)
     }
 }
 
-int TuringMachine::execute(string &path, bool lambda)
+void TuringMachine::lazyStart(string path, bool lambda)
 {
-    sqlite3 *db = 0;
-    char *err = 0;
-    sqlite3_stmt *ppStmt;
+    this->lambda = lambda;
 
     if (this->load_strip("datasection.tmp"))
     {
         string dir;
         dir = path;
-        ifstream fin;
         fin.open(dir);
         if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
         {
@@ -216,36 +209,82 @@ int TuringMachine::execute(string &path, bool lambda)
             sqlite3_close(db);
             throw err;
         }
-        string select_command;
-        string debug_line;
-        int linebyline = 0;
-        while (!this->is_end(dir, lambda))
-        {
-            select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
-            sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-
-            if (sqlite3_step(ppStmt) != SQLITE_DONE)
-            {
-                this->set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
-                this->set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
-                this->get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
-            }
-            else
-            {
-                sqlite3_finalize(ppStmt);
-                sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-                sqlite3_close(db);
-                throw "EMULATING ERROR : CANT FIND NEXT COMMAND";
-            }
-
-            sqlite3_finalize(ppStmt);
-        }
-        sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-        sqlite3_close(db);
-        fin.close();
     }
     else
     {
         throw "there are some troubles with .data file";
     }
+}
+
+int TuringMachine::execute(string &path, bool lambda)
+{
+    this->lazyStart(path, lambda);
+    string select_command;
+    while (!this->is_end(dir, lambda))
+    {
+        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
+        sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);
+
+        if (sqlite3_step(ppStmt) != SQLITE_DONE)
+        {
+            this->set_current_state(string((char *)sqlite3_column_text(this->ppStmt, 2)));
+            this->set_current_word(string((char *)sqlite3_column_text(this->ppStmt, 3)));
+            this->get_step(((char *)sqlite3_column_text(this->ppStmt, 4))[0]);
+        }
+        else
+        {
+            sqlite3_finalize(ppStmt);
+            sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
+            sqlite3_close(db);
+            throw "EMULATING ERROR : CANT FIND NEXT COMMAND";
+        }
+
+        sqlite3_finalize(ppStmt);
+    }
+    this->lazyFinalize();
+    return 0;
+}
+
+MachineState TuringMachine::lazyDebug()
+{
+
+    string select_command;
+    while (!this->is_end(dir, lambda))
+    {
+        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
+        sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);
+
+        if (sqlite3_step(ppStmt) != SQLITE_DONE)
+        {
+            this->set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
+            this->set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
+            this->get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
+        }
+        else
+        {
+            sqlite3_finalize(ppStmt);
+            sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
+            sqlite3_close(db);
+            throw "EMULATING ERROR : CANT FIND NEXT COMMAND\nWith last state " + this->get_current_state() + " and word " + this->get_current_word();
+        }
+
+        if (string((char *)sqlite3_column_text(ppStmt, 5)) == "1" || this->get_current_state() == "end")
+        {
+            MachineState step;
+            step.current_strip = this->get_strip();
+            step.current_state = this->get_current_state();
+            step.current_word = this->get_current_word();
+            step.line = string((char *)sqlite3_column_text(ppStmt, 6));
+            sqlite3_finalize(ppStmt);
+            return step;
+        }
+        sqlite3_finalize(ppStmt);
+    }
+}
+
+void TuringMachine::lazyFinalize()
+{
+    sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
+    sqlite3_close(db);
+    fin.close();
 }

@@ -154,13 +154,12 @@ void App::emulator_executing_procedure()
 {
     TuringMachine tm;
 
-    LOG(INFO) << "Starting emulator...";
-
     if (!debug_statement)
     {
+        LOG(INFO) << "Starting emulator...";
         try
         {
-            cout << 1 << endl;
+
             tm.execute(path, lambda);
         }
         catch (const char *message)
@@ -173,99 +172,32 @@ void App::emulator_executing_procedure()
         return;
     }
 
-    sqlite3 *db = 0;
-    char *err = 0;
-    sqlite3_stmt *ppStmt;
-
-    if (tm.load_strip("datasection.tmp"))
+    LOG(INFO) << "Starting debugger...";
+    MachineState result;
+    try
     {
-        string dir;
-        dir = path;
-        ifstream fin;
-        fin.open(dir);
-        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
-        {
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-        }
-
-        /**************/
-        string a = dir;
-        a.append(".db");
-
-        if (sqlite3_open(a.c_str(), &db))
-        {
-            LOG(ERROR) << "UNDEFINED ERROR : DATABASE UNAVAILABLE";
-            throw std::exception();
-        }
-        LOG(INFO) << "Trying to open/create database";
-        if (sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err))
-        {
-            LOG(ERROR) << err;
-            sqlite3_free(err);
-            throw std::exception();
-        }
-        if (sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err))
-        {
-            LOG(ERROR) << err;
-            sqlite3_free(err);
-            sqlite3_close(db);
-            throw std::exception();
-        }
-        string select_command;
         string debug_line;
-        int linebyline = 0;
-        while (!tm.is_end(dir, lambda))
+        tm.lazyStart(path, lambda);
+
+        do
         {
-            select_command = "SELECT *FROM commands WHERE initial_state=\"" + tm.get_current_state() + "\" AND initial_word=\"" + tm.get_current_word() + "\"";
-            sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
+            result = tm.lazyDebug();
+            cout << result.current_strip << endl;
+            cout << "current_state: " << result.current_state << ", current_word: " << result.current_word << ", current line: " << result.line << endl;
+            getline(cin, debug_line);
+        } while (result.current_state != "end");
 
-            if (sqlite3_step(ppStmt) != SQLITE_DONE)
-            {
-                tm.set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
-                tm.set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
-                tm.get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
-            }
-            else
-            {
-                LOG(ERROR) << "EMULATING ERROR : CANT FIND NEXT COMMAND";
-                sqlite3_finalize(ppStmt);
-                sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-                sqlite3_close(db);
-                LOG(INFO) << "Database closed";
-                throw std::exception();
-            }
-
-            if (debug_statement && (linebyline || string((char *)sqlite3_column_text(ppStmt, 5)) == "1"))
-            {
-                linebyline = 1;
-                cout << tm.get_strip() << endl;
-                cout << "Current data: " << tm.get_current_state() << " " << tm.get_current_word() << endl;
-                cout << "On string number: " << string((char *)sqlite3_column_text(ppStmt, 6)) << endl;
-
-                getline(cin, debug_line);
-                if (debug_line.length())
-                {
-                    linebyline = 0;
-                }
-            }
-
-            sqlite3_finalize(ppStmt);
-        }
-        sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-        sqlite3_close(db);
-        LOG(INFO) << "Database closed";
-        fin.close();
+        tm.lazyFinalize();
+        LOG(INFO) << "Run complete";
     }
-    else
+    catch (const char *message)
     {
-        LOG(ERROR) << "there are some troubles with .data file";
-        throw std::exception();
+        LOG(ERROR) << message;
     }
-
-    LOG(INFO) << "Run complete";
+    catch (string message)
+    {
+        LOG(ERROR) << message;
+    }
 }
 
 bool App::check_str_in_vec(vector<string> v, string s)

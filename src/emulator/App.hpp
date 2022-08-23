@@ -1,17 +1,23 @@
 extern "C"
 {
 #include <stdio.h>
-#include "vendor/sqlite3/sqlite3.h"
 }
-#include "vendor/easyloggingpp/easylogging++.h"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <chrono>
 #include <algorithm>
+
+extern "C"
+{
+#include "vendor/sqlite3/sqlite3.h"
+}
+#include "vendor/easyloggingpp/easylogging++.h"
+
 #include "TuringMachine.hpp"
 #include "libs/text_functions.hpp"
+#include "MachineState.hpp"
 
 using namespace std;
 
