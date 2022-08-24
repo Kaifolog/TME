@@ -37,7 +37,7 @@ TEST(ExecutionTest, LambdaTest)
 
         // you should start it from ./TME/build
         string path = "../tests/machine/BasicTest.txt";
-        ASSERT_NO_THROW(tm.execute(path, 0));
+        ASSERT_NO_THROW(tm.execute(path, 1));
 
         // preparing test
         string result;
