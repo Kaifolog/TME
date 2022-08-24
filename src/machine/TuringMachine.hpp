@@ -20,6 +20,7 @@ class TuringMachine
     int cursor;
 
     string dir;
+    string output;
     bool lambda;
     sqlite3 *db = 0;
     sqlite3_stmt *ppStmt;

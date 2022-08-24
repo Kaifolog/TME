@@ -190,6 +190,7 @@ void TuringMachine::lazyStart(string path, bool lambda)
 
         /**************/
         string a = dir;
+        this->output = a;
         a.append(".db");
 
         if (sqlite3_open(a.c_str(), &db))
@@ -218,7 +219,7 @@ int TuringMachine::execute(string &path, bool lambda)
 {
     this->lazyStart(path, lambda);
     string select_command;
-    while (!this->is_end(dir, lambda))
+    while (!this->is_end(this->output, lambda))
     {
         select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
         sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);
@@ -247,7 +248,7 @@ MachineState TuringMachine::lazyDebug()
 {
 
     string select_command;
-    while (!this->is_end(dir, lambda))
+    while (!this->is_end(this->output, lambda))
     {
         select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
         sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);

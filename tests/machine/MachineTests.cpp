@@ -20,7 +20,7 @@ TEST(ExecutionTest, BasicTest)
 
         // preparing test
         string result;
-        ifstream output("_out.txt");
+        ifstream output("../tests/machine/BasicTest_out.txt");
         getline(output, result);
         ASSERT_STREQ("1 1 1 |lambda| ", result.c_str());
 }
@@ -41,7 +41,7 @@ TEST(ExecutionTest, LambdaTest)
 
         // preparing test
         string result;
-        ifstream output("_out.txt");
+        ifstream output("../tests/machine/BasicTest_out.txt");
         getline(output, result);
         ASSERT_STREQ("1 1 1 | | ", result.c_str());
 }
