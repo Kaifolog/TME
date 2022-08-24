@@ -1,5 +1,4 @@
 #include "TuringMachine.hpp"
-#include "../emulator/vendor/easyloggingpp/easylogging++.h"
 
 using namespace std;
 
@@ -167,7 +166,6 @@ bool TuringMachine::get_step(char a)
         }
         break;
     default:
-        LOG(ERROR) << "direction arg error";
         throw std::exception();
         break;
     }

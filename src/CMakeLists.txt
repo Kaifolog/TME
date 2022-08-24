@@ -1,37 +1,12 @@
-if(IS_GUI)
-
-        set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-        set(CMAKE_AUTOUIC ON)
-        set(CMAKE_AUTOMOC ON)
-        set(CMAKE_AUTORCC ON)
-
-        set(CMAKE_CXX_STANDARD 11)
-        set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-        find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-        find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
-
-        set(PROJECT_SOURCES
-                ui/main.cpp
-                ui/mainwindow.cpp
-                ui/mainwindow.h
-                ui/mainwindow.ui
-        )
-        if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-        qt_add_executable(TME
-                ${PROJECT_SOURCES}
-        )
-        else()
-        add_executable(TME WIN32
-                ${PROJECT_SOURCES}
-        )
-        endif()
-
-        add_subdirectory(emulator)
-
-        target_link_libraries( TME PRIVATE APP PARSER LIBS VENDOR TuringMachine  Qt${QT_VERSION_MAJOR}::Widgets ${CMAKE_DL_LIBS} pthread )
+if(TEST)
+        add_subdirectory(../tests ./tests)
 else()
-        add_subdirectory(machine)
-        add_subdirectory(emulator)
+        if(IS_GUI)
+                add_subdirectory(machine)
+                add_subdirectory(emulator)
+                add_subdirectory(ui)
+        else()
+                add_subdirectory(machine)
+                add_subdirectory(emulator)
+        endif()
 endif()
