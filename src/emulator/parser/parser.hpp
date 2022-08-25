@@ -34,6 +34,7 @@ public:
                 line_counter = 0;
         };
         void parse(string &path);
+        void analyse(string &path);
 };
 
 #endif

@@ -53,9 +53,8 @@ void App::context_free_analysis_and_parsing()
         return;
     }
 
-    LOG(INFO) << "Database closed";
     LOG(INFO) << "Parsing ended.";
-}
+};
 
 void App::emulator_executing_procedure()
 {
@@ -105,116 +104,27 @@ void App::emulator_executing_procedure()
     {
         LOG(ERROR) << message;
     }
-}
-
-bool App::check_str_in_vec(vector<string> v, string s)
-{
-    return find(v.begin(), v.end(), s) == v.end();
-}
+};
 
 void App::semantic_analysis()
 {
-    sqlite3 *db = 0;
-    sqlite3_stmt *ppStmt;
-
+    Parser parser;
     LOG(INFO) << "Starting analyser...";
-    TuringMachine tm;
-    string dir;
-    dir = path;
-    if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
+    try
     {
-        dir.pop_back();
-        dir.pop_back();
-        dir.pop_back();
-        dir.pop_back();
+        parser.analyse(path);
     }
-
-    /**************/
-    string a = dir;
-    a.append(".db");
-    LOG(INFO) << "Trying to open/create database";
-    if (sqlite3_open(a.c_str(), &db))
+    catch (const char *message)
     {
-        LOG(ERROR) << "UNDEFINED ERROR : DATABASE UNAVAILABLE";
-        throw std::exception();
+        LOG(ERROR) << message;
+        LOG(INFO) << "Ooh. Looks bad.";
+        return;
     }
-    // sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO FUCKING RISKY
-    string select_command;
-    select_command = "SELECT *FROM commands";
-    sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-    vector<string> alphabet;
-
-    while (sqlite3_step(ppStmt) != SQLITE_DONE)
+    catch (string message)
     {
-        if (check_str_in_vec(alphabet, string((char *)sqlite3_column_text(ppStmt, 1))))
-            alphabet.push_back(string((char *)sqlite3_column_text(ppStmt, 1)));
-        if (check_str_in_vec(alphabet, string((char *)sqlite3_column_text(ppStmt, 3))))
-            alphabet.push_back(string((char *)sqlite3_column_text(ppStmt, 3)));
+        LOG(ERROR) << message;
+        LOG(INFO) << "Ooh. Looks bad.";
+        return;
     }
-    sqlite3_finalize(ppStmt);
-
-    select_command = "SELECT *FROM commands";
-    sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-
-    vector<string> statements;
-    while (sqlite3_step(ppStmt) != SQLITE_DONE)
-    {
-        if (check_str_in_vec(statements, string((char *)sqlite3_column_text(ppStmt, 2))))
-        {
-            statements.push_back(string((char *)sqlite3_column_text(ppStmt, 2)));
-        }
-        if (check_str_in_vec(statements, string((char *)sqlite3_column_text(ppStmt, 0))))
-        {
-            if (string((char *)sqlite3_column_text(ppStmt, 0)) != "end")
-            {
-                statements.push_back(string((char *)sqlite3_column_text(ppStmt, 0)));
-            }
-            else
-            {
-                LOG(ERROR) << "ANALYSER FATAL ERROR! There are \"end\" at the left side of command.";
-                sqlite3_close(db);
-                throw std::exception();
-            }
-        }
-    }
-    sqlite3_finalize(ppStmt);
-
-    if (check_str_in_vec(statements, "start"))
-    {
-        LOG(ERROR) << "ANALYSER FATAL ERROR! There are no \"start\" command.";
-        sqlite3_close(db);
-        throw std::exception();
-    }
-
-    if (check_str_in_vec(statements, "end"))
-    {
-        LOG(ERROR) << "ANALYSER FATAL ERROR! There are no \"end\" command.";
-        sqlite3_close(db);
-        throw std::exception();
-    }
-
-    for (int i = 0; i < statements.size(); i++)
-        for (int j = 0; j < alphabet.size(); j++)
-        {
-            string select_command = "SELECT *FROM commands WHERE initial_state=\"" + statements[i] + "\" AND initial_word=\"" + alphabet[j] + "\"";
-            sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-            if (sqlite3_step(ppStmt) != SQLITE_DONE)
-            {
-                if (sqlite3_step(ppStmt) != SQLITE_DONE)
-                {
-                    string a = "ANALYSER FATAL ERROR!!! There are two or more commands with same left side. " + string((char *)sqlite3_column_text(ppStmt, 0)) + " " + string((char *)sqlite3_column_text(ppStmt, 1));
-                    LOG(ERROR) << a;
-                    sqlite3_close(db);
-                    throw std::exception();
-                }
-            }
-            else
-            {
-                string a = "You might have to create command with state =  " + statements[i] + ", \tword = " + alphabet[j];
-                LOG(WARNING) << a;
-            }
-        }
-
-    sqlite3_close(db);
-    LOG(INFO) << "Analysis complete";
-}
+    LOG(INFO) << "Analysis complete. All set for execution!";
+};

@@ -14,6 +14,11 @@ void command_to_sqlite3(sqlite3 *db, Command *current_command, sqlite3_stmt *ppS
         sqlite3_reset(ppStmt);
 };
 
+bool check_str_in_vec(vector<string> v, string s)
+{
+        return find(v.begin(), v.end(), s) == v.end();
+}
+
 void Parser::init(string &path)
 {
         this->needsToFinalize = true;
@@ -110,4 +115,98 @@ void Parser::finalize()
                 sqlite3_close(db);
                 fin.close();
         }
+};
+
+void Parser::analyse(string &path)
+{
+        string dir;
+        dir = path;
+        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
+        {
+                dir.pop_back();
+                dir.pop_back();
+                dir.pop_back();
+                dir.pop_back();
+        }
+
+        /**************/
+        string a = dir;
+        a.append(".db");
+        if (sqlite3_open(a.c_str(), &db))
+        {
+                throw "UNDEFINED ERROR : DATABASE UNAVAILABLE";
+        }
+        // sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO FUCKING RISKY
+        string select_command;
+        select_command = "SELECT *FROM commands";
+        sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
+        vector<string> alphabet;
+
+        while (sqlite3_step(ppStmt) != SQLITE_DONE)
+        {
+                if (check_str_in_vec(alphabet, string((char *)sqlite3_column_text(ppStmt, 1))))
+                        alphabet.push_back(string((char *)sqlite3_column_text(ppStmt, 1)));
+                if (check_str_in_vec(alphabet, string((char *)sqlite3_column_text(ppStmt, 3))))
+                        alphabet.push_back(string((char *)sqlite3_column_text(ppStmt, 3)));
+        }
+        sqlite3_finalize(ppStmt);
+
+        select_command = "SELECT *FROM commands";
+        sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
+
+        vector<string> statements;
+        while (sqlite3_step(ppStmt) != SQLITE_DONE)
+        {
+                if (check_str_in_vec(statements, string((char *)sqlite3_column_text(ppStmt, 2))))
+                {
+                        statements.push_back(string((char *)sqlite3_column_text(ppStmt, 2)));
+                }
+                if (check_str_in_vec(statements, string((char *)sqlite3_column_text(ppStmt, 0))))
+                {
+                        if (string((char *)sqlite3_column_text(ppStmt, 0)) != "end")
+                        {
+                                statements.push_back(string((char *)sqlite3_column_text(ppStmt, 0)));
+                        }
+                        else
+                        {
+                                sqlite3_close(db);
+                                throw "ANALYSER FATAL ERROR! There are \"end\" at the left side of command.";
+                        }
+                }
+        }
+        sqlite3_finalize(ppStmt);
+
+        if (check_str_in_vec(statements, "start"))
+        {
+                sqlite3_close(db);
+                throw "ANALYSER FATAL ERROR! There are no \"start\" command.";
+        }
+
+        if (check_str_in_vec(statements, "end"))
+        {
+                sqlite3_close(db);
+                throw "ANALYSER FATAL ERROR! There are no \"end\" command.";
+        }
+
+        for (int i = 0; i < statements.size(); i++)
+                for (int j = 0; j < alphabet.size(); j++)
+                {
+                        string select_command = "SELECT *FROM commands WHERE initial_state=\"" + statements[i] + "\" AND initial_word=\"" + alphabet[j] + "\"";
+                        sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
+                        if (sqlite3_step(ppStmt) != SQLITE_DONE)
+                        {
+                                if (sqlite3_step(ppStmt) != SQLITE_DONE)
+                                {
+                                        string a = "ANALYSER FATAL ERROR!!! There are two or more commands with same left side. " + string((char *)sqlite3_column_text(ppStmt, 0)) + " " + string((char *)sqlite3_column_text(ppStmt, 1));
+                                        sqlite3_close(db);
+                                        throw a;
+                                }
+                        }
+                        else
+                        {
+                                string a = "You might have to create command with state =  " + statements[i] + ", \tword = " + alphabet[j];
+                        }
+                }
+
+        sqlite3_close(db);
 };
