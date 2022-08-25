@@ -1,4 +1,4 @@
-#include "lexer.hpp"
+#include "parser.hpp"
 
 #include <iostream>
 #include <exception>
@@ -10,8 +10,7 @@ void Command::define_fsm(string line_v)
     int i;
     if (strstr(line_v.c_str(), "#define ") == NULL)
     {
-        LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
-        throw std::exception();
+        throw "parse error at line #" + to_string(parser->line_counter);
     }
     else
     {
@@ -48,53 +47,49 @@ void Command::command_fsm(string line_v)
 
     int i = 0;
 
-    for (; i < line_v.size() - 1 && line_v[i] != ','; i++) //st1
+    for (; i < line_v.size() - 1 && line_v[i] != ','; i++) // st1
     {
         if (isalnum(line_v[i]) || line_v[i] == '_')
             this->initial_state.push_back(line_v[i]);
         else
         {
-            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
-            throw std::exception();
+            throw "parse error at line #" + to_string(parser->line_counter);
         }
     }
     this->initial_state.push_back('\0');
     i++;
 
-    for (; i < line_v.size() - 1 && !(line_v[i] == '-' && line_v[i + 1] == '>'); i++) //w1
+    for (; i < line_v.size() - 1 && !(line_v[i] == '-' && line_v[i + 1] == '>'); i++) // w1
     {
         if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%')
             this->initial_word.push_back(line_v[i]);
         else
         {
-            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
-            throw std::exception();
+            throw "parse error at line #" + to_string(parser->line_counter);
         }
     }
     this->initial_word.push_back('\0');
 
     i++;
     i++;
-    for (; i < line_v.size() - 1 && line_v[i] != ','; i++) //st2
+    for (; i < line_v.size() - 1 && line_v[i] != ','; i++) // st2
     {
         if (isalnum(line_v[i]) || line_v[i] == '_')
             this->final_state.push_back(line_v[i]);
         else
         {
-            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
-            throw std::exception();
+            throw "parse error at line #" + to_string(parser->line_counter);
         }
     }
     this->final_state.push_back('\0');
     i++;
-    for (; i < line_v.size() - 1 && line_v[i] != ','; i++) //w2
+    for (; i < line_v.size() - 1 && line_v[i] != ','; i++) // w2
     {
         if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%')
             this->final_word.push_back(line_v[i]);
         else
         {
-            LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
-            throw std::exception();
+            throw "parse error at line #" + to_string(parser->line_counter);
         }
     }
     this->final_word.push_back('\0');
@@ -103,8 +98,7 @@ void Command::command_fsm(string line_v)
         this->direction = line_v[i];
     else
     {
-        LOG(ERROR) << ("parse error at line #" + to_string(parser->line_counter));
-        throw std::exception();
+        throw "parse error at line #" + to_string(parser->line_counter);
     }
     i++;
     if (line_v[i] == '\0')
@@ -131,8 +125,7 @@ void Command::sector_fsm(string line_v)
         return;
     }
 
-    LOG(ERROR) << ("SECTION parse error at line #" + to_string(parser->line_counter));
-    throw std::exception();
+    throw "SECTION parse error at line #" + to_string(parser->line_counter);
 }
 
 int Command::datasection_fsm(string line_v)
@@ -145,13 +138,12 @@ int Command::datasection_fsm(string line_v)
         fclose(datasection);
         return '\0';
     }
-    LOG(ERROR) << "Temple file error";
-    throw std::exception();
+    throw "Temple file error";
 }
 
 string Command::command_preprocessor(string line_v)
 {
-    for (int i = 0; i < line_v.size(); i++) //thats shit
+    for (int i = 0; i < line_v.size(); i++) // thats shit
     {
         if (line_v[i] == ';')
         {
@@ -264,27 +256,26 @@ string Command::data_preprocessor(string line_v)
     int cursor_char = 0;
     for (int i = 0; i < line_v.size(); i++)
     {
-        if (line_v[i] == ';') //comments
+        if (line_v[i] == ';') // comments
         {
             for (int j = i; line_v[j + 1] != '\0';)
                 line_v.erase(j + 1, 1);
             line_v.erase(i, 1);
         }
-        if (line_v[i] == ' ' && line_v[i + 1] == '\0') //spacet at end of the line
+        if (line_v[i] == ' ' && line_v[i + 1] == '\0') // spacet at end of the line
         {
             line_v.erase(i, 1);
             i--;
         }
         if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') && !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') && !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') && !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?') && !(line_v[i] == '>') && !(line_v[i] == '<') && !(line_v[i] == '%'))
         {
-            LOG(WARNING) << ("at data section (you have to use only allowed symbols) at char #" + to_string(i + 1));
+            throw "at data section (you have to use only allowed symbols) at char #" + to_string(i + 1);
         }
         if (line_v[i] == '|')
             if (i < line_v.size() && i > 0)
                 if (line_v[i + 1] != ' ' && line_v[i - 1] != ' ' && line_v[i + 1] != '\0')
                 {
-                    LOG(ERROR) << ("parse error (check space splits)  at line #" + to_string(parser->line_counter));
-                    throw std::exception();
+                    throw "parse error (check space splits)  at line #" + to_string(parser->line_counter);
                 }
     }
     for (int i = 0; i < line_v.length(); i++)
@@ -292,8 +283,7 @@ string Command::data_preprocessor(string line_v)
             cursor_char++;
     if (cursor_char != 2)
     {
-        LOG(ERROR) << ("parse error at (data section) line #" + to_string(parser->line_counter));
-        throw std::exception();
+        throw "parse error at (data section) line #" + to_string(parser->line_counter);
     }
     return line_v;
 }

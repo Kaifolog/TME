@@ -9,20 +9,10 @@
 
 using namespace std;
 
-class Parser
-{
-    string section;
-    int line_counter;
-    vector<vector<string *> *> macros_table;
-    friend class Command;
+#ifndef _COMMAND
+#define _COMMAND
 
-public:
-    Parser()
-    {
-        section = "";
-        line_counter = 0;
-    }
-};
+class Parser;
 
 class Command
 {
@@ -52,3 +42,5 @@ public:
         return initial_state.empty() && initial_word.empty() && final_state.empty() && final_word.empty() && direction.empty();
     }
 };
+
+#endif

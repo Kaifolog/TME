@@ -22,23 +22,9 @@ SOFTWARE.
 
 #include "App.hpp"
 
-#include "parser/lexer.hpp"
+#include "parser/parser.hpp"
 
 using namespace std;
-
-void App::command_to_sqlite3(sqlite3 *db, Command *current_command, sqlite3_stmt *ppStmt)
-{
-    sqlite3_bind_text(ppStmt, 1, current_command->initial_state.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 2, current_command->initial_word.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 3, current_command->final_state.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 4, current_command->final_word.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 5, current_command->direction.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 6, current_command->debug.c_str(), -1, SQLITE_STATIC);
-    sqlite3_bind_text(ppStmt, 7, current_command->lineNumber.c_str(), -1, SQLITE_STATIC);
-    sqlite3_step(ppStmt);
-    sqlite3_clear_bindings(ppStmt);
-    sqlite3_reset(ppStmt);
-}
 
 bool App::check_arguments(char *search, int argc, char **argv)
 {
@@ -50,103 +36,24 @@ bool App::check_arguments(char *search, int argc, char **argv)
 
 void App::context_free_analysis_and_parsing()
 {
-    string dir;
-    dir = path;
-    ifstream fin;
-    fin.open(dir);
-    if (!fin.is_open())
-    {
-        std::cerr << "gg" << std::endl;
-    }
-    if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
-    {
-        dir.pop_back();
-        dir.pop_back();
-        dir.pop_back();
-        dir.pop_back();
-    }
-    string a = dir;
-
-    /***************************/
-
-    sqlite3 *db = 0;
-    char *err = 0;
-    a = dir;
-    a.append(".db");
-    LOG(INFO) << "Trying to open/create database";
-    if (sqlite3_open(a.c_str(), &db))
-    {
-        LOG(ERROR) << "UNDEFINED ERROR : DATABASE UNAVAILABLE";
-        throw std::exception();
-    }
-
-    const char *drop_table_query = "DROP TABLE IF EXISTS commands";
-    if (sqlite3_exec(db, drop_table_query, 0, 0, &err))
-    {
-        LOG(ERROR) << err;
-        sqlite3_free(err);
-        sqlite3_close(db);
-        throw std::exception();
-    }
-    const char *create_table_query =
-        "CREATE TABLE IF NOT EXISTS commands(initial_state,initial_word,final_state, final_word,direction,debug,line)";
-    if (sqlite3_exec(db, create_table_query, 0, 0, &err))
-    {
-        LOG(ERROR) << err;
-        sqlite3_free(err);
-        sqlite3_close(db);
-        throw std::exception();
-    }
-    /***************************/
-    a.clear();
-
-    Parser *p = new Parser;
-    Command *current_command;
-
+    Parser parser;
     LOG(INFO) << "Parser started... ";
-    sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
-    char insert_bind[256];
-    sqlite3_stmt *ppStmt;
-    sprintf(insert_bind, "INSERT INTO commands VALUES (?,?,?,?,?,?,?)");
-    sqlite3_prepare_v2(db, insert_bind, 256, &ppStmt, NULL);
+    try
+    {
+        parser.parse(path);
+    }
+    catch (const char *message)
+    {
+        LOG(ERROR) << message;
+        return;
+    }
+    catch (string message)
+    {
+        LOG(ERROR) << message;
+        return;
+    }
 
-    string buffer;
-    while (getline(fin, buffer))
-    {
-        try
-        {
-            current_command = new Command(buffer, p);
-        }
-        catch (...)
-        {
-            sqlite3_finalize(ppStmt);
-            sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-            sqlite3_free(err);
-            sqlite3_close(db);
-            fin.close();
-            delete p;
-            throw;
-        }
-        if (!current_command->is_empty())
-        {
-            command_to_sqlite3(db, current_command, ppStmt);
-        }
-        delete current_command;
-    }
-    if (sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err))
-    {
-        LOG(ERROR) << err;
-        sqlite3_free(err);
-        sqlite3_close(db);
-        throw std::exception();
-    }
-    sqlite3_finalize(ppStmt);
-    sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-    sqlite3_free(err);
-    sqlite3_close(db);
     LOG(INFO) << "Database closed";
-    fin.close();
-    delete p;
     LOG(INFO) << "Parsing ended.";
 }
 
