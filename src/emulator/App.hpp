@@ -18,6 +18,7 @@ extern "C"
 #include "../machine/TuringMachine.hpp"
 #include "libs/text_functions.hpp"
 #include "../machine/MachineState.hpp"
+#include "../analyser/parser.hpp"
 
 using namespace std;
 

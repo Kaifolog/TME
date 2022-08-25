@@ -1,4 +1,4 @@
-#include "../vendor/easyloggingpp/easylogging++.h"
+#include "../emulator/vendor/easyloggingpp/easylogging++.h"
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>

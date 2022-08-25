@@ -1,7 +1,7 @@
 #include "./command.hpp"
 extern "C"
 {
-#include "../vendor/sqlite3/sqlite3.h"
+#include "../emulator/vendor/sqlite3/sqlite3.h"
 }
 
 using namespace std;

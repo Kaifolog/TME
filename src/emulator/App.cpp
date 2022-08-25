@@ -22,8 +22,6 @@ SOFTWARE.
 
 #include "App.hpp"
 
-#include "parser/parser.hpp"
-
 using namespace std;
 
 bool App::check_arguments(char *search, int argc, char **argv)
