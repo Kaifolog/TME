@@ -40,92 +40,31 @@ INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char *argv[])
 {
-    if (argc > 1)
+    ProjectName pname;
+    if (argc > 1 && string(argv[1]) != string("-v"))
     {
-        if (!strcmp(argv[1], "-v"))
-        {
-            text_v_func();
-        }
-        else
-        {
-            string dir = argv[1];
-            string logs_path = argv[1];
+        pname.setOriginal(string(argv[1]));
 
-            if (logs_path.substr(logs_path.find_last_of(".") + 1) == "tme" || logs_path.substr(logs_path.find_last_of(".") + 1) == "txt")
-            {
-                logs_path.pop_back();
-                logs_path.pop_back();
-                logs_path.pop_back();
-                logs_path.pop_back();
-            }
+        // logger configuring
+        el::Configurations defaultConf;
+        defaultConf.setToDefault();
+        defaultConf.setGlobally(
+            el::ConfigurationType::Format, "%datetime :: %level %msg");
+        defaultConf.setGlobally(
+            el::ConfigurationType::ToFile, "true");
+        defaultConf.setGlobally(
+            el::ConfigurationType::Filename, pname.getLogFile());
+        defaultConf.setGlobally(
+            el::ConfigurationType::MaxLogFileSize, "104857600"); // 100mb
+        el::Loggers::reconfigureLogger("default", defaultConf);
 
-            logs_path.append("_log.txt");
-
-            //logger configuring
-            el::Configurations defaultConf;
-            defaultConf.setToDefault();
-            defaultConf.setGlobally(
-                el::ConfigurationType::Format, "%datetime :: %level %msg");
-            //      defaultConf.setGlobally(
-            //          el::ConfigurationType::ToStandardOutput, "false");
-            defaultConf.setGlobally(
-                el::ConfigurationType::ToFile, "true");
-            defaultConf.setGlobally(
-                el::ConfigurationType::Filename, logs_path);
-
-            //logs file clearing
-            defaultConf.setGlobally(
-                el::ConfigurationType::MaxLogFileSize, "1");
-            el::Loggers::reconfigureLogger("default", defaultConf);
-            LOG(INFO) << "Log file cleared";
-            defaultConf.setGlobally(
-                el::ConfigurationType::MaxLogFileSize, "104857600"); // 100mb
-            el::Loggers::reconfigureLogger("default", defaultConf);
-
-            ifstream fin(dir);
-            if (!fin.is_open())
-            {
-                LOG(ERROR) << "File opening exception";
-                cin.get();
-                return -1;
-            }
-            fin.close();
-            LOG(INFO) << "File opened";
-
-            try
-            {
-                App app(dir);
-                if (app.check_arguments("-d", argc, argv))
-                {
-                    app.setDebug(1);
-                    app.context_free_analysis_and_parsing();
-                    app.semantic_analysis();
-                    app.emulator_executing_procedure();
-                }
-                if (app.check_arguments("-g", argc, argv))
-                    app.context_free_analysis_and_parsing();
-                if (app.check_arguments("-a", argc, argv))
-                    app.semantic_analysis();
-                if (app.check_arguments("-e", argc, argv))
-                    app.emulator_executing_procedure();
-                if (argc == 2 || (argc == 3 && string(argv[2]) == "-l"))
-                {
-                    app.setLambda(1);
-                    app.context_free_analysis_and_parsing();
-                    app.semantic_analysis();
-                    app.emulator_executing_procedure();
-                }
-            }
-            catch (...)
-            {
-                cin.get();
-                return 1;
-            }
-        }
+        // clearing log file
+        std::ofstream cleanLogs;
+        cleanLogs.open(pname.getLogFile(), std::ofstream::out | std::ofstream::trunc);
+        cleanLogs.close();
     }
-    else
-        text_start_func();
-    cin.get();
 
-    return 0;
+    App a(pname, argc, argv);
+
+    return a.execute();
 }

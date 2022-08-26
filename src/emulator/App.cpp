@@ -24,53 +24,56 @@ SOFTWARE.
 
 using namespace std;
 
-bool App::check_arguments(char *search, int argc, char **argv)
+void App::handleArguments()
 {
-    bool res = 0;
-    for (int i = 0; i < argc; i++)
-        res = res + (string(argv[i]) == string(search));
-    return res;
+    // i = 1 because argv[0] is a program path
+    for (int i = 1; i < argc; i++)
+    {
+        string current = argv[i];
+        if (current == "-l")
+        {
+            this->noLambda = true;
+        }
+        if (current == "-g")
+        {
+            this->parsing = true;
+        }
+        if (current == "-a")
+        {
+            this->semantic = true;
+        }
+        if (current == "-e")
+        {
+            this->emulating = true;
+        }
+        if (current == "-d")
+        {
+            this->debug = true;
+        }
+    }
 }
 
-void App::context_free_analysis_and_parsing()
+void App::parse()
 {
     Parser parser;
     LOG(INFO) << "Parser started... ";
-    try
-    {
-        parser.parse(path);
-    }
-    catch (const char *message)
-    {
-        LOG(ERROR) << message;
-        return;
-    }
-    catch (string message)
-    {
-        LOG(ERROR) << message;
-        return;
-    }
+
+    string path = _pname.getOriginal();
+    parser.parse(path);
 
     LOG(INFO) << "Parsing ended.";
 };
 
-void App::emulator_executing_procedure()
+void App::emulate()
 {
     TuringMachine tm;
+    string path = _pname.getOriginal();
 
-    if (!debug_statement)
+    if (!debug)
     {
         LOG(INFO) << "Starting emulator...";
-        try
-        {
 
-            tm.execute(path, lambda);
-        }
-        catch (const char *message)
-        {
-            LOG(ERROR) << message;
-            return;
-        }
+        tm.execute(path, noLambda);
 
         LOG(INFO) << "Run complete";
         return;
@@ -78,51 +81,112 @@ void App::emulator_executing_procedure()
 
     LOG(INFO) << "Starting debugger...";
     MachineState result;
-    try
-    {
-        string debug_line;
-        tm.lazyStart(path, lambda);
 
-        do
-        {
-            result = tm.lazyDebug();
-            cout << result.current_strip << endl;
-            cout << "current_state: " << result.current_state << ", current_word: " << result.current_word << ", current line: " << result.line << endl;
-            getline(cin, debug_line);
-        } while (result.current_state != "end");
+    string debug_line;
+    tm.lazyStart(_pname.getOriginal(), noLambda);
 
-        tm.lazyFinalize();
-        LOG(INFO) << "Run complete";
-    }
-    catch (const char *message)
+    do
     {
-        LOG(ERROR) << message;
-    }
-    catch (string message)
-    {
-        LOG(ERROR) << message;
-    }
+        result = tm.lazyDebug();
+        cout << result.current_strip << endl;
+        cout << "current_state: " << result.current_state << ", current_word: " << result.current_word << ", current line: " << result.line << endl;
+        getline(cin, debug_line);
+    } while (result.current_state != "end");
+
+    tm.lazyFinalize();
+    LOG(INFO) << "Run complete";
 };
 
 void App::semantic_analysis()
 {
     Parser parser;
     LOG(INFO) << "Starting analyser...";
+
+    string path = _pname.getOriginal();
+    parser.analyse(path);
+
+    LOG(INFO) << "Analysis complete. All set for execution!";
+};
+
+int App::execute()
+{
+    if (argc == 1)
+    {
+        text_start_func();
+        cout << endl;
+        return 0;
+    }
+    if (argc == 2 && string(argv[1]) == string("-v"))
+    {
+        text_v_func();
+        cout << endl;
+        return 0;
+    }
+
     try
     {
-        parser.analyse(path);
+        // if there are only path to origin or path to origin + noLambda flag
+        if (argc == 2 || (argc == 3 && string(argv[2]) == "-l"))
+        {
+            parse();
+            semantic_analysis();
+            emulate();
+            cout << endl;
+            return 0;
+        }
+
+        ifstream fin(_pname.getOriginal());
+        if (!fin.is_open())
+        {
+            LOG(ERROR) << "File opening exception";
+            cout << endl;
+            return 1;
+        }
+        fin.close();
+        LOG(ERROR) << "File exists.";
+
+        // so, we have 2+ arguments and the argv[2] is not "-v":
+        if (debug)
+        {
+            parse();
+            semantic_analysis();
+            emulate();
+            cout << endl;
+            return 0;
+        }
+
+        if (parsing)
+        {
+            parse();
+        }
+        if (semantic)
+        {
+            semantic_analysis();
+        }
+        if (emulating)
+        {
+            emulate();
+        }
     }
     catch (const char *message)
     {
         LOG(ERROR) << message;
-        LOG(INFO) << "Ooh. Looks bad.";
-        return;
+        cout << endl;
+        return 1;
     }
     catch (string message)
     {
         LOG(ERROR) << message;
-        LOG(INFO) << "Ooh. Looks bad.";
-        return;
+        cout << endl;
+        return 1;
     }
-    LOG(INFO) << "Analysis complete. All set for execution!";
+    catch (...)
+    {
+        LOG(ERROR) << "Something went wrong." << endl
+                   << "Please tell about this to the developer." << endl;
+        cout << endl;
+        return 1;
+    }
+    cout << endl;
+    return 0;
 };

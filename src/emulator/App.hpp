@@ -19,35 +19,39 @@ extern "C"
 #include "libs/text_functions.hpp"
 #include "../machine/MachineState.hpp"
 #include "../analyser/parser.hpp"
+#include "../tools/ProjectName.hpp"
 
 using namespace std;
 
 class App
 {
-    string path;
-    bool lambda;
-    bool debug_statement;
+    int argc;
+    char **argv;
+
+    ProjectName _pname;
+
+    bool noLambda = false;
+    bool parsing = false;
+    bool semantic = false;
+    bool emulating = false;
+    bool debug = false;
+
     void command_to_sqlite3(sqlite3 *db, struct Command *current_command, sqlite3_stmt *ppStmt);
     bool check_str_in_vec(vector<string> v, string s);
     App(){};
 
 public:
-    App(string path_)
+    App(ProjectName pname, int _argc, char *_argv[])
     {
-        path = path_;
-        lambda = 0;
-        debug_statement = 0;
+        _pname = pname;
+        argc = _argc;
+        argv = _argv;
+        handleArguments();
     };
-    void setLambda(bool lambda_)
-    {
-        lambda = lambda_;
-    };
-    void setDebug(bool debug_)
-    {
-        debug_statement = debug_;
-    };
+
+    void parse();
     void semantic_analysis();
-    void context_free_analysis_and_parsing();
-    void emulator_executing_procedure();
-    bool check_arguments(char *search, int argc, char **argv);
+    void emulate();
+    void handleArguments();
+    int execute();
 };
