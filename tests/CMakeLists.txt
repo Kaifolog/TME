@@ -15,20 +15,23 @@ add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
 add_subdirectory(../src/emulator/vendor ../emulator/machine) 
+add_subdirectory(../src/analyser ../analyser) 
 add_subdirectory(../src/machine ../machine)
-add_executable(MachineTests_gTests ./machine/MachineTests.cpp)
+
+add_executable(AllTests_gTests AllTests.cpp)
 
 target_link_libraries(
-MachineTests_gTests
+AllTests_gTests
 
 TuringMachine
+PARSER
 GTest::gtest_main
 VENDOR
 )
 
 if (UNIX)
-        target_link_libraries(MachineTests_gTests dl pthread)
+        target_link_libraries(AllTests_gTests dl pthread)
 endif (UNIX)
 
 include(GoogleTest)
-gtest_discover_tests(MachineTests_gTests)
+gtest_discover_tests(AllTests_gTests)

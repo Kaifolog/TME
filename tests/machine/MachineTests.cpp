@@ -46,10 +46,37 @@ TEST(ExecutionTest, LambdaTest)
         ASSERT_STREQ("1 1 1 | | ", result.c_str());
 }
 
+TEST(ExecutionTest, HardTest)
+{
+        TuringMachine tm;
+
+        // preparing test
+        ofstream datasec;
+        datasec.open("datasection.tmp");
+        datasec << "|1| 0 1 0 1 0 1 0 0 1 0 1 0 1 0 1";
+        datasec.close();
+
+        // you should start it from ./TME/build
+        string path = "../examples/ZhegalkinOfDualFunc.txt";
+        ASSERT_NO_THROW(tm.execute(path, 1));
+
+        // preparing test
+        string result;
+        ifstream output("../examples/ZhegalkinOfDualFunc_out.txt");
+        getline(output, result);
+        ASSERT_STREQ("1 0 1 0 1 0 1 0 0 1 0 1 0 1 0 1 =                                   x4 + |x1|                                                                                                                                                             ", result.c_str());
+}
+
 TEST(DebuggingTest, LambdaTest)
 {
         TuringMachine tm;
         MachineState result;
+
+        ofstream datasec;
+        datasec.open("datasection.tmp");
+        datasec << "|lambda|";
+        datasec.close();
+
         // you should start it from ./TME/build
         string path = "../tests/machine/BasicTest.txt";
         ASSERT_NO_THROW(tm.lazyStart(path, 0));
@@ -60,10 +87,4 @@ TEST(DebuggingTest, LambdaTest)
         // ASSERT_NO_THROW(result = tm.lazyDebug();); // remember it for writing destructive test
         // ASSERT_EQ(result.current_state, "");
         tm.lazyFinalize();
-}
-
-int main(int argc, char **argv)
-{
-        ::testing::InitGoogleTest(&argc, argv);
-        return RUN_ALL_TESTS();
 }
