@@ -9,8 +9,8 @@ TEST(ParsingTest, BasicTest)
         Parser parser;
 
         // you should start it from ./TME/build
-        string path = "../tests/analyser/BasicTest.txt";
-        ASSERT_NO_THROW(parser.parse(path));
+        ProjectName pn("../tests/analyser/BasicTest.txt");
+        ASSERT_NO_THROW(parser.parse(pn));
 }
 
 TEST(ParsingTest, BasicFailTest)
@@ -18,11 +18,11 @@ TEST(ParsingTest, BasicFailTest)
         Parser parser;
 
         // you should start it from ./TME/build
-        string path = "../tests/analyser/BasicFailTest.txt";
+        ProjectName pn("../tests/analyser/BasicFailTest.txt");
         string output;
         try
         {
-                parser.parse(path);
+                parser.parse(pn);
         }
         catch (const char *message)
         {
@@ -40,8 +40,8 @@ TEST(ParsingTest, HardTest)
         Parser parser;
 
         // you should start it from ./TME/build
-        string path = "../examples/ZhegalkinOfDualFunc.txt";
-        ASSERT_NO_THROW(parser.parse(path));
+        ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
+        ASSERT_NO_THROW(parser.parse(pn));
 }
 
 TEST(ParsingTest, SectionDataTest)
@@ -49,11 +49,11 @@ TEST(ParsingTest, SectionDataTest)
         Parser parser;
 
         // you should start it from ./TME/build
-        string path = "../tests/analyser/SectionDataTest.txt";
+        ProjectName pn("../tests/analyser/SectionDataTest.txt");
         string output;
         try
         {
-                parser.parse(path);
+                parser.parse(pn);
         }
         catch (const char *message)
         {
@@ -71,11 +71,11 @@ TEST(ParsingTest, SectionTextTest)
         Parser parser;
 
         // you should start it from ./TME/build
-        string path = "../tests/analyser/SectionTextTest.txt";
+        ProjectName pn("../tests/analyser/SectionTextTest.txt");
         string output;
         try
         {
-                parser.parse(path);
+                parser.parse(pn);
         }
         catch (const char *message)
         {
@@ -93,12 +93,12 @@ TEST(AnalysisTest, StartTest)
         Parser parser;
 
         // you should start it from ./TME/build
-        string path = "../tests/analyser/StartTest.txt";
+        ProjectName pn("../tests/analyser/StartTest.txt");
         string output;
         try
         {
-                parser.parse(path);
-                parser.analyse(path);
+                parser.parse(pn);
+                parser.analyse(pn);
         }
         catch (const char *message)
         {
@@ -116,12 +116,12 @@ TEST(AnalysisTest, EndTest)
         Parser parser;
 
         // you should start it from ./TME/build
-        string path = "../tests/analyser/EndTest.txt";
+        ProjectName pn("../tests/analyser/EndTest.txt");
         string output;
         try
         {
-                parser.parse(path);
-                parser.analyse(path);
+                parser.parse(pn);
+                parser.analyse(pn);
         }
         catch (const char *message)
         {

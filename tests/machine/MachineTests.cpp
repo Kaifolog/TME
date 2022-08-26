@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "../../src/machine/TuringMachine.hpp"
+#include "../../src/analyser/parser.hpp"
 
 TEST(ExecutionTest, BasicTest)
 {
@@ -15,8 +16,8 @@ TEST(ExecutionTest, BasicTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        string path = "../tests/machine/BasicTest.txt";
-        ASSERT_NO_THROW(tm.execute(path, 0));
+        ProjectName pn("../tests/machine/BasicTest.txt");
+        ASSERT_NO_THROW(tm.execute(pn, 0));
 
         // preparing test
         string result;
@@ -36,8 +37,8 @@ TEST(ExecutionTest, LambdaTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        string path = "../tests/machine/BasicTest.txt";
-        ASSERT_NO_THROW(tm.execute(path, 1));
+        ProjectName pn("../tests/machine/BasicTest.txt");
+        ASSERT_NO_THROW(tm.execute(pn, 1));
 
         // preparing test
         string result;
@@ -57,8 +58,8 @@ TEST(ExecutionTest, HardTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        string path = "../examples/ZhegalkinOfDualFunc.txt";
-        ASSERT_NO_THROW(tm.execute(path, 1));
+        ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
+        ASSERT_NO_THROW(tm.execute(pn, 1));
 
         // preparing test
         string result;
@@ -78,8 +79,8 @@ TEST(DebuggingTest, LambdaTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        string path = "../tests/machine/BasicTest.txt";
-        ASSERT_NO_THROW(tm.lazyStart(path, 0));
+        ProjectName pn("../tests/machine/BasicTest.txt");
+        ASSERT_NO_THROW(tm.lazyStart(pn, 0));
         ASSERT_NO_THROW(result = tm.lazyDebug(););
         ASSERT_EQ(result.line, "6");
         ASSERT_NO_THROW(result = tm.lazyDebug(););

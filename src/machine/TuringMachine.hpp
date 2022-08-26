@@ -11,6 +11,8 @@ extern "C"
 #include "../emulator/vendor/sqlite3/sqlite3.h"
 }
 
+#include "../tools/ProjectName.hpp"
+
 using namespace std;
 
 class TuringMachine
@@ -43,9 +45,9 @@ public:
     void set_current_state(string a);
     void set_current_word(string a);
     bool get_step(char a);
-    int execute(string &path, bool lambda);
+    int execute(ProjectName &pname, bool lambda);
 
-    void lazyStart(string path, bool lambda);
+    void lazyStart(ProjectName &pname, bool lambda);
     MachineState lazyDebug();
     void lazyFinalize();
 };

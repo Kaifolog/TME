@@ -19,30 +19,17 @@ bool check_str_in_vec(vector<string> v, string s)
         return find(v.begin(), v.end(), s) == v.end();
 }
 
-void Parser::init(string &path)
+void Parser::init(ProjectName &pname)
 {
         this->needsToFinalize = true;
 
-        this->dir = path;
-        fin.open(dir);
+        fin.open(pname.getOriginal());
         if (!fin.is_open())
         {
                 throw "Can't open the file.";
         }
-        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
-        {
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
-        }
-        string a = dir;
 
-        /***************************/
-
-        a = dir;
-        a.append(".db");
-        if (sqlite3_open(a.c_str(), &db))
+        if (sqlite3_open(pname.getDBFile().c_str(), &db))
         {
                 throw "UNDEFINED ERROR : DATABASE UNAVAILABLE";
         }
@@ -63,15 +50,14 @@ void Parser::init(string &path)
                 throw err;
         }
         /***************************/
-        a.clear();
         sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
         sprintf(insert_bind, "INSERT INTO commands VALUES (?,?,?,?,?,?,?)");
         sqlite3_prepare_v2(db, insert_bind, 256, &ppStmt, NULL);
 };
 
-void Parser::parse(string &path)
+void Parser::parse(ProjectName &pname)
 {
-        init(path);
+        init(pname);
         Command *current_command;
         string buffer;
         while (getline(fin, buffer))
@@ -117,21 +103,9 @@ void Parser::finalize()
         }
 };
 
-void Parser::analyse(string &path)
+void Parser::analyse(ProjectName &pname)
 {
-        string dir;
-        dir = path;
-        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
-        {
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
-        }
-
-        /**************/
-        string a = dir;
-        a.append(".db");
+        string a = pname.getDBFile();
         if (sqlite3_open(a.c_str(), &db))
         {
                 throw "UNDEFINED ERROR : DATABASE UNAVAILABLE";

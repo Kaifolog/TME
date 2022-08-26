@@ -58,8 +58,7 @@ void App::parse()
     Parser parser;
     LOG(INFO) << "Parser started... ";
 
-    string path = _pname.getOriginal();
-    parser.parse(path);
+    parser.parse(_pname);
 
     LOG(INFO) << "Parsing ended.";
 };
@@ -67,13 +66,12 @@ void App::parse()
 void App::emulate()
 {
     TuringMachine tm;
-    string path = _pname.getOriginal();
 
     if (!debug)
     {
         LOG(INFO) << "Starting emulator...";
 
-        tm.execute(path, noLambda);
+        tm.execute(_pname, noLambda);
 
         LOG(INFO) << "Run complete";
         return;
@@ -83,7 +81,7 @@ void App::emulate()
     MachineState result;
 
     string debug_line;
-    tm.lazyStart(_pname.getOriginal(), noLambda);
+    tm.lazyStart(_pname, noLambda);
 
     do
     {
@@ -102,8 +100,7 @@ void App::semantic_analysis()
     Parser parser;
     LOG(INFO) << "Starting analyser...";
 
-    string path = _pname.getOriginal();
-    parser.analyse(path);
+    parser.analyse(_pname);
 
     LOG(INFO) << "Analysis complete. All set for execution!";
 };

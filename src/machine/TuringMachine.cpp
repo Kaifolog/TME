@@ -36,7 +36,7 @@ bool TuringMachine::is_end(string dir, bool lambda)
     if (statement == "end")
     {
         ofstream fout;
-        fout.open(dir + "_out.txt");
+        fout.open(dir);
 
         for (int i = 0; i < strip.size(); i++)
         {
@@ -171,27 +171,14 @@ bool TuringMachine::get_step(char a)
     }
 }
 
-void TuringMachine::lazyStart(string path, bool lambda)
+void TuringMachine::lazyStart(ProjectName &pname, bool lambda)
 {
     this->lambda = lambda;
 
     if (this->load_strip("datasection.tmp"))
     {
-        string dir;
-        dir = path;
-        fin.open(dir);
-        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
-        {
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-        }
-
-        /**************/
-        string a = dir;
-        this->output = a;
-        a.append(".db");
+        string a = pname.getDBFile();
+        this->output = pname.getOutFile();
 
         if (sqlite3_open(a.c_str(), &db))
         {
@@ -215,9 +202,9 @@ void TuringMachine::lazyStart(string path, bool lambda)
     }
 }
 
-int TuringMachine::execute(string &path, bool lambda)
+int TuringMachine::execute(ProjectName &pname, bool lambda)
 {
-    this->lazyStart(path, lambda);
+    this->lazyStart(pname, lambda);
     string select_command;
     while (!this->is_end(this->output, lambda))
     {
