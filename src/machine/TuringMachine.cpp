@@ -231,9 +231,8 @@ int TuringMachine::execute(ProjectName &pname, bool lambda)
     return 0;
 }
 
-MachineState TuringMachine::lazyDebug()
+MachineState TuringMachine::lazyDebug(bool step_by_step)
 {
-
     string select_command;
     while (!this->is_end(this->output, lambda))
     {
@@ -254,7 +253,7 @@ MachineState TuringMachine::lazyDebug()
             throw "EMULATING ERROR : CANT FIND NEXT COMMAND\nWith last state " + this->get_current_state() + " and word " + this->get_current_word();
         }
 
-        if (string((char *)sqlite3_column_text(ppStmt, 5)) == "1" || this->get_current_state() == "end")
+        if (step_by_step || (string((char *)sqlite3_column_text(ppStmt, 5)) == "1" || this->get_current_state() == "end"))
         {
             MachineState step;
             step.current_strip = this->get_strip();

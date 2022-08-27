@@ -48,6 +48,6 @@ public:
     int execute(ProjectName &pname, bool lambda);
 
     void lazyStart(ProjectName &pname, bool lambda);
-    MachineState lazyDebug();
+    MachineState lazyDebug(bool step_by_step = 0);
     void lazyFinalize();
 };
