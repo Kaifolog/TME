@@ -13,6 +13,9 @@ extern "C"
 
 #include "../tools/ProjectName.hpp"
 
+#ifndef _TURINGMACHINE
+#define _TURINGMACHINE
+
 using namespace std;
 
 class TuringMachine
@@ -51,3 +54,5 @@ public:
     MachineState lazyDebug(bool step_by_step = 0);
     void lazyFinalize();
 };
+
+#endif

@@ -21,6 +21,9 @@ extern "C"
 #include "../analyser/parser.hpp"
 #include "../tools/ProjectName.hpp"
 
+#ifndef _APP
+#define _APP
+
 using namespace std;
 
 class App
@@ -55,3 +58,5 @@ public:
     void handleArguments();
     int execute();
 };
+
+#endif

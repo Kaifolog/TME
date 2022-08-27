@@ -1,54 +1,37 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
-#include <QFileDialog>
-#include <QMenuBar>
-#include <QTextStream>
-#include <QFile>
-#include <fstream>
-#include "../emulator/App.hpp"
-#include "../emulator/vendor/sqlite3/sqlite3.h"
-#include <QMessageBox>
-#include <iostream>
-#include <unistd.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    keyCtrlS = new QShortcut(this);         // Инициализируем объект
-    keyCtrlS->setKey(Qt::CTRL + Qt::Key_S); // Устанавливаем сочетание клавиш
-    // подключаем обработчик нажатия клавиши
+    // connect keybind CTRL + S
+    keyCtrlS = new QShortcut(this);
+    keyCtrlS->setKey(Qt::CTRL + Qt::Key_S);
     connect(keyCtrlS, SIGNAL(activated()), this, SLOT(slotShortcutCtrlS()));
-
-    keyCtrlO = new QShortcut(this);         // Инициализируем объект
-    keyCtrlO->setKey(Qt::CTRL + Qt::Key_O); // Устанавливаем сочетание клавиш
-    // подключаем обработчик нажатия клавиши
+    // connect keybind CTRL + O
+    keyCtrlO = new QShortcut(this);
+    keyCtrlO->setKey(Qt::CTRL + Qt::Key_O);
     connect(keyCtrlO, SIGNAL(activated()), this, SLOT(slotShortcutCtrlO()));
-
-    keyCtrlN = new QShortcut(this);         // Инициализируем объект
-    keyCtrlN->setKey(Qt::CTRL + Qt::Key_N); // Устанавливаем сочетание клавиш
-    // подключаем обработчик нажатия клавиши
+    // connect keybind CTRL + N
+    keyCtrlN = new QShortcut(this);
+    keyCtrlN->setKey(Qt::CTRL + Qt::Key_N);
     connect(keyCtrlN, SIGNAL(activated()), this, SLOT(slotShortcutCtrlN()));
-
-    CtrlShiftX = new QShortcut(this);                     // Инициализируем объект
-    CtrlShiftX->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_X); // Устанавливаем сочетание клавиш
-    // подключаем обработчик нажатия клавиши
+    // connect keybind CTRL + SHIFT + X
+    CtrlShiftX = new QShortcut(this);
+    CtrlShiftX->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_X);
     connect(CtrlShiftX, SIGNAL(activated()), this, SLOT(slotShortcutCtrlShiftX()));
-
-    CtrlTab = new QShortcut(this);           // Инициализируем объект
-    CtrlTab->setKey(Qt::CTRL + Qt::Key_Tab); // Устанавливаем сочетание клавиш
-    // подключаем обработчик нажатия клавиши
+    // connect keybind CTRL + Tab
+    CtrlTab = new QShortcut(this);
+    CtrlTab->setKey(Qt::CTRL + Qt::Key_Tab);
     connect(CtrlTab, SIGNAL(activated()), this, SLOT(slotShortcutCtrlTab()));
-
-    CtrlSpace = new QShortcut(this); // Инициализируем объект
-    CtrlSpace->setKey(Qt::Key_F5);   // CTRL + Qt::Key_Space); // Устанавливаем сочетание клавиш
-    // подключаем обработчик нажатия клавиши
+    // connect keybind F5
+    CtrlSpace = new QShortcut(this);
+    CtrlSpace->setKey(Qt::Key_F5);
     connect(CtrlSpace, SIGNAL(activated()), this, SLOT(slotShortcutCtrlSpace()));
-
-    CtrlD = new QShortcut(this);         // Инициализируем объект
-    CtrlD->setKey(Qt::CTRL + Qt::Key_D); // Устанавливаем сочетание клавиш
-    // подключаем обработчик нажатия клавиши
+    // connect keybind CTRL + D
+    CtrlD = new QShortcut(this);
+    CtrlD->setKey(Qt::CTRL + Qt::Key_D);
     connect(CtrlD, SIGNAL(activated()), this, SLOT(slotShortcutCtrlD()));
 }
 
@@ -91,11 +74,6 @@ void MainWindow::slotShortcutCtrlD()
     }
 }
 
-void MainWindow::slotShortcutCtrlSpace()
-{
-    on_debugnextbtn_clicked();
-}
-
 void MainWindow::slotShortcutCtrlTab()
 {
     if (ui->rawnumberlabel->text().length())
@@ -133,31 +111,6 @@ void MainWindow::slotShortcutCtrlTab()
             text_cursor.insertText("\n");
     }
 }
-
-void MainWindow::slotShortcutCtrlS()
-{
-    on_actionSave_triggered();
-}
-
-void MainWindow::slotShortcutCtrlO()
-{
-    on_actionOpen_triggered();
-}
-void MainWindow::slotShortcutCtrlN()
-{
-    on_actioNew_triggered();
-}
-void MainWindow::slotShortcutCtrlShiftX()
-{
-    on_quickstartbtn_clicked();
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-/****************************/
 
 void MainWindow::on_datacheckBox_clicked()
 {
@@ -289,7 +242,6 @@ void MainWindow::on_actioNew_triggered()
     ui->filenamelbl->setText(fileName);
     ui->filestatuslbl->setText("Opened");
 }
-/********************************/
 
 void MainWindow::on_mainTextField_textChanged()
 {
@@ -299,14 +251,13 @@ void MainWindow::on_mainTextField_textChanged()
         ui->logwindow->appendPlainText("Please, open the file.");
     }
 }
-/****************************/
 
 void MainWindow::on_parsingbtn_clicked()
 {
 
     breakpointHighlightOFF();
     ui->parsingbtn->setEnabled(false);
-    ui->analisysbtn->setEnabled(false);
+    ui->analysisbtn->setEnabled(false);
     ui->emulationbtn->setEnabled(false);
     ui->quickstartbtn->setEnabled(false);
     ui->debugbtn->setEnabled(false);
@@ -371,18 +322,18 @@ void MainWindow::on_parsingbtn_clicked()
         file.close();
     }
     ui->parsingbtn->setEnabled(true);
-    ui->analisysbtn->setEnabled(true);
+    ui->analysisbtn->setEnabled(true);
     ui->emulationbtn->setEnabled(true);
     ui->quickstartbtn->setEnabled(true);
     ui->debugbtn->setEnabled(true);
 }
 
-void MainWindow::on_analisysbtn_clicked()
+void MainWindow::on_analysisbtn_clicked()
 {
 
     breakpointHighlightOFF();
     ui->parsingbtn->setEnabled(false);
-    ui->analisysbtn->setEnabled(false);
+    ui->analysisbtn->setEnabled(false);
     ui->emulationbtn->setEnabled(false);
     ui->quickstartbtn->setEnabled(false);
     ui->debugbtn->setEnabled(false);
@@ -445,7 +396,7 @@ void MainWindow::on_analisysbtn_clicked()
         file.close();
     }
     ui->parsingbtn->setEnabled(true);
-    ui->analisysbtn->setEnabled(true);
+    ui->analysisbtn->setEnabled(true);
     ui->emulationbtn->setEnabled(true);
     ui->quickstartbtn->setEnabled(true);
     ui->debugbtn->setEnabled(true);
@@ -455,7 +406,7 @@ void MainWindow::on_emulationbtn_clicked()
 {
     breakpointHighlightOFF();
     ui->parsingbtn->setEnabled(false);
-    ui->analisysbtn->setEnabled(false);
+    ui->analysisbtn->setEnabled(false);
     ui->emulationbtn->setEnabled(false);
     ui->quickstartbtn->setEnabled(false);
     ui->debugbtn->setEnabled(false);
@@ -530,7 +481,7 @@ void MainWindow::on_emulationbtn_clicked()
         }
     }
     ui->parsingbtn->setEnabled(true);
-    ui->analisysbtn->setEnabled(true);
+    ui->analysisbtn->setEnabled(true);
     ui->emulationbtn->setEnabled(true);
     ui->quickstartbtn->setEnabled(true);
     ui->debugbtn->setEnabled(true);
@@ -540,7 +491,7 @@ void MainWindow::on_quickstartbtn_clicked()
 {
     breakpointHighlightOFF();
     ui->parsingbtn->setEnabled(false);
-    ui->analisysbtn->setEnabled(false);
+    ui->analysisbtn->setEnabled(false);
     ui->emulationbtn->setEnabled(false);
     ui->quickstartbtn->setEnabled(false);
     ui->debugbtn->setEnabled(false);
@@ -618,7 +569,7 @@ void MainWindow::on_quickstartbtn_clicked()
         file.close();
     }
     ui->parsingbtn->setEnabled(true);
-    ui->analisysbtn->setEnabled(true);
+    ui->analysisbtn->setEnabled(true);
     ui->emulationbtn->setEnabled(true);
     ui->quickstartbtn->setEnabled(true);
     ui->debugbtn->setEnabled(true);
@@ -987,7 +938,6 @@ void MainWindow::on_debugnextbtn_clicked()
             ui->debugnextbtn->setEnabled(true);
         }
     }
-    /*************************************************************************************************************************/
 }
 
 void MainWindow::on_skipButton_clicked()
@@ -1106,83 +1056,6 @@ void MainWindow::on_skipButton_clicked()
             return;
         }
     }
-}
-
-void MainWindow::on_action_triggered()
-{
-    QMessageBox::about(0,
-                       "Про мову цього емулятора",
-                       "Синтаксис:\n"
-                       "Має два заразервованих стани, 3 ключові вирази та один символ.\n"
-                       "В мові елементарною одиницею є рядок, який завжди має вид: \n\n statement1, word1->statement2, word2, direction\n\n"
-                       "В ідентифікаторах станів та алфавіту допустимі лише латинські букви будь-якого регістру, цифри та нижні підкреслення \"_\"\n"
-                       "Мова не має обмежень двжини ідентификаторів, рядків та не залежить від кількости чи наявності відступів, табуляцій, пропусків.\n\n\n"
-                       "section\n\nЯк і в мовах ассемблерів, мова данного емулятора розділена на секції \nsection .text; section .data;\nСекції для коду та вхідного рядка відповідно. Їх може бути декілька. З .data обирається остання, .text зливаються в одну.\n\n"
-                       "Макроси\n\nМакроси подібні макросам з мови С, #define st1 st2, де st1 заміниться на st2. Макроси підставляються по черзі з вернього вниз. Можуть маніпулювати всім у секції коду.\n\n"
-                       "section .data\n\nКожна клітинка стрічки має довільний розмір та відділяється від інших пропуском \" \", курсор вказується за допомогою обводки \"|\", наприклад:\"|lambda|\".\n\n"
-                       "Коментарі:\nЗа ассемблерною традицією комментарі мають лише одно-рядковий синтаксис та діють з \";\" ф до кінця рядка, у довільному рядку программи.\n\n"
-                       "Остаточно про виконання мови:\nВиконання завжди починається за стану \"start\" та слова, що було виділено курсором, кінець - стан \"end\", lambda - зарезервоване слово, що позначає пустий символ."
-                       "\n\nДетальніше на гітхаб Kaifolog/TME,\nтам є ціла нормальна інструкція!");
-    QMessageBox msgBox;
-    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Інструкція та актуальна версія</a>");
-    msgBox.exec();
-}
-void MainWindow::on_action_2_triggered()
-{
-    QMessageBox::about(this,
-                       "Гарячі клавіші.",
-                       "Синтаксис:\n"
-                       "Ctrl+S - save\nCtrl+N - New\nCtrl+O - open\nCtrl+Shift+X - Quick Start\nCtrl+Tab - підстановка розділових знаків до форми команди \",->,,\"\n F5 - Робить 1 ітерацію у debug режимі");
-    QMessageBox msgBox;
-    // msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Інструкція та актуальна версія</a>");
-    // msgBox.exec();
-}
-
-void MainWindow::on_action_3_triggered()
-{
-    QMessageBox::about(this,
-                       "Приклад програми.",
-                       "Виконаємо порт з Оніщенка:\n\n"
-                       "#define ,: ,lambda: ; на нашому емуляторі недопустимі пусті строки\n"
-                       "#define ,, ,lambda, ; на нашому компіляторі недопустимі пусті строки\n"
-                       "#define q0 start ; змінюємо точку входу\n"
-                       "#define ! end ; змінюємо точку кінця\n"
-                       "#define * star ; \n"
-                       "#define : -> ; \n"
-                       "section .data\n"
-                       "|lambda|\n"
-                       "section .text\n"
-                       "q0,:q1,g,r\n"
-                       "q1,:q2,e,r\n"
-                       "q2,:q3,o,r\n"
-                       "q3,:q4,r,r\n"
-                       "q4,:q5,g,r\n"
-                       "q5,:q6,e,r\n"
-                       "q6,:!,,r\n");
-    QMessageBox msgBox;
-    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Інструкція та актуальна версія</a>");
-    msgBox.exec();
-}
-
-void MainWindow::on_action_5_triggered()
-{
-    QMessageBox::about(this,
-                       "Про емулятор\n\n",
-                       "Єдина неприємність - верхній рядок з графічного інтерфейсу є аналогом section .data, куди він і збережується.\n"
-                       "При відкритті ви побачите, що він в головному полі тексту. Можете сам рядок рядок без вказання секції переписати в інпут рядок граф. інтерфейсу. Якщо він пустий - він не буде записаний.\n"
-                       "Щоб дізнатися деталі чи зв'язатися з розробником - відкрийте вкладку \"Про программу\""
-                       "Читайте інструкцію.");
-}
-
-void MainWindow::on_action_4_triggered()
-{
-    QMessageBox::about(this,
-                       "Про программу\n\n",
-                       "Присвячено Україні та всім моїм друзям і подругам, Kanye \"Ye\" West'у.\n"
-                       "Якщо мене ще не відрахували та мені ще цікаво - я буду продовжувати розробляти емулятор, маєш якісь ідеї або хочеш допомогти? Хочеш отримати консольну версію?\n\n");
-    QMessageBox msgBox;
-    msgBox.setText("<a href=\"https://github.com/Kaifolog/TME\" style=\"color:red\">Мій Github</a>");
-    msgBox.exec();
 }
 
 void MainWindow::on_mainTextField_cursorPositionChanged()

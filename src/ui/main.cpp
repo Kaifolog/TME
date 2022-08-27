@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-    // setting style
+    // sets style
     QFile styleSheetFile("./MaterialDark.qss");
     styleSheetFile.open(QFile::ReadOnly);
     if (styleSheetFile.isOpen())

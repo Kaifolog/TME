@@ -308,7 +308,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="analisysbtn">
+      <widget class="QPushButton" name="analysisbtn">
        <property name="text">
         <string>Analysis</string>
        </property>
