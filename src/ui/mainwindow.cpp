@@ -272,17 +272,7 @@ void MainWindow::on_parsingbtn_clicked()
 
         on_actionSave_triggered();
 
-        string logs_path = fileName.toStdString();
-
-        if (logs_path.substr(logs_path.find_last_of(".") + 1) == "tme" || logs_path.substr(logs_path.find_last_of(".") + 1) == "txt")
-        {
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-        }
-
-        logs_path.append("_log.txt");
+        ProjectName pn(fileName.toStdString());
 
         // logger configuring
         el::Configurations defaultConf;
@@ -290,7 +280,7 @@ void MainWindow::on_parsingbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, logs_path);
+        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -299,17 +289,29 @@ void MainWindow::on_parsingbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        App app(fileName.toStdString());
-        app.setLambda((bool)ui->lambdacheckBox->isChecked());
+        char *args[3];
+        args[0] = "";
+        if ((bool)ui->lambdacheckBox->isChecked())
+        {
+            args[1] = "-g";
+            args[2] = "-l";
+        }
+        else
+        {
+            args[1] = "-g";
+            args[2] = "";
+        }
+
+        App app(pn, 3, args);
         try
         {
-            app.context_free_analysis_and_parsing();
+            app.parse();
         }
         catch (...)
         {
         }
 
-        QFile file(QString::fromUtf8(logs_path.c_str()));
+        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -346,17 +348,7 @@ void MainWindow::on_analysisbtn_clicked()
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
 
-        string logs_path = fileName.toStdString();
-
-        if (logs_path.substr(logs_path.find_last_of(".") + 1) == "tme" || logs_path.substr(logs_path.find_last_of(".") + 1) == "txt")
-        {
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-        }
-
-        logs_path.append("_log.txt");
+        ProjectName pn(fileName.toStdString());
 
         // logger configuring
         el::Configurations defaultConf;
@@ -364,7 +356,7 @@ void MainWindow::on_analysisbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, logs_path);
+        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -373,8 +365,20 @@ void MainWindow::on_analysisbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        App app(fileName.toStdString());
-        app.setLambda((bool)ui->lambdacheckBox->isChecked());
+        char *args[3];
+        args[0] = "";
+        if ((bool)ui->lambdacheckBox->isChecked())
+        {
+            args[1] = "-a";
+            args[2] = "-l";
+        }
+        else
+        {
+            args[1] = "-g";
+            args[2] = "";
+        }
+
+        App app(pn, 3, args);
         try
         {
             app.semantic_analysis();
@@ -383,7 +387,7 @@ void MainWindow::on_analysisbtn_clicked()
         {
         }
 
-        QFile file(QString::fromUtf8(logs_path.c_str()));
+        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -419,19 +423,7 @@ void MainWindow::on_emulationbtn_clicked()
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
 
-        string logs_path = fileName.toStdString();
-
-        if (logs_path.substr(logs_path.find_last_of(".") + 1) == "tme" || logs_path.substr(logs_path.find_last_of(".") + 1) == "txt")
-        {
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-        }
-
-        string out_path = logs_path;
-
-        logs_path.append("_log.txt");
+        ProjectName pn(fileName.toStdString());
 
         // logger configuring
         el::Configurations defaultConf;
@@ -439,7 +431,7 @@ void MainWindow::on_emulationbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, logs_path);
+        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -448,17 +440,29 @@ void MainWindow::on_emulationbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        App app(fileName.toStdString());
-        app.setLambda((bool)ui->lambdacheckBox->isChecked());
+        char *args[3];
+        args[0] = "";
+        if ((bool)ui->lambdacheckBox->isChecked())
+        {
+            args[1] = "-a";
+            args[2] = "-l";
+        }
+        else
+        {
+            args[1] = "-g";
+            args[2] = "";
+        }
+
+        App app(pn, 3, args);
         try
         {
-            app.emulator_executing_procedure();
+            app.emulate();
         }
         catch (...)
         {
         }
 
-        QFile file(QString::fromUtf8(logs_path.c_str()));
+        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -469,7 +473,7 @@ void MainWindow::on_emulationbtn_clicked()
             file.close();
         }
 
-        QFile file1(QString::fromUtf8((out_path + "_out.txt").c_str()));
+        QFile file1(QString::fromUtf8(pn.getOutFile().c_str()));
         if (file1.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file1);
@@ -505,19 +509,7 @@ void MainWindow::on_quickstartbtn_clicked()
 
         on_actionSave_triggered();
 
-        string logs_path = fileName.toStdString();
-
-        if (logs_path.substr(logs_path.find_last_of(".") + 1) == "tme" || logs_path.substr(logs_path.find_last_of(".") + 1) == "txt")
-        {
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-            logs_path.pop_back();
-        }
-
-        string out_path = logs_path;
-
-        logs_path.append("_log.txt");
+        ProjectName pn(fileName.toStdString());
 
         // logger configuring
         el::Configurations defaultConf;
@@ -525,7 +517,7 @@ void MainWindow::on_quickstartbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, logs_path);
+        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -534,18 +526,30 @@ void MainWindow::on_quickstartbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        App app(fileName.toStdString());
-        app.setLambda((bool)ui->lambdacheckBox->isChecked());
+        char *args[3];
+        args[0] = "";
+        if ((bool)ui->lambdacheckBox->isChecked())
+        {
+            args[1] = "-a";
+            args[2] = "-l";
+        }
+        else
+        {
+            args[1] = "-g";
+            args[2] = "";
+        }
+
+        App app(pn, 3, args);
         try
         {
-            app.context_free_analysis_and_parsing();
-            app.emulator_executing_procedure();
+            app.parse();
+            app.emulate();
         }
         catch (...)
         {
         }
 
-        QFile file(QString::fromUtf8(logs_path.c_str()));
+        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -556,7 +560,7 @@ void MainWindow::on_quickstartbtn_clicked()
             file.close();
         }
 
-        QFile file1(QString::fromUtf8((out_path + "_out.txt").c_str()));
+        QFile file1(QString::fromUtf8(pn.getOutFile().c_str()));
         if (file1.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file1);
