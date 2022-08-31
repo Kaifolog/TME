@@ -9,14 +9,27 @@
 #include <QTextStream>
 #include <QFile>
 
-#include <fstream>
-#include <iostream>
-#include <unistd.h>
-
-#include "../emulator/vendor/sqlite3/sqlite3.h"
-
 #include "./ui_mainwindow.h"
-#include "../emulator/App.hpp"
+
+extern "C"
+{
+#include <stdio.h>
+}
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <chrono>
+#include <algorithm>
+
+extern "C"
+{
+#include "../emulator/vendor/sqlite3/sqlite3.h"
+}
+#include "../emulator/vendor/easyloggingpp/easylogging++.h"
+
+#include "../analyser/parser.hpp"
+#include "../machine/TuringMachine.hpp"
 #include "../tools/ProjectName.hpp"
 
 QT_BEGIN_NAMESPACE

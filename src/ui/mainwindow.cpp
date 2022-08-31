@@ -283,26 +283,27 @@ void MainWindow::on_parsingbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        char *args[3];
-        args[0] = "";
-        if ((bool)ui->lambdacheckBox->isChecked())
-        {
-            args[1] = "-g";
-            args[2] = "-l";
-        }
-        else
-        {
-            args[1] = "-g";
-            args[2] = "";
-        }
-
-        App app(_pname, 3, args);
         try
         {
-            app.parse();
+            Parser parser;
+            LOG(INFO) << "Parser started... ";
+
+            parser.parse(_pname);
+
+            LOG(INFO) << "Parsing ended.";
+        }
+        catch (const char *message)
+        {
+            LOG(ERROR) << message;
+        }
+        catch (string message)
+        {
+            LOG(ERROR) << message;
         }
         catch (...)
         {
+            LOG(ERROR) << "Something went wrong." << endl
+                       << "Please tell about this to the developer." << endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -349,26 +350,27 @@ void MainWindow::on_analysisbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        char *args[3];
-        args[0] = "";
-        if ((bool)ui->lambdacheckBox->isChecked())
-        {
-            args[1] = "-a";
-            args[2] = "-l";
-        }
-        else
-        {
-            args[1] = "-g";
-            args[2] = "";
-        }
-
-        App app(_pname, 3, args);
         try
         {
-            app.semantic_analysis();
+            Parser parser;
+            LOG(INFO) << "Starting analyser...";
+
+            parser.analyse(_pname);
+
+            LOG(INFO) << "Analysis complete. All set for execution!";
+        }
+        catch (const char *message)
+        {
+            LOG(ERROR) << message;
+        }
+        catch (string message)
+        {
+            LOG(ERROR) << message;
         }
         catch (...)
         {
+            LOG(ERROR) << "Something went wrong." << endl
+                       << "Please tell about this to the developer." << endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -414,33 +416,34 @@ void MainWindow::on_emulationbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        char *args[3];
-        args[0] = "";
-        if ((bool)ui->lambdacheckBox->isChecked())
-        {
-            args[1] = "-a";
-            args[2] = "-l";
-        }
-        else
-        {
-            args[1] = "-g";
-            args[2] = "";
-        }
-
-        App app(_pname, 3, args);
         try
         {
-            app.emulate();
+            TuringMachine tm;
+            LOG(INFO) << "Starting emulator...";
+
+            tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
+
+            LOG(INFO) << "Run complete";
+        }
+        catch (const char *message)
+        {
+            LOG(ERROR) << message;
+        }
+        catch (string message)
+        {
+            LOG(ERROR) << message;
         }
         catch (...)
         {
+            LOG(ERROR) << "Something went wrong." << endl
+                       << "Please tell about this to the developer." << endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
-            QString text = "ddfdf"; // ?)
+            QString text;
             text = file.readAll();
             ui->logwindow->clear();
             ui->logwindow->appendPlainText(text);
@@ -490,27 +493,30 @@ void MainWindow::on_quickstartbtn_clicked()
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
         el::Loggers::reconfigureLogger("default", defaultConf);
 
-        char *args[3];
-        args[0] = "";
-        if ((bool)ui->lambdacheckBox->isChecked())
-        {
-            args[1] = "-a";
-            args[2] = "-l";
-        }
-        else
-        {
-            args[1] = "-g";
-            args[2] = "";
-        }
-
-        App app(_pname, 3, args);
         try
         {
-            app.parse();
-            app.emulate();
+            Parser parser;
+            LOG(INFO) << "Parser started... ";
+            parser.parse(_pname);
+            LOG(INFO) << "Parsing ended.";
+
+            TuringMachine tm;
+            LOG(INFO) << "Starting emulator...";
+            tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
+            LOG(INFO) << "Run complete";
+        }
+        catch (const char *message)
+        {
+            LOG(ERROR) << message;
+        }
+        catch (string message)
+        {
+            LOG(ERROR) << message;
         }
         catch (...)
         {
+            LOG(ERROR) << "Something went wrong." << endl
+                       << "Please tell about this to the developer." << endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
