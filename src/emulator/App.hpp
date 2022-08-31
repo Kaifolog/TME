@@ -39,8 +39,6 @@ class App
     bool emulating = false;
     bool debug = false;
 
-    void command_to_sqlite3(sqlite3 *db, struct Command *current_command, sqlite3_stmt *ppStmt);
-    bool check_str_in_vec(vector<string> v, string s);
     App(){};
 
 public:

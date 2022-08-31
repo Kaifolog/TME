@@ -36,6 +36,13 @@ public:
         std::string getDBFile() { return db_file; };
         std::string getOutFile() { return out_file; };
         bool empty() { return original.empty(); };
+        void clear()
+        {
+                original.clear();
+                log_file.clear();
+                db_file.clear();
+                out_file.clear();
+        };
 };
 
 #endif

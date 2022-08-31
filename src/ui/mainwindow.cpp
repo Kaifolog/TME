@@ -145,7 +145,7 @@ void MainWindow::on_actionOpen_triggered()
 {
     QString newFile;
     newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));
-    // if (!fileName.length())
+    // if (_pname.empty())
     //     newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));           // ??))
     // else
     // {
@@ -154,8 +154,8 @@ void MainWindow::on_actionOpen_triggered()
     //     newFile = QFileDialog::getOpenFileName(this, tr("Open File"), file__, tr("Documents (*.tme *.txt)"));
     // }
     if (newFile.length())
-        fileName = newFile;
-    QFile file(fileName);
+        _pname.setOriginal(newFile.toStdString());
+    QFile file(QString::fromUtf8(_pname.getOriginal().c_str()));
     if (file.open(QIODevice::ReadOnly))
     {
         QTextStream in(&file);
@@ -177,33 +177,24 @@ void MainWindow::on_actionOpen_triggered()
         ui->mainTextField->clear();
         ui->mainTextField->setPlainText(text);
         file.close();
-        ui->filenamelbl->setText(fileName);
+        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
         ui->filestatuslbl->setText("Opened");
-
-        char *argv1[2];
-        argv1[1] = new char[fileName.length()];
-        string stdfileName = fileName.toStdString();
-        for (int i = 0; i < fileName.length(); i++)
-        {
-            argv1[1][i] = stdfileName.c_str()[i];
-        }
-        argv = argv1;
     }
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    if (fileName.size())
+    if (!_pname.empty())
     {
         std::ofstream out;
-        out.open(fileName.toUtf8());
+        out.open(_pname.getOriginal());
         if (ui->inputlineEdit->text().size() && ui->datacheckBox->isChecked())
         {
             out << "section .data" << std::endl;
             out << ui->inputlineEdit->text().toStdString() << std::endl;
         }
         out << ui->mainTextField->toPlainText().toStdString();
-        ui->filenamelbl->setText(fileName);
+        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
         ui->filestatuslbl->setText("Saved");
 
         out.close();
@@ -213,7 +204,7 @@ void MainWindow::on_actionSave_triggered()
 void MainWindow::on_actionClose_triggered()
 {
 
-    fileName.clear();
+    _pname.clear();
     ui->debuglineEdit->clear();
     ui->mainTextField->clear();
     ui->inputlineEdit->clear();
@@ -229,40 +220,45 @@ void MainWindow::on_actioNew_triggered()
 {
     ui->mainTextField->clear();
 
-    if (!fileName.length())
-        fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)"));
+    if (_pname.empty())
+        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)")).toStdString());
     else
     {
-        QString file__ = fileName.left(fileName.lastIndexOf(QChar('/')));
-        fileName = QFileDialog::getSaveFileName(this, tr("Save File"), file__, tr("Documents (*.tme *.txt)"));
+        QString file__ = QString::fromUtf8(_pname.getOriginal().c_str()).left(QString::fromUtf8(_pname.getOriginal().c_str()).lastIndexOf(QChar('/')));
+        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), file__, tr("Documents (*.tme *.txt)")).toStdString());
     }
-    QFile mFile(fileName);
+    QFile mFile(QString::fromUtf8(_pname.getOriginal().c_str()));
     mFile.open(QIODevice::WriteOnly);
     mFile.close();
-    ui->filenamelbl->setText(fileName);
+    ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
     ui->filestatuslbl->setText("Opened");
 }
 
 void MainWindow::on_mainTextField_textChanged()
 {
     ui->filestatuslbl->setText("Changed");
-    if (!fileName.size())
+    if (_pname.empty())
     {
         ui->logwindow->appendPlainText("Please, open the file.");
     }
+}
+
+void MainWindow::AllButtonsSetEnabled(bool state)
+{
+    ui->parsingbtn->setEnabled(state);
+    ui->analysisbtn->setEnabled(state);
+    ui->emulationbtn->setEnabled(state);
+    ui->quickstartbtn->setEnabled(state);
+    ui->debugbtn->setEnabled(state);
 }
 
 void MainWindow::on_parsingbtn_clicked()
 {
 
     breakpointHighlightOFF();
-    ui->parsingbtn->setEnabled(false);
-    ui->analysisbtn->setEnabled(false);
-    ui->emulationbtn->setEnabled(false);
-    ui->quickstartbtn->setEnabled(false);
-    ui->debugbtn->setEnabled(false);
+    AllButtonsSetEnabled(false);
 
-    if (fileName.size())
+    if (!_pname.empty())
     {
 
         debug = 0; //выводим из режима дебаг принудительно
@@ -272,15 +268,13 @@ void MainWindow::on_parsingbtn_clicked()
 
         on_actionSave_triggered();
 
-        ProjectName pn(fileName.toStdString());
-
         // logger configuring
         el::Configurations defaultConf;
         defaultConf.setToDefault();
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
+        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -302,7 +296,7 @@ void MainWindow::on_parsingbtn_clicked()
             args[2] = "";
         }
 
-        App app(pn, 3, args);
+        App app(_pname, 3, args);
         try
         {
             app.parse();
@@ -311,7 +305,7 @@ void MainWindow::on_parsingbtn_clicked()
         {
         }
 
-        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
+        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -323,24 +317,16 @@ void MainWindow::on_parsingbtn_clicked()
         }
         file.close();
     }
-    ui->parsingbtn->setEnabled(true);
-    ui->analysisbtn->setEnabled(true);
-    ui->emulationbtn->setEnabled(true);
-    ui->quickstartbtn->setEnabled(true);
-    ui->debugbtn->setEnabled(true);
+    AllButtonsSetEnabled(true);
 }
 
 void MainWindow::on_analysisbtn_clicked()
 {
 
     breakpointHighlightOFF();
-    ui->parsingbtn->setEnabled(false);
-    ui->analysisbtn->setEnabled(false);
-    ui->emulationbtn->setEnabled(false);
-    ui->quickstartbtn->setEnabled(false);
-    ui->debugbtn->setEnabled(false);
+    AllButtonsSetEnabled(false);
 
-    if (fileName.size())
+    if (!_pname.empty())
     {
 
         debug = 0; //выводим из режима дебаг принудительно
@@ -348,15 +334,13 @@ void MainWindow::on_analysisbtn_clicked()
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
 
-        ProjectName pn(fileName.toStdString());
-
         // logger configuring
         el::Configurations defaultConf;
         defaultConf.setToDefault();
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
+        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -378,7 +362,7 @@ void MainWindow::on_analysisbtn_clicked()
             args[2] = "";
         }
 
-        App app(pn, 3, args);
+        App app(_pname, 3, args);
         try
         {
             app.semantic_analysis();
@@ -387,7 +371,7 @@ void MainWindow::on_analysisbtn_clicked()
         {
         }
 
-        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
+        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -399,23 +383,15 @@ void MainWindow::on_analysisbtn_clicked()
         }
         file.close();
     }
-    ui->parsingbtn->setEnabled(true);
-    ui->analysisbtn->setEnabled(true);
-    ui->emulationbtn->setEnabled(true);
-    ui->quickstartbtn->setEnabled(true);
-    ui->debugbtn->setEnabled(true);
+    AllButtonsSetEnabled(true);
 }
 
 void MainWindow::on_emulationbtn_clicked()
 {
     breakpointHighlightOFF();
-    ui->parsingbtn->setEnabled(false);
-    ui->analysisbtn->setEnabled(false);
-    ui->emulationbtn->setEnabled(false);
-    ui->quickstartbtn->setEnabled(false);
-    ui->debugbtn->setEnabled(false);
+    AllButtonsSetEnabled(false);
 
-    if (fileName.size())
+    if (!_pname.empty())
     {
 
         debug = 0; //выводим из режима дебаг принудительно
@@ -423,15 +399,13 @@ void MainWindow::on_emulationbtn_clicked()
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
 
-        ProjectName pn(fileName.toStdString());
-
         // logger configuring
         el::Configurations defaultConf;
         defaultConf.setToDefault();
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
+        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -453,7 +427,7 @@ void MainWindow::on_emulationbtn_clicked()
             args[2] = "";
         }
 
-        App app(pn, 3, args);
+        App app(_pname, 3, args);
         try
         {
             app.emulate();
@@ -462,7 +436,7 @@ void MainWindow::on_emulationbtn_clicked()
         {
         }
 
-        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
+        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -473,7 +447,7 @@ void MainWindow::on_emulationbtn_clicked()
             file.close();
         }
 
-        QFile file1(QString::fromUtf8(pn.getOutFile().c_str()));
+        QFile file1(QString::fromUtf8(_pname.getOutFile().c_str()));
         if (file1.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file1);
@@ -484,23 +458,15 @@ void MainWindow::on_emulationbtn_clicked()
             file.close();
         }
     }
-    ui->parsingbtn->setEnabled(true);
-    ui->analysisbtn->setEnabled(true);
-    ui->emulationbtn->setEnabled(true);
-    ui->quickstartbtn->setEnabled(true);
-    ui->debugbtn->setEnabled(true);
+    AllButtonsSetEnabled(true);
 }
 
 void MainWindow::on_quickstartbtn_clicked()
 {
     breakpointHighlightOFF();
-    ui->parsingbtn->setEnabled(false);
-    ui->analysisbtn->setEnabled(false);
-    ui->emulationbtn->setEnabled(false);
-    ui->quickstartbtn->setEnabled(false);
-    ui->debugbtn->setEnabled(false);
+    AllButtonsSetEnabled(false);
 
-    if (fileName.size())
+    if (!_pname.empty())
     {
         debug = 0; //выводим из режима дебаг принудительно
         ui->debuglineEdit->clear();
@@ -509,15 +475,13 @@ void MainWindow::on_quickstartbtn_clicked()
 
         on_actionSave_triggered();
 
-        ProjectName pn(fileName.toStdString());
-
         // logger configuring
         el::Configurations defaultConf;
         defaultConf.setToDefault();
         defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
         defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
         defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, pn.getLogFile());
+        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
 
         // logs file clearing
         defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
@@ -539,7 +503,7 @@ void MainWindow::on_quickstartbtn_clicked()
             args[2] = "";
         }
 
-        App app(pn, 3, args);
+        App app(_pname, 3, args);
         try
         {
             app.parse();
@@ -549,7 +513,7 @@ void MainWindow::on_quickstartbtn_clicked()
         {
         }
 
-        QFile file(QString::fromUtf8(pn.getLogFile().c_str()));
+        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
@@ -560,7 +524,7 @@ void MainWindow::on_quickstartbtn_clicked()
             file.close();
         }
 
-        QFile file1(QString::fromUtf8(pn.getOutFile().c_str()));
+        QFile file1(QString::fromUtf8(_pname.getOutFile().c_str()));
         if (file1.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file1);
@@ -572,20 +536,16 @@ void MainWindow::on_quickstartbtn_clicked()
         }
         file.close();
     }
-    ui->parsingbtn->setEnabled(true);
-    ui->analysisbtn->setEnabled(true);
-    ui->emulationbtn->setEnabled(true);
-    ui->quickstartbtn->setEnabled(true);
-    ui->debugbtn->setEnabled(true);
+    AllButtonsSetEnabled(true);
 }
 
 void MainWindow::breakpointHighlightON()
 {
 
-    if (fileName.size())
+    if (!_pname.empty())
     {
 
-        string dir = fileName.toStdString();
+        string dir = _pname.getOriginal();
 
         if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
         {
@@ -708,7 +668,7 @@ void MainWindow::breakpointHighlightOFF()
 
 void MainWindow::on_debugbtn_clicked()
 {
-    if (fileName.size())
+    if (!_pname.empty())
     {
         ui->debugbtn->setEnabled(false);
 
@@ -718,7 +678,7 @@ void MainWindow::on_debugbtn_clicked()
 
         debug = 1;
 
-        string dir = fileName.toStdString();
+        string dir = _pname.getOriginal();
 
         if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
         {
@@ -849,9 +809,9 @@ void MainWindow::on_debugnextbtn_clicked()
     {
         ui->debugnextbtn->setEnabled(false);
 
-        if (fileName.size())
+        if (!_pname.empty())
         {
-            string dir = fileName.toStdString();
+            string dir = _pname.getOriginal();
 
             if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
             {
@@ -948,7 +908,7 @@ void MainWindow::on_skipButton_clicked()
 {
     if (debug == 1)
     {
-        string dir = fileName.toStdString();
+        string dir = _pname.getOriginal();
 
         if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
         {

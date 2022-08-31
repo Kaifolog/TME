@@ -17,6 +17,7 @@
 
 #include "./ui_mainwindow.h"
 #include "../emulator/App.hpp"
+#include "../tools/ProjectName.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -30,9 +31,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    QString fileName;
     bool debug = false;
     int highlighedLine = 0;
+    ProjectName _pname;
 
     Ui::MainWindow *ui;
 
@@ -74,13 +75,13 @@ private slots:
     void on_actionClose_triggered(); // |
     void on_actioNew_triggered();    //_|
 
-    void on_skipButton_clicked();    //_  triggers for buttons
-    void on_parsingbtn_clicked();    // |
+    void on_parsingbtn_clicked();    //_  triggers for buttons
     void on_analysisbtn_clicked();   // |
     void on_emulationbtn_clicked();  // |
     void on_quickstartbtn_clicked(); // |
     void on_debugbtn_clicked();      // |
-    void on_debugnextbtn_clicked();  //_|
+    void on_debugnextbtn_clicked();  // |
+    void on_skipButton_clicked();    //_|
     // void on_autoDebuggerPushButton_clicked();
 
     void on_mainTextField_textChanged();           //_  triggers for a textfield
@@ -95,6 +96,7 @@ private slots:
 
     void breakpointHighlightON();        //_  utility functions
     void breakpointHighlightOFF();       // |
+    void AllButtonsSetEnabled(bool);     // |
     void currentLineHighlight(int line); //_|
 
 public:
