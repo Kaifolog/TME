@@ -44,9 +44,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    bool debug = false;
-    int highlighedLine = 0;
+    bool debugMode = false;
+    int highlightedLine = false;
     ProjectName _pname;
+    TuringMachine _debugger;
 
     Ui::MainWindow *ui;
 
@@ -95,7 +96,6 @@ private slots:
     void on_debugbtn_clicked();      // |
     void on_debugnextbtn_clicked();  // |
     void on_skipButton_clicked();    //_|
-    // void on_autoDebuggerPushButton_clicked();
 
     void on_mainTextField_textChanged();           //_  triggers for a textfield
     void on_mainTextField_cursorPositionChanged(); // |
@@ -112,15 +112,19 @@ private slots:
     void AllButtonsSetEnabled(bool);     // |
     void currentLineHighlight(int line); //_|
 
+    void NormalMiddleware(); //_  Middleware functions
+    void DebugMiddleware();  //_|
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow()
     {
         delete ui;
     };
-    int argc;
-    char **argv;
     bool isDarkMode = 0;
 };
+
+#define NORMALMIDDLEWARE NormalMiddleware();
+#define DEBUGMIDDLEWARE DebugMiddleware();
 
 #endif // MAINWINDOW_H

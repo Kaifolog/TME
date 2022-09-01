@@ -252,16 +252,72 @@ void MainWindow::AllButtonsSetEnabled(bool state)
     ui->debugbtn->setEnabled(state);
 }
 
+void MainWindow::NormalMiddleware()
+{
+    if (debugMode)
+    {
+        debugMode = 0;
+        breakpointHighlightOFF();
+        //        ui->debuglineEdit->clear();
+        //        ui->debugstatelbl->clear();
+        //        ui->debugwordlbl->clear();
+        ui->mainTextField->document()->clearUndoRedoStacks();
+        ui->logwindow->appendPlainText("Debugging ended...");
+        ui->mainTextField->setFocus(); //
+        try
+        {
+            _debugger.lazyFinalize();
+        }
+        catch (const char *message)
+        {
+            ui->logwindow->appendPlainText(message);
+            cout << message << endl;
+        }
+        catch (string message)
+        {
+            ui->logwindow->appendPlainText(message.c_str());
+            cout << message << endl;
+        }
+    }
+}
+
+void MainWindow::DebugMiddleware()
+{
+    if (ui->debugstatelbl->text() == "end")
+    {
+        debugMode = 0;
+        breakpointHighlightOFF();
+        //        ui->debuglineEdit->clear();
+        //        ui->debugstatelbl->clear();
+        //        ui->debugwordlbl->clear();
+        ui->mainTextField->document()->clearUndoRedoStacks();
+        ui->logwindow->appendPlainText("Debugging ended...");
+        ui->mainTextField->setFocus(); //
+        try
+        {
+            _debugger.lazyFinalize();
+        }
+        catch (const char *message)
+        {
+            ui->logwindow->appendPlainText(message);
+        }
+        catch (string message)
+        {
+            ui->logwindow->appendPlainText(message.c_str());
+        }
+    }
+}
+
 void MainWindow::on_parsingbtn_clicked()
 {
+    NORMALMIDDLEWARE
 
-    breakpointHighlightOFF();
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
 
-        debug = 0; //выводим из режима дебаг принудительно
+        debugMode = 0; //выводим из режима дебаг принудительно
         ui->debuglineEdit->clear();
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
@@ -324,13 +380,14 @@ void MainWindow::on_parsingbtn_clicked()
 void MainWindow::on_analysisbtn_clicked()
 {
 
-    breakpointHighlightOFF();
+    NORMALMIDDLEWARE
+
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
 
-        debug = 0; //выводим из режима дебаг принудительно
+        debugMode = 0; //выводим из режима дебаг принудительно
         ui->debuglineEdit->clear();
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
@@ -358,6 +415,18 @@ void MainWindow::on_analysisbtn_clicked()
             parser.analyse(_pname);
 
             LOG(INFO) << "Analysis complete. All set for execution!";
+
+            QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
+            if (file.open(QIODevice::ReadOnly))
+            {
+                QTextStream in(&file);
+                QString text = "ddfdf"; // ?)
+                text = file.readAll();
+                ui->debuglineEdit->clear();
+                ui->logwindow->clear();
+                ui->logwindow->appendPlainText(text);
+            }
+            file.close();
         }
         catch (const char *message)
         {
@@ -372,31 +441,20 @@ void MainWindow::on_analysisbtn_clicked()
             LOG(ERROR) << "Something went wrong." << endl
                        << "Please tell about this to the developer." << endl;
         }
-
-        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
-        if (file.open(QIODevice::ReadOnly))
-        {
-            QTextStream in(&file);
-            QString text = "ddfdf"; // ?)
-            text = file.readAll();
-            ui->debuglineEdit->clear();
-            ui->logwindow->clear();
-            ui->logwindow->appendPlainText(text);
-        }
-        file.close();
     }
     AllButtonsSetEnabled(true);
 }
 
 void MainWindow::on_emulationbtn_clicked()
 {
-    breakpointHighlightOFF();
+    NORMALMIDDLEWARE
+
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
 
-        debug = 0; //выводим из режима дебаг принудительно
+        debugMode = 0; //выводим из режима дебаг принудительно
         ui->debuglineEdit->clear();
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
@@ -424,6 +482,17 @@ void MainWindow::on_emulationbtn_clicked()
             tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
 
             LOG(INFO) << "Run complete";
+
+            QFile file1(QString::fromUtf8(_pname.getOutFile().c_str()));
+            if (file1.open(QIODevice::ReadOnly))
+            {
+                QTextStream in(&file1);
+                QString text = file1.readAll();
+
+                ui->debuglineEdit->clear();
+                ui->debuglineEdit->setText(text);
+                file1.close();
+            }
         }
         catch (const char *message)
         {
@@ -438,40 +507,30 @@ void MainWindow::on_emulationbtn_clicked()
             LOG(ERROR) << "Something went wrong." << endl
                        << "Please tell about this to the developer." << endl;
         }
+    }
 
-        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
-        if (file.open(QIODevice::ReadOnly))
-        {
-            QTextStream in(&file);
-            QString text;
-            text = file.readAll();
-            ui->logwindow->clear();
-            ui->logwindow->appendPlainText(text);
-            file.close();
-        }
-
-        QFile file1(QString::fromUtf8(_pname.getOutFile().c_str()));
-        if (file1.open(QIODevice::ReadOnly))
-        {
-            QTextStream in(&file1);
-            QString text = file1.readAll();
-
-            ui->debuglineEdit->clear();
-            ui->debuglineEdit->setText(text);
-            file.close();
-        }
+    QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&file);
+        QString text;
+        text = file.readAll();
+        ui->logwindow->clear();
+        ui->logwindow->appendPlainText(text);
+        file.close();
     }
     AllButtonsSetEnabled(true);
 }
 
 void MainWindow::on_quickstartbtn_clicked()
 {
-    breakpointHighlightOFF();
+    NORMALMIDDLEWARE
+
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
-        debug = 0; //выводим из режима дебаг принудительно
+        debugMode = 0; //выводим из режима дебаг принудительно
         ui->debuglineEdit->clear();
         ui->debugstatelbl->clear();
         ui->debugwordlbl->clear();
@@ -504,6 +563,17 @@ void MainWindow::on_quickstartbtn_clicked()
             LOG(INFO) << "Starting emulator...";
             tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
             LOG(INFO) << "Run complete";
+
+            QFile file1(QString::fromUtf8(_pname.getOutFile().c_str()));
+            if (file1.open(QIODevice::ReadOnly))
+            {
+                QTextStream in(&file1);
+                QString text = file1.readAll();
+
+                ui->debuglineEdit->clear();
+                ui->debuglineEdit->setText(text);
+                file1.close();
+            }
         }
         catch (const char *message)
         {
@@ -529,25 +599,12 @@ void MainWindow::on_quickstartbtn_clicked()
             ui->logwindow->appendPlainText(text);
             file.close();
         }
-
-        QFile file1(QString::fromUtf8(_pname.getOutFile().c_str()));
-        if (file1.open(QIODevice::ReadOnly))
-        {
-            QTextStream in(&file1);
-            QString text = file1.readAll();
-
-            ui->debuglineEdit->clear();
-            ui->debuglineEdit->setText(text);
-            file.close();
-        }
-        file.close();
     }
     AllButtonsSetEnabled(true);
 }
 
 void MainWindow::breakpointHighlightON()
 {
-
     if (!_pname.empty())
     {
 
@@ -571,7 +628,7 @@ void MainWindow::breakpointHighlightON()
         sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
 
         string select_command;
-        select_command = "SELECT *FROM commands WHERE debug=\"1\"";
+        select_command = "SELECT * FROM commands WHERE debug=\"1\"";
         sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
         int resultSqlite3 = sqlite3_step(ppStmt);
 
@@ -607,7 +664,6 @@ void MainWindow::breakpointHighlightON()
 
 void MainWindow::currentLineHighlight(int line)
 {
-
     if (ui->inputlineEdit->text().length())
     {
         line -= 2; //коректировка номера строки, мы ж секцию сверху дописываем
@@ -615,7 +671,7 @@ void MainWindow::currentLineHighlight(int line)
 
     QTextCursor cur = ui->mainTextField->textCursor();
     cur.movePosition(QTextCursor::Start);
-    for (int i = 0; i < highlighedLine - 1; i++)
+    for (int i = 0; i < highlightedLine - 1; i++)
         cur.movePosition(QTextCursor::Down);
     QTextBlockFormat f;
     if (isDarkMode)
@@ -629,7 +685,7 @@ void MainWindow::currentLineHighlight(int line)
     cur.select(QTextCursor::LineUnderCursor);
     cur.setBlockFormat(f);
 
-    highlighedLine = line;
+    highlightedLine = line;
 
     breakpointHighlightON();
 
@@ -674,357 +730,126 @@ void MainWindow::breakpointHighlightOFF()
 
 void MainWindow::on_debugbtn_clicked()
 {
+    NORMALMIDDLEWARE
+
     if (!_pname.empty())
     {
-        ui->debugbtn->setEnabled(false);
 
         on_actionSave_triggered();
-        breakpointHighlightON();
         on_parsingbtn_clicked();
+        breakpointHighlightON();
 
-        debug = 1;
+        ui->debugbtn->setEnabled(false);
 
-        string dir = _pname.getOriginal();
+        debugMode = 1;
 
-        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
+        ui->logwindow->appendPlainText("Starting debugger...");
+
+        MachineState result;
+        try
         {
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
+            _debugger.lazyStart(_pname, ui->lambdacheckBox->isChecked());
+            result = _debugger.lazyDebug(true);
+            currentLineHighlight(std::stoi(result.line));
+            ui->debuglineEdit->setText(result.current_strip.c_str());
+            ui->debugstatelbl->setText(result.current_state.c_str());
+            ui->debugwordlbl->setText(result.current_word.c_str());
+        }
+        catch (const char *message)
+        {
+            ui->logwindow->appendPlainText(message);
+        }
+        catch (string message)
+        {
+            ui->logwindow->appendPlainText(message.c_str());
+        }
+        catch (...)
+        {
+            ui->logwindow->appendPlainText("Something went wrong.");
+            ui->logwindow->appendPlainText("Please tell about this to the developer.");
         }
 
-        sqlite3 *db = 0;
-        char *err = 0;
-        sqlite3_stmt *ppStmt;
-
-        ui->logwindow->appendPlainText("Starting debugger...\n");
-        TuringMachine tm;
-        ui->debuglineEdit->setReadOnly(1);
-
-        if (tm.load_strip("datasection.tmp"))
-        {
-            string a = dir;
-
-            /**************/
-            a.append(".db");
-
-            sqlite3_open(a.c_str(), &db);
-            // sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO FUCKING RISKY
-            sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
-            string select_command;
-            int currentline = 0;
-            if (!tm.is_end(dir, (int)ui->lambdacheckBox->isChecked()))
-            {
-
-                select_command = "SELECT *FROM commands WHERE initial_state=\"" + tm.get_current_state() + "\" AND initial_word=\"" + tm.get_current_word() + "\"";
-                sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-
-                if (sqlite3_step(ppStmt) != SQLITE_DONE)
-                {
-                    tm.set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
-                    tm.set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
-                    tm.get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
-                    currentline = atoi(string((char *)sqlite3_column_text(ppStmt, 6)).c_str());
-                }
-                else
-                {
-                    breakpointHighlightOFF();
-                    ui->logwindow->appendPlainText("EMULATING ERROR : CANT FIND NEXT COMMAND");
-                    LOG(ERROR) << "EMULATING ERROR : CANT FIND NEXT COMMAND";
-                    sqlite3_finalize(ppStmt);
-                    sqlite3_close(db);
-                    ui->logwindow->appendPlainText("Database closed");
-                    LOG(INFO) << "Database closed";
-
-                    ui->debuglineEdit->setText(tm.get_strip((int)ui->lambdacheckBox->isChecked()).c_str());
-                    ui->debugstatelbl->setText(tm.get_current_state().c_str());
-                    ui->debugwordlbl->setText(tm.get_current_word().c_str());
-
-                    debug = 0;
-                    ui->debugbtn->setEnabled(true);
-                    return; //сюда ебашить подсветку
-                }
-
-                currentLineHighlight(currentline);
-
-                ui->debuglineEdit->setText(tm.get_strip((int)ui->lambdacheckBox->isChecked()).c_str());
-                ui->debugstatelbl->setText(tm.get_current_state().c_str());
-                ui->debugwordlbl->setText(tm.get_current_word().c_str());
-
-                ofstream fout;
-                fout.open("datasection.tmp");
-
-                for (int i = 0; i < tm.get_strip(0).size(); i++)
-                {
-                    fout << tm.get_strip(0)[i];
-                }
-                fout.close();
-
-                sqlite3_finalize(ppStmt);
-                sqlite3_close(db);
-                ui->logwindow->appendPlainText("Database closed");
-
-                ui->debugbtn->setEnabled(true);
-                return; //сюда ебашить подсветку
-            }
-            else
-            {
-                debug = 0;
-                ui->mainTextField->document()->clearUndoRedoStacks();
-
-                ui->debugbtn->setEnabled(true);
-                breakpointHighlightOFF();
-                ui->debuglineEdit->setText(tm.get_strip((int)ui->lambdacheckBox->isChecked()).c_str());
-                ui->logwindow->appendPlainText("Debugging ended");
-
-                sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-                sqlite3_finalize(ppStmt);
-                sqlite3_close(db);
-            }
-        }
-        else
-        {
-            ui->debugbtn->setEnabled(true);
-            breakpointHighlightOFF();
-            ui->logwindow->appendPlainText("there are some troubles with .data file");
-            debug = 0;
-            return;
-        }
-        breakpointHighlightOFF();
-        sqlite3_finalize(ppStmt);
-        sqlite3_close(db);
+        ui->debugbtn->setEnabled(true);
     }
 }
 
 void MainWindow::on_debugnextbtn_clicked()
 {
-    if (ui->debugstatelbl->text() == "end")
-    {
-        debug = 0;
-        breakpointHighlightOFF();
-        //        ui->debuglineEdit->clear();
-        //        ui->debugstatelbl->clear();
-        //        ui->debugwordlbl->clear();
-        ui->mainTextField->document()->clearUndoRedoStacks();
-        ui->logwindow->appendPlainText("\nDebugging ended...\n");
-        ui->mainTextField->setFocus(); //
-        return;
-    }
-    if (debug == 1)
+    DEBUGMIDDLEWARE
+
+    if (debugMode == 1)
     {
         ui->debugnextbtn->setEnabled(false);
 
-        if (!_pname.empty())
+        ui->logwindow->appendPlainText("Debugger step.");
+
+        MachineState result;
+        try
         {
-            string dir = _pname.getOriginal();
-
-            if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
-            {
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
-                dir.pop_back();
-            }
-
-            sqlite3 *db = 0;
-            char *err = 0;
-            sqlite3_stmt *ppStmt;
-
-            TuringMachine tm;
-            tm.set_current_state(ui->debugstatelbl->text().toStdString());
-
-            if (tm.load_strip("datasection.tmp"))
-            {
-
-                string a = dir;
-
-                /**************/
-                a.append(".db");
-
-                sqlite3_open(a.c_str(), &db);
-                string select_command;
-                int currentline = 0;
-                if (!tm.is_end(dir, (int)ui->lambdacheckBox->isChecked()))
-                {
-                    select_command = "SELECT *FROM commands WHERE initial_state=\"" + tm.get_current_state() + "\" AND initial_word=\"" + tm.get_current_word() + "\"";
-
-                    sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-
-                    if (sqlite3_step(ppStmt) != SQLITE_DONE)
-                    {
-                        ui->logwindow->appendPlainText("\nNext step...");
-                        tm.set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
-                        tm.set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
-                        tm.get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
-                        currentline = atoi(string((char *)sqlite3_column_text(ppStmt, 6)).c_str());
-                        ui->debugstatelbl->setText(QString::fromStdString(tm.get_current_state()));
-                        ui->debugwordlbl->setText(QString::fromStdString(tm.get_current_word()));
-                        ui->debuglineEdit->setText(QString::fromStdString(tm.get_strip((int)ui->lambdacheckBox->isChecked())));
-                        currentLineHighlight(currentline);
-
-                        ui->logwindow->appendPlainText("OK...");
-                        /***/
-                        ofstream fout;
-                        fout.open("datasection.tmp");
-
-                        for (int i = 0; i < tm.get_strip(0).size(); i++)
-                        {
-                            fout << tm.get_strip(0)[i];
-                        }
-                        fout.close();
-                        ui->debugnextbtn->setEnabled(true);
-                        /***/
-                    }
-                    else
-                    {
-                        sqlite3_finalize(ppStmt);
-                        sqlite3_close(db);
-                        ui->logwindow->appendPlainText("emulation error : cant find next command\n");
-                        // breakpointHighlightOFF();
-                        debug = 0;
-                        ui->debuglineEdit->setText(QString::fromStdString(tm.get_strip((int)ui->lambdacheckBox->isChecked())));
-                        ui->debuglineEdit->setReadOnly(0);
-                        ui->debugnextbtn->setEnabled(true);
-                        // currentLineHighlight(currentline);
-                        return;
-                    }
-                    ui->debugnextbtn->setEnabled(true);
-
-                    sqlite3_finalize(ppStmt);
-
-                    ui->debuglineEdit->setReadOnly(0);
-                }
-                sqlite3_close(db);
-            }
-            else
-            {
-                ui->logwindow->appendPlainText("there are some troubles with .data file\n");
-                breakpointHighlightOFF();
-                debug = 0;
-                ui->debugnextbtn->setEnabled(true);
-                return;
-            }
-            ui->debugnextbtn->setEnabled(true);
+            result = _debugger.lazyDebug(true);
+            currentLineHighlight(std::stoi(result.line));
+            ui->debuglineEdit->setText(result.current_strip.c_str());
+            ui->debugstatelbl->setText(result.current_state.c_str());
+            ui->debugwordlbl->setText(result.current_word.c_str());
         }
+        catch (const char *message)
+        {
+            ui->logwindow->appendPlainText(message);
+            NORMALMIDDLEWARE
+        }
+        catch (string message)
+        {
+            ui->logwindow->appendPlainText(message.c_str());
+            NORMALMIDDLEWARE
+        }
+        catch (...)
+        {
+            ui->logwindow->appendPlainText("Something went wrong.");
+            ui->logwindow->appendPlainText("Please tell about this to the developer.");
+            NORMALMIDDLEWARE
+        }
+
+        ui->debugnextbtn->setEnabled(true);
     }
 }
 
 void MainWindow::on_skipButton_clicked()
 {
-    if (debug == 1)
+    DEBUGMIDDLEWARE
+
+    if (debugMode == 1)
     {
-        string dir = _pname.getOriginal();
+        ui->debugnextbtn->setEnabled(false);
 
-        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
+        ui->logwindow->appendPlainText("Debugger continue.");
+
+        MachineState result;
+        try
         {
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
+            result = _debugger.lazyDebug();
+            currentLineHighlight(std::stoi(result.line));
+            ui->debuglineEdit->setText(result.current_strip.c_str());
+            ui->debugstatelbl->setText(result.current_state.c_str());
+            ui->debugwordlbl->setText(result.current_word.c_str());
+        }
+        catch (const char *message)
+        {
+            ui->logwindow->appendPlainText(message);
+            NORMALMIDDLEWARE
+        }
+        catch (string message)
+        {
+            ui->logwindow->appendPlainText(message.c_str());
+            NORMALMIDDLEWARE
+        }
+        catch (...)
+        {
+            ui->logwindow->appendPlainText("Something went wrong.");
+            ui->logwindow->appendPlainText("Please tell about this to the developer.");
+            NORMALMIDDLEWARE
         }
 
-        sqlite3 *db = 0;
-        char *err = 0;
-        sqlite3_stmt *ppStmt;
-
-        TuringMachine tm;
-        ui->debuglineEdit->setReadOnly(1);
-
-        // ui->skipButton->setEnabled(false);
-
-        if (tm.load_strip("datasection.tmp"))
-        {
-            tm.set_current_state(ui->debugstatelbl->text().toStdString());
-            tm.set_current_word(ui->debugwordlbl->text().toStdString());
-
-            string a = dir;
-
-            /**************/
-            a.append(".db");
-
-            sqlite3_open(a.c_str(), &db);
-            // sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, &err); //SO FUCKING RISKY
-            sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
-            string select_command;
-            int currentline = 0;
-            if (!tm.is_end(dir, (int)ui->lambdacheckBox->isChecked()) && ui->debugstatelbl->text().toStdString() != "end")
-            {
-                while (!tm.is_end(dir, (int)ui->lambdacheckBox->isChecked()))
-                {
-                    select_command = "SELECT *FROM commands WHERE initial_state=\"" + tm.get_current_state() + "\" AND initial_word=\"" + tm.get_current_word() + "\"";
-                    sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-
-                    if (sqlite3_step(ppStmt) != SQLITE_DONE)
-                    {
-                        tm.set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
-                        tm.set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
-                        tm.get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
-                        currentline = atoi(string((char *)sqlite3_column_text(ppStmt, 6)).c_str());
-                    }
-                    else
-                    {
-                        ui->logwindow->appendPlainText("EMULATING ERROR : CANT FIND NEXT COMMAND");
-                        sqlite3_finalize(ppStmt);
-                        sqlite3_close(db);
-                        ui->logwindow->appendPlainText("Database closed");
-                        breakpointHighlightOFF();
-
-                        ui->debuglineEdit->setText(tm.get_strip((int)ui->lambdacheckBox->isChecked()).c_str());
-                        ui->debugstatelbl->setText(tm.get_current_state().c_str());
-                        ui->debugwordlbl->setText(tm.get_current_word().c_str());
-
-                        debug = 0;
-                        currentLineHighlight(currentline);
-                        ui->skipButton->setEnabled(true);
-                        return; //сюда ебашить подсветку
-                    }
-
-                    if (string((char *)sqlite3_column_text(ppStmt, 5)) == "1")
-                    {
-                        ui->logwindow->appendPlainText("Founded breakpoint");
-                        ui->debuglineEdit->setText(tm.get_strip((int)ui->lambdacheckBox->isChecked()).c_str());
-                        ui->debugstatelbl->setText(tm.get_current_state().c_str());
-                        ui->debugwordlbl->setText(tm.get_current_word().c_str());
-
-                        ofstream fout;
-                        fout.open("datasection.tmp");
-
-                        for (int i = 0; i < tm.get_strip(0).size(); i++)
-                        {
-                            fout << tm.get_strip(0)[i];
-                        }
-                        fout.close();
-
-                        currentLineHighlight(currentline);
-
-                        sqlite3_finalize(ppStmt);
-                        sqlite3_close(db);
-                        ui->skipButton->setEnabled(true);
-                        return; //сюда ебашить подсветку
-                    }
-
-                    sqlite3_finalize(ppStmt);
-                }
-                ui->skipButton->setEnabled(true);
-                sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-                sqlite3_close(db);
-            }
-            ui->debuglineEdit->setText(tm.get_strip((int)ui->lambdacheckBox->isChecked()).c_str());
-            ui->debugstatelbl->setText(tm.get_current_state().c_str());
-            ui->debugwordlbl->setText(tm.get_current_word().c_str());
-            breakpointHighlightOFF();
-            debug = 0;
-            ui->mainTextField->document()->clearUndoRedoStacks();
-            ui->logwindow->appendPlainText("Debugging ended");
-        }
-        else
-        {
-            ui->skipButton->setEnabled(true);
-            ui->logwindow->appendPlainText("there are some troubles with .data file");
-            debug = 0;
-            return;
-        }
+        ui->debugnextbtn->setEnabled(true);
     }
 }
 
