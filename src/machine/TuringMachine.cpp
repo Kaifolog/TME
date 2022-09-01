@@ -256,7 +256,7 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
         if (step_by_step || (string((char *)sqlite3_column_text(ppStmt, 5)) == "1" || this->get_current_state() == "end"))
         {
             MachineState step;
-            step.current_strip = this->get_strip();
+            step.current_strip = this->get_strip(lambda);
             step.current_state = this->get_current_state();
             step.current_word = this->get_current_word();
             step.line = string((char *)sqlite3_column_text(ppStmt, 6));
@@ -272,4 +272,11 @@ void TuringMachine::lazyFinalize()
     sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
     sqlite3_close(db);
     fin.close();
+    strip.clear();
+    statement = "start";
+    dir.clear();
+    output.clear();
+    ppStmt = 0;
+    db = 0;
+    err = 0;
 }

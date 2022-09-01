@@ -38,7 +38,6 @@ class TuringMachine
         return cell[0] == '|' && cell[cell.size() - 1] == '|';
     }
 
-public:
     bool is_end(string dir, bool lambda);
     bool load_strip(string dir);
     string get_current_state();
@@ -48,8 +47,9 @@ public:
     void set_current_state(string a);
     void set_current_word(string a);
     bool get_step(char a);
-    int execute(ProjectName &pname, bool lambda);
 
+public:
+    int execute(ProjectName &pname, bool lambda);
     void lazyStart(ProjectName &pname, bool lambda);
     MachineState lazyDebug(bool step_by_step = 0);
     void lazyFinalize();
