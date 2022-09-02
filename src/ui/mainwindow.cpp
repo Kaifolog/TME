@@ -1,45 +1,47 @@
 #include "mainwindow.h"
 
+/* keybinds slots */
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    // connect keybind CTRL + S
+    // connects keybind CTRL + S
     keyCtrlS = new QShortcut(this);
     keyCtrlS->setKey(Qt::CTRL + Qt::Key_S);
     connect(keyCtrlS, SIGNAL(activated()), this, SLOT(slotShortcutCtrlS()));
-    // connect keybind CTRL + O
+    // connects keybind CTRL + O
     keyCtrlO = new QShortcut(this);
     keyCtrlO->setKey(Qt::CTRL + Qt::Key_O);
     connect(keyCtrlO, SIGNAL(activated()), this, SLOT(slotShortcutCtrlO()));
-    // connect keybind CTRL + N
+    // connects keybind CTRL + N
     keyCtrlN = new QShortcut(this);
     keyCtrlN->setKey(Qt::CTRL + Qt::Key_N);
     connect(keyCtrlN, SIGNAL(activated()), this, SLOT(slotShortcutCtrlN()));
-    // connect keybind CTRL + SHIFT + X
+    // connects keybind CTRL + SHIFT + X
     CtrlShiftX = new QShortcut(this);
     CtrlShiftX->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_X);
     connect(CtrlShiftX, SIGNAL(activated()), this, SLOT(slotShortcutCtrlShiftX()));
-    // connect keybind CTRL + Tab
+    // connects keybind CTRL + Tab
     CtrlTab = new QShortcut(this);
     CtrlTab->setKey(Qt::CTRL + Qt::Key_Tab);
     connect(CtrlTab, SIGNAL(activated()), this, SLOT(slotShortcutCtrlTab()));
-    // connect keybind F5
+    // connects keybind F5
     CtrlSpace = new QShortcut(this);
     CtrlSpace->setKey(Qt::Key_F5);
     connect(CtrlSpace, SIGNAL(activated()), this, SLOT(slotShortcutCtrlSpace()));
-    // connect keybind CTRL + D
+    // connects keybind CTRL + D
     CtrlD = new QShortcut(this);
     CtrlD->setKey(Qt::CTRL + Qt::Key_D);
     connect(CtrlD, SIGNAL(activated()), this, SLOT(slotShortcutCtrlD()));
 }
 
-void MainWindow::slotShortcutCtrlD()
+void MainWindow::slotShortcutCtrlTab()
 {
-    if (ui->rawnumberlabel->text().length())
+    if (ui->rowNumberLabel->text().length())
     {
-        int rawNumber = ui->rawnumberlabel->text().toInt();
+        int rawNumber = ui->rowNumberLabel->text().toInt();
 
         if (ui->datacheckBox->isChecked())
         {
@@ -47,18 +49,60 @@ void MainWindow::slotShortcutCtrlD()
         }
 
         QString str = ui->mainTextField->toPlainText();
-        QStringList strList = str.split('\n'); // разбиваем строку из текстедита на отдельные строки
-        str = strList.at(rawNumber - 1);       // берем вторую строку
+        QStringList strList = str.split('\n');           // splits textEdit text by \n
+        QString originalStr = strList.at(rawNumber - 1); // gets a second result of the split
 
-        strList = str.split(";#d");
+        QStringList commaTest = originalStr.split(',');
+        QStringList arrowTest = originalStr.split("->");
 
         QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
 
+        // getts cursor to the current row
         for (int i = 0; i < rawNumber - 1; i++)
             text_cursor.movePosition(QTextCursor::Down);
 
         text_cursor.movePosition(QTextCursor::EndOfLine);
 
+        // appends punctuation
+        if (commaTest.length() == 1)
+            text_cursor.insertText(",");
+        if (commaTest.length() == 2 && arrowTest.length() == 1)
+            text_cursor.insertText("->");
+        if (commaTest.length() == 2 && arrowTest.length() == 2)
+            text_cursor.insertText(",");
+        if (commaTest.length() == 3 && arrowTest.length() == 2)
+            text_cursor.insertText(",");
+        if (commaTest.length() == 4 && arrowTest.length() == 2)
+            text_cursor.insertText("\n");
+    }
+}
+
+void MainWindow::slotShortcutCtrlD()
+{
+    if (ui->rowNumberLabel->text().length())
+    {
+        int rawNumber = ui->rowNumberLabel->text().toInt();
+
+        if (ui->datacheckBox->isChecked())
+        {
+            rawNumber -= 2;
+        }
+
+        QString str = ui->mainTextField->toPlainText();
+        QStringList strList = str.split('\n'); // splits textEdit text by \n
+        str = strList.at(rawNumber - 1);       // gets a second result of the split
+
+        strList = str.split(";#d");
+
+        QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
+
+        // get s cursor to the current row
+        for (int i = 0; i < rawNumber - 1; i++)
+            text_cursor.movePosition(QTextCursor::Down);
+
+        text_cursor.movePosition(QTextCursor::EndOfLine);
+
+        // appends punctuation
         if (strList.size() == 1)
         {
             text_cursor.insertText("\t;#d");
@@ -74,50 +118,242 @@ void MainWindow::slotShortcutCtrlD()
     }
 }
 
-void MainWindow::slotShortcutCtrlTab()
-{
-    if (ui->rawnumberlabel->text().length())
-    {
-        int rawNumber = ui->rawnumberlabel->text().toInt();
+/* utility functions */
 
-        if (ui->datacheckBox->isChecked())
+void MainWindow::breakpointHighlightON()
+{
+    if (!_pname.empty())
+    {
+
+        sqlite3 *db = 0;
+        char *err = 0;
+        sqlite3_stmt *ppStmt;
+
+        sqlite3_open(_pname.getDBFile().c_str(), &db);
+        sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
+
+        string select_command;
+        select_command = "SELECT * FROM commands WHERE debug=\"1\"";
+        sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
+        int resultSqlite3 = sqlite3_step(ppStmt);
+
+        while (resultSqlite3 == SQLITE_ROW)
         {
-            rawNumber -= 2;
+            QTextCursor cur = ui->mainTextField->textCursor();
+            int linenumber = atoi(string((char *)sqlite3_column_text(ppStmt, 6)).c_str());
+            cur.movePosition(QTextCursor::Start);
+            if (ui->inputlineEdit->text().length())
+            {
+                linenumber -= 2; // because of deleted by on_datacheckBox_clicked two rows at the start of a file
+            }
+            for (int i = 0; i < linenumber - 1; i++)
+                cur.movePosition(QTextCursor::Down);
+            QTextBlockFormat f;
+            // no theme color switcher
+            f.setBackground(QBrush("#550e12"));
+            cur.select(QTextCursor::LineUnderCursor);
+            cur.setBlockFormat(f);
+
+            resultSqlite3 = sqlite3_step(ppStmt);
         }
 
-        QString str = ui->mainTextField->toPlainText();
-        QStringList strList = str.split('\n'); // разбиваем строку из текстедита на отдельные строки
-        str = strList.at(rawNumber - 1);       // берем вторую строку
-
-        strList = str.split(',');
-        QStringList strList1 = str.split("->");
-
-        QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
-
-        for (int i = 0; i < rawNumber - 1; i++)
-            text_cursor.movePosition(QTextCursor::Down);
-
-        text_cursor.movePosition(QTextCursor::EndOfLine);
-
-        if (strList.length() == 1)
-            text_cursor.insertText(",");
-        if (strList.length() == 2 && strList1.length() == 1)
-            text_cursor.insertText("->");
-        if (strList.length() == 2 && strList1.length() == 2)
-            text_cursor.insertText(",");
-        if (strList.length() == 3 && strList1.length() == 2)
-            text_cursor.insertText(",");
-        if (strList.length() == 4 && strList1.length() == 2)
-            text_cursor.insertText("\n");
+        sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
+        sqlite3_free(err);
+        sqlite3_finalize(ppStmt);
+        sqlite3_close(db);
     }
 }
+
+void MainWindow::currentLineHighlight(int line)
+{
+    if (ui->inputlineEdit->text().length())
+    {
+        line -= 2; // because of deleted by on_datacheckBox_clicked two rows at the start of a file
+    }
+
+    QTextCursor cur = ui->mainTextField->textCursor();
+    cur.movePosition(QTextCursor::Start);
+    for (int i = 0; i < highlightedLine - 1; i++)
+        cur.movePosition(QTextCursor::Down);
+    QTextBlockFormat f;
+    if (isDarkMode)
+    {
+        f.setBackground(QBrush("#2a2931"));
+    }
+    else
+    {
+        f.setBackground(QBrush("#ffffff"));
+    }
+    cur.select(QTextCursor::LineUnderCursor);
+    cur.setBlockFormat(f);
+
+    highlightedLine = line;
+
+    breakpointHighlightON();
+
+    QTextCursor cur1 = ui->mainTextField->textCursor();
+    cur1.movePosition(QTextCursor::Start);
+    for (int i = 0; i < line - 1; i++)
+        cur1.movePosition(QTextCursor::Down);
+    QTextBlockFormat f1;
+    f1.setBackground(QBrush("#4b4b18"));
+    cur1.select(QTextCursor::LineUnderCursor);
+    cur1.setBlockFormat(f1);
+
+    if (line > 24)
+    {
+        QTextCursor cursor(ui->mainTextField->document()->findBlockByLineNumber(line - 1)); // (line - 1) because line number is starts from 0
+        ui->mainTextField->setTextCursor(cursor);
+    }
+}
+
+void MainWindow::breakpointHighlightOFF()
+{
+
+    QTextCursor cursor = ui->mainTextField->textCursor();
+    cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    cursor.select(QTextCursor::Document);
+    QTextBlockFormat f1;
+    if (isDarkMode)
+    {
+        f1.setBackground(QBrush("#2a2931"));
+    }
+    else
+    {
+        f1.setBackground(QBrush("#ffffff"));
+    }
+    // #2a2931 // #550e12 // #4b4b18
+    // cur1.select(QTextCursor::LineUnderCursor);
+    cursor.setBlockFormat(f1);
+}
+
+void MainWindow::AllButtonsSetEnabled(bool state)
+{
+    ui->parsingbtn->setEnabled(state);
+    ui->analysisbtn->setEnabled(state);
+    ui->emulationbtn->setEnabled(state);
+    ui->quickstartbtn->setEnabled(state);
+    ui->debugbtn->setEnabled(state);
+}
+
+/* triggers for files actions */
+
+void MainWindow::on_actionOpen_triggered()
+{
+    NORMALMIDDLEWARE
+
+    QString newFile;
+    QString fileText;
+
+    // if there is a last path -- we start in their directory
+    if (_pname.empty())
+        newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));
+    else
+    {
+        newFile = QString::fromUtf8(_pname.getOriginal().c_str()).left(newFile.lastIndexOf(QChar('/')));
+        newFile = QFileDialog::getOpenFileName(this, tr("Open File"), fileText, tr("Documents (*.tme *.txt)"));
+    }
+    if (newFile.length()) // if newFile is not empty
+        _pname.setOriginal(newFile.toStdString());
+    QFile file(QString::fromUtf8(_pname.getOriginal().c_str()));
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&file);
+        QString text;
+        text = file.readAll();
+
+        // if user wants to use inputlineEdit we do it
+        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data" && ui->datacheckBox->isChecked())
+        {
+            QStringList list = text.split('\n');
+            QString inputData = list[1];
+            list.removeFirst();
+            list.removeFirst();
+            text = list.join('\n');
+            ui->inputlineEdit->setText(inputData);
+        }
+        else
+            ui->inputlineEdit->clear();
+
+        // sets text to the mainfield
+        ui->mainTextField->clear();
+        ui->mainTextField->setPlainText(text);
+        file.close();
+
+        // sets name of the current file
+        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
+        ui->filestatuslbl->setText("Opened");
+
+        file.close();
+    }
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (!_pname.empty())
+    {
+        std::ofstream out;
+        // I think I don't need to check the state of the file. If the file does not exist, then ofstream should create it.
+        out.open(_pname.getOriginal());
+        if (ui->inputlineEdit->text().size() && ui->datacheckBox->isChecked())
+        {
+            out << "section .data" << std::endl;
+            out << ui->inputlineEdit->text().toStdString() << std::endl;
+        }
+        out << ui->mainTextField->toPlainText().toStdString();
+        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
+        ui->filestatuslbl->setText("Saved");
+
+        out.close();
+    }
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+    NORMALMIDDLEWARE
+
+    _pname.clear();
+    ui->debuglineEdit->clear();
+    ui->mainTextField->clear();
+    ui->inputlineEdit->clear();
+    ui->debugstatelbl->clear();
+    ui->debugwordlbl->clear();
+    ui->logwindow->clear();
+    ui->filenamelbl->clear();
+    ui->filestatuslbl->clear();
+    ui->mainTextField->document()->clearUndoRedoStacks();
+}
+
+void MainWindow::on_actioNew_triggered()
+{
+    NORMALMIDDLEWARE
+
+    ui->mainTextField->clear();
+    QString fileText;
+
+    if (_pname.empty())
+        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)")).toStdString());
+    else
+    {
+        fileText = QString::fromUtf8(_pname.getOriginal().c_str()).left(QString::fromUtf8(_pname.getOriginal().c_str()).lastIndexOf(QChar('/')));
+        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), fileText, tr("Documents (*.tme *.txt)")).toStdString());
+    }
+    QFile mFile(QString::fromUtf8(_pname.getOriginal().c_str()));
+    mFile.open(QIODevice::WriteOnly);
+    mFile.close();
+    ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
+    ui->filestatuslbl->setText("Opened");
+}
+
+/* triggers for textfields */
 
 void MainWindow::on_datacheckBox_clicked()
 {
     if (ui->datacheckBox->isChecked())
     {
         QString text = ui->mainTextField->toPlainText();
-        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data") //если первая строка .data и нажат чекбокс
+        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data")
         {
             QStringList list = text.split('\n');
             QString inputData = list[1];
@@ -141,99 +377,6 @@ void MainWindow::on_datacheckBox_clicked()
     }
 }
 
-void MainWindow::on_actionOpen_triggered()
-{
-    QString newFile;
-    newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));
-    // if (_pname.empty())
-    //     newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));           // ??))
-    // else
-    // {
-    //     newFile = fileName;
-    //     QString file__ = newFile.left(newFile.lastIndexOf(QChar('/')));
-    //     newFile = QFileDialog::getOpenFileName(this, tr("Open File"), file__, tr("Documents (*.tme *.txt)"));
-    // }
-    if (newFile.length())
-        _pname.setOriginal(newFile.toStdString());
-    QFile file(QString::fromUtf8(_pname.getOriginal().c_str()));
-    if (file.open(QIODevice::ReadOnly))
-    {
-        QTextStream in(&file);
-        QString text;
-        text = file.readAll();
-
-        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data" && ui->datacheckBox->isChecked()) //если первая строка .data и нажат чекбокс
-        {
-            QStringList list = text.split('\n');
-            QString inputData = list[1];
-            list.removeFirst();
-            list.removeFirst();
-            text = list.join('\n');
-            ui->inputlineEdit->setText(inputData);
-        }
-        else
-            ui->inputlineEdit->clear();
-
-        ui->mainTextField->clear();
-        ui->mainTextField->setPlainText(text);
-        file.close();
-        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
-        ui->filestatuslbl->setText("Opened");
-    }
-}
-
-void MainWindow::on_actionSave_triggered()
-{
-    if (!_pname.empty())
-    {
-        std::ofstream out;
-        out.open(_pname.getOriginal());
-        if (ui->inputlineEdit->text().size() && ui->datacheckBox->isChecked())
-        {
-            out << "section .data" << std::endl;
-            out << ui->inputlineEdit->text().toStdString() << std::endl;
-        }
-        out << ui->mainTextField->toPlainText().toStdString();
-        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
-        ui->filestatuslbl->setText("Saved");
-
-        out.close();
-    }
-}
-
-void MainWindow::on_actionClose_triggered()
-{
-
-    _pname.clear();
-    ui->debuglineEdit->clear();
-    ui->mainTextField->clear();
-    ui->inputlineEdit->clear();
-    ui->debugstatelbl->clear();
-    ui->debugwordlbl->clear();
-    ui->logwindow->clear();
-    ui->filenamelbl->clear();
-    ui->filestatuslbl->clear();
-    ui->mainTextField->document()->clearUndoRedoStacks();
-}
-
-void MainWindow::on_actioNew_triggered()
-{
-    ui->mainTextField->clear();
-
-    if (_pname.empty())
-        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)")).toStdString());
-    else
-    {
-        QString file__ = QString::fromUtf8(_pname.getOriginal().c_str()).left(QString::fromUtf8(_pname.getOriginal().c_str()).lastIndexOf(QChar('/')));
-        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), file__, tr("Documents (*.tme *.txt)")).toStdString());
-    }
-    QFile mFile(QString::fromUtf8(_pname.getOriginal().c_str()));
-    mFile.open(QIODevice::WriteOnly);
-    mFile.close();
-    ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
-    ui->filestatuslbl->setText("Opened");
-}
-
 void MainWindow::on_mainTextField_textChanged()
 {
     ui->filestatuslbl->setText("Changed");
@@ -243,14 +386,33 @@ void MainWindow::on_mainTextField_textChanged()
     }
 }
 
-void MainWindow::AllButtonsSetEnabled(bool state)
+void MainWindow::on_mainTextField_cursorPositionChanged()
 {
-    ui->parsingbtn->setEnabled(state);
-    ui->analysisbtn->setEnabled(state);
-    ui->emulationbtn->setEnabled(state);
-    ui->quickstartbtn->setEnabled(state);
-    ui->debugbtn->setEnabled(state);
+    QPlainTextEdit *edit = qobject_cast<QPlainTextEdit *>(sender());
+    Q_ASSERT(edit);
+    QTextCursor cursor = edit->textCursor();
+    cursor.movePosition(QTextCursor::StartOfLine);
+
+    int lines = 1;
+    while (cursor.positionInBlock() > 0)
+    {
+        cursor.movePosition(QTextCursor::Up);
+        lines++;
+    }
+    QTextBlock block = cursor.block().previous();
+
+    while (block.isValid())
+    {
+        lines += block.lineCount();
+        block = block.previous();
+    }
+    if (ui->datacheckBox->isChecked())
+        ui->rowNumberLabel->setText(QString::number(lines + 2));
+    else
+        ui->rowNumberLabel->setText(QString::number(lines));
 }
+
+/* middleware functions */
 
 void MainWindow::NormalMiddleware()
 {
@@ -258,12 +420,9 @@ void MainWindow::NormalMiddleware()
     {
         debugMode = 0;
         breakpointHighlightOFF();
-        //        ui->debuglineEdit->clear();
-        //        ui->debugstatelbl->clear();
-        //        ui->debugwordlbl->clear();
         ui->mainTextField->document()->clearUndoRedoStacks();
         ui->logwindow->appendPlainText("Debugging ended...");
-        ui->mainTextField->setFocus(); //
+        ui->mainTextField->setFocus();
         try
         {
             _debugger.lazyFinalize();
@@ -279,6 +438,9 @@ void MainWindow::NormalMiddleware()
             cout << message << endl;
         }
     }
+    ui->debuglineEdit->clear();
+    ui->debugstatelbl->clear();
+    ui->debugwordlbl->clear();
 }
 
 void MainWindow::DebugMiddleware()
@@ -287,12 +449,9 @@ void MainWindow::DebugMiddleware()
     {
         debugMode = 0;
         breakpointHighlightOFF();
-        //        ui->debuglineEdit->clear();
-        //        ui->debugstatelbl->clear();
-        //        ui->debugwordlbl->clear();
         ui->mainTextField->document()->clearUndoRedoStacks();
         ui->logwindow->appendPlainText("Debugging ended...");
-        ui->mainTextField->setFocus(); //
+        ui->mainTextField->setFocus();
         try
         {
             _debugger.lazyFinalize();
@@ -308,19 +467,15 @@ void MainWindow::DebugMiddleware()
     }
 }
 
+/* triggers for buttons */
+
 void MainWindow::on_parsingbtn_clicked()
 {
-    NORMALMIDDLEWARE
-
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
-
-        debugMode = 0; //выводим из режима дебаг принудительно
-        ui->debuglineEdit->clear();
-        ui->debugstatelbl->clear();
-        ui->debugwordlbl->clear();
+        NORMALMIDDLEWARE
 
         on_actionSave_triggered();
 
@@ -379,18 +534,11 @@ void MainWindow::on_parsingbtn_clicked()
 
 void MainWindow::on_analysisbtn_clicked()
 {
-
-    NORMALMIDDLEWARE
-
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
-
-        debugMode = 0; //выводим из режима дебаг принудительно
-        ui->debuglineEdit->clear();
-        ui->debugstatelbl->clear();
-        ui->debugwordlbl->clear();
+        NORMALMIDDLEWARE
 
         // logger configuring
         el::Configurations defaultConf;
@@ -447,17 +595,11 @@ void MainWindow::on_analysisbtn_clicked()
 
 void MainWindow::on_emulationbtn_clicked()
 {
-    NORMALMIDDLEWARE
-
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
-
-        debugMode = 0; //выводим из режима дебаг принудительно
-        ui->debuglineEdit->clear();
-        ui->debugstatelbl->clear();
-        ui->debugwordlbl->clear();
+        NORMALMIDDLEWARE
 
         // logger configuring
         el::Configurations defaultConf;
@@ -524,16 +666,11 @@ void MainWindow::on_emulationbtn_clicked()
 
 void MainWindow::on_quickstartbtn_clicked()
 {
-    NORMALMIDDLEWARE
-
     AllButtonsSetEnabled(false);
 
     if (!_pname.empty())
     {
-        debugMode = 0; //выводим из режима дебаг принудительно
-        ui->debuglineEdit->clear();
-        ui->debugstatelbl->clear();
-        ui->debugwordlbl->clear();
+        NORMALMIDDLEWARE
 
         on_actionSave_triggered();
 
@@ -603,131 +740,6 @@ void MainWindow::on_quickstartbtn_clicked()
     AllButtonsSetEnabled(true);
 }
 
-void MainWindow::breakpointHighlightON()
-{
-    if (!_pname.empty())
-    {
-
-        string dir = _pname.getOriginal();
-
-        if (dir.substr(dir.find_last_of(".") + 1) == "tme" || dir.substr(dir.find_last_of(".") + 1) == "txt")
-        {
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-            dir.pop_back();
-        }
-
-        sqlite3 *db = 0;
-        char *err = 0;
-        sqlite3_stmt *ppStmt;
-        string a = dir;
-        a.append(".db");
-
-        sqlite3_open(a.c_str(), &db);
-        sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
-
-        string select_command;
-        select_command = "SELECT * FROM commands WHERE debug=\"1\"";
-        sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
-        int resultSqlite3 = sqlite3_step(ppStmt);
-
-        while (resultSqlite3 == SQLITE_ROW)
-        {
-            QTextCursor cur = ui->mainTextField->textCursor();
-            int linenumber = atoi(string((char *)sqlite3_column_text(ppStmt, 6)).c_str());
-            cur.movePosition(QTextCursor::Start);
-            if (ui->inputlineEdit->text().length())
-            {
-                linenumber -= 2; //коректировка номера строки, мы ж секцию сверху дописываем
-            }
-            for (int i = 0; i < linenumber - 1; i++)
-                cur.movePosition(QTextCursor::Down);
-            QTextBlockFormat f;
-            f.setBackground(QBrush("#550e12"));
-            cur.select(QTextCursor::LineUnderCursor);
-            cur.setBlockFormat(f);
-
-            resultSqlite3 = sqlite3_step(ppStmt);
-        }
-
-        sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
-        sqlite3_free(err);
-        sqlite3_finalize(ppStmt);
-        sqlite3_close(db);
-    }
-    else
-    {
-        return;
-    }
-}
-
-void MainWindow::currentLineHighlight(int line)
-{
-    if (ui->inputlineEdit->text().length())
-    {
-        line -= 2; //коректировка номера строки, мы ж секцию сверху дописываем
-    }
-
-    QTextCursor cur = ui->mainTextField->textCursor();
-    cur.movePosition(QTextCursor::Start);
-    for (int i = 0; i < highlightedLine - 1; i++)
-        cur.movePosition(QTextCursor::Down);
-    QTextBlockFormat f;
-    if (isDarkMode)
-    {
-        f.setBackground(QBrush("#2a2931"));
-    }
-    else
-    {
-        f.setBackground(QBrush("#ffffff"));
-    }
-    cur.select(QTextCursor::LineUnderCursor);
-    cur.setBlockFormat(f);
-
-    highlightedLine = line;
-
-    breakpointHighlightON();
-
-    QTextCursor cur1 = ui->mainTextField->textCursor();
-    cur1.movePosition(QTextCursor::Start);
-    for (int i = 0; i < line - 1; i++)
-        cur1.movePosition(QTextCursor::Down);
-    QTextBlockFormat f1;
-    f1.setBackground(QBrush("#4b4b18"));
-    cur1.select(QTextCursor::LineUnderCursor);
-    cur1.setBlockFormat(f1);
-
-    if (line > 24)
-    {
-        QTextCursor cursor(ui->mainTextField->document()->findBlockByLineNumber(line - 1)); // ln-1 because line number starts from 0
-        ui->mainTextField->setTextCursor(cursor);
-    }
-}
-
-void MainWindow::breakpointHighlightOFF()
-{
-
-    QTextCursor cursor = ui->mainTextField->textCursor();
-    // cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
-    cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
-    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    cursor.select(QTextCursor::Document);
-    QTextBlockFormat f1;
-    // f.setBackground(Qt::red);
-    if (isDarkMode)
-    {
-        f1.setBackground(QBrush("#2a2931"));
-    }
-    else
-    {
-        f1.setBackground(QBrush("#ffffff"));
-    }
-    // f1.setBackground(QBrush("#2a2931")); // 550e12 //4b4b18
-    // cur1.select(QTextCursor::LineUnderCursor);
-    cursor.setBlockFormat(f1);
-}
-
 void MainWindow::on_debugbtn_clicked()
 {
     NORMALMIDDLEWARE
@@ -777,7 +789,7 @@ void MainWindow::on_debugnextbtn_clicked()
 {
     DEBUGMIDDLEWARE
 
-    if (debugMode == 1)
+    if (debugMode)
     {
         ui->debugnextbtn->setEnabled(false);
 
@@ -817,7 +829,7 @@ void MainWindow::on_skipButton_clicked()
 {
     DEBUGMIDDLEWARE
 
-    if (debugMode == 1)
+    if (debugMode)
     {
         ui->debugnextbtn->setEnabled(false);
 
@@ -851,30 +863,4 @@ void MainWindow::on_skipButton_clicked()
 
         ui->debugnextbtn->setEnabled(true);
     }
-}
-
-void MainWindow::on_mainTextField_cursorPositionChanged()
-{
-    QPlainTextEdit *edit = qobject_cast<QPlainTextEdit *>(sender());
-    Q_ASSERT(edit);
-    QTextCursor cursor = edit->textCursor();
-    cursor.movePosition(QTextCursor::StartOfLine);
-
-    int lines = 1;
-    while (cursor.positionInBlock() > 0)
-    {
-        cursor.movePosition(QTextCursor::Up);
-        lines++;
-    }
-    QTextBlock block = cursor.block().previous();
-
-    while (block.isValid())
-    {
-        lines += block.lineCount();
-        block = block.previous();
-    }
-    if (ui->datacheckBox->isChecked())
-        ui->rawnumberlabel->setText(QString::number(lines + 2));
-    else
-        ui->rawnumberlabel->setText(QString::number(lines));
 }

@@ -266,7 +266,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="rawnumberlabel">
+      <widget class="QLabel" name="rowNumberLabel">
        <property name="text">
         <string/>
        </property>

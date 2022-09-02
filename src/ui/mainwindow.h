@@ -97,7 +97,7 @@ private slots:
     void on_debugnextbtn_clicked();  // |
     void on_skipButton_clicked();    //_|
 
-    void on_mainTextField_textChanged();           //_  triggers for a textfield
+    void on_mainTextField_textChanged();           //_  triggers for textfields
     void on_mainTextField_cursorPositionChanged(); // |
     void on_datacheckBox_clicked();                //_|
 
@@ -112,7 +112,7 @@ private slots:
     void AllButtonsSetEnabled(bool);     // |
     void currentLineHighlight(int line); //_|
 
-    void NormalMiddleware(); //_  Middleware functions
+    void NormalMiddleware(); //_  middleware functions
     void DebugMiddleware();  //_|
 
 public:
