@@ -62,7 +62,7 @@ Moreover, you can choose between console and GUI version by -D IS_GUI=(True or F
 ### **Building**
 ```
 mkdir build && cd build
-cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/Qt/5.15.2/mingw81_64" -DIS_GUI=True
+cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/Qt/5.15.2/mingw81_64" -DGUI=True
 mingw32-make
 ```
 

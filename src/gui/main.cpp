@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "../emulator/App.hpp"
 #include <iostream>
 
 #include <QApplication>

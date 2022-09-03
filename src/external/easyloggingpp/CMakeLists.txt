@@ -1,3 +1,5 @@
+set(test False)
+
 FetchContent_MakeAvailable(easyloggingpp)
 
 file(COPY ${easyloggingpp_SOURCE_DIR}/src/easylogging++.cc DESTINATION ${CMAKE_SOURCE_DIR}/src/external/easyloggingpp/)

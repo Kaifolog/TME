@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(IS_GUI FALSE CACHE BOOL "An option that defines whether CLI or GUI app would you build.")
+set(GUI FALSE CACHE BOOL "An option that defines whether CLI or GUI app would you build.")
 
 set(TEST FALSE CACHE BOOL "An option that manages compilation flow between building test and release version of the program.")
 
