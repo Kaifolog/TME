@@ -24,9 +24,9 @@ extern "C"
 
 extern "C"
 {
-#include "../emulator/vendor/sqlite3/sqlite3.h"
+#include "../external/sqlite3/sqlite3.h"
 }
-#include "../emulator/vendor/easyloggingpp/easylogging++.h"
+#include "../external/easyloggingpp/easylogging++.h"
 
 #include "../analyser/parser.hpp"
 #include "../machine/TuringMachine.hpp"

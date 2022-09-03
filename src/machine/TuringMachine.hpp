@@ -8,7 +8,7 @@
 #include "MachineState.hpp"
 extern "C"
 {
-#include "../emulator/vendor/sqlite3/sqlite3.h"
+#include "../external/sqlite3/sqlite3.h"
 }
 
 #include "../tools/ProjectName.hpp"

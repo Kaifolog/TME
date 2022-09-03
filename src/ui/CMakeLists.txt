@@ -29,4 +29,4 @@ add_executable(TME WIN32
 )
 endif()
 
-target_link_libraries( TME PRIVATE APP PARSER LIBS VENDOR TuringMachine  Qt${QT_VERSION_MAJOR}::Widgets ${CMAKE_DL_LIBS} pthread )
+target_link_libraries( TME PRIVATE PARSER easyloggingpp sqlite3 TuringMachine  Qt${QT_VERSION_MAJOR}::Widgets ${CMAKE_DL_LIBS} pthread )

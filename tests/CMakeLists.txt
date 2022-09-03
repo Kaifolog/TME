@@ -3,9 +3,9 @@ enable_testing()
 include(FetchContent)
 
 FetchContent_Declare(
-googletest
-GIT_REPOSITORY https://github.com/google/googletest.git
-GIT_TAG        release-1.11.0
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        release-1.11.0
 )
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
@@ -14,7 +14,6 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-add_subdirectory(../src/emulator/vendor ../emulator/machine) 
 add_subdirectory(../src/analyser ../analyser) 
 add_subdirectory(../src/machine ../machine)
 
@@ -24,9 +23,10 @@ target_link_libraries(
 AllTests_gTests
 
 TuringMachine
+sqlite3
+easyloggingpp
 PARSER
 GTest::gtest_main
-VENDOR
 )
 
 if (UNIX)

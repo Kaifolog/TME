@@ -11,9 +11,9 @@ extern "C"
 
 extern "C"
 {
-#include "vendor/sqlite3/sqlite3.h"
+#include "../external/sqlite3/sqlite3.h"
 }
-#include "vendor/easyloggingpp/easylogging++.h"
+#include "../external/easyloggingpp/easylogging++.h"
 
 #include "../machine/TuringMachine.hpp"
 #include "libs/text_functions.hpp"

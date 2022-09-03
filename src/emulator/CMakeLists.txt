@@ -1,17 +1,3 @@
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
-
-project(TME VERSION 0.1)
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED True)
-
-add_subdirectory(vendor) 
-
-add_subdirectory(../analyser ../analyser) 
-
 add_subdirectory(libs)
 
 add_library(APP STATIC App.cpp)
@@ -19,7 +5,7 @@ add_library(APP STATIC App.cpp)
 if(NOT IS_GUI)
     add_executable(TME main.cpp )
 
-    target_link_libraries(TME APP PARSER VENDOR LIBS TuringMachine )
+    target_link_libraries(TME APP PARSER easyloggingpp sqlite3 LIBS TuringMachine )
 
     if (UNIX)
         target_link_libraries(TME dl pthread)

@@ -10,3 +10,7 @@ CMakeLists.txt.user
 *.synctex.gz
 *.toc
 *.ui.autosave
+easylogging++.cc
+easylogging++.h
+sqlite3.c
+sqlite3.h
