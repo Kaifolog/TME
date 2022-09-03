@@ -110,7 +110,8 @@ private slots:
     void breakpointHighlightON();        //_  utility functions
     void breakpointHighlightOFF();       // |
     void AllButtonsSetEnabled(bool);     // |
-    void currentLineHighlight(int line); //_|
+    void currentLineHighlight(int line); // |
+    void clearLogFile();                 //_|
 
     void NormalMiddleware(); //_  middleware functions
     void DebugMiddleware();  //_|

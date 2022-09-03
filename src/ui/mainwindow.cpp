@@ -120,6 +120,13 @@ void MainWindow::slotShortcutCtrlD()
 
 /* utility functions */
 
+void MainWindow::clearLogFile()
+{
+    std::ofstream ofs;
+    ofs.open(_pname.getLogFile(), std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
+}
+
 void MainWindow::breakpointHighlightON()
 {
     if (!_pname.empty())
@@ -286,6 +293,18 @@ void MainWindow::on_actionOpen_triggered()
         ui->filestatuslbl->setText("Opened");
 
         file.close();
+
+        // logger configuring
+        el::Configurations defaultConf;
+        defaultConf.setToDefault();
+        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime : %msg");
+        defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
+        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
+        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
+        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
+        el::Loggers::reconfigureLogger("default", defaultConf);
+
+        clearLogFile();
     }
 }
 
@@ -344,6 +363,18 @@ void MainWindow::on_actioNew_triggered()
     mFile.close();
     ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
     ui->filestatuslbl->setText("Opened");
+
+    // logger configuring
+    el::Configurations defaultConf;
+    defaultConf.setToDefault();
+    defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime : %msg");
+    defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
+    defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
+    defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
+    defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
+    el::Loggers::reconfigureLogger("default", defaultConf);
+
+    clearLogFile();
 }
 
 /* triggers for textfields */
@@ -479,20 +510,7 @@ void MainWindow::on_parsingbtn_clicked()
 
         on_actionSave_triggered();
 
-        // logger configuring
-        el::Configurations defaultConf;
-        defaultConf.setToDefault();
-        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
-        defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
-        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
-
-        // logs file clearing
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
-        el::Loggers::reconfigureLogger("default", defaultConf);
-        LOG(INFO) << "Log file cleared";
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
-        el::Loggers::reconfigureLogger("default", defaultConf);
+        clearLogFile();
 
         try
         {
@@ -540,20 +558,7 @@ void MainWindow::on_analysisbtn_clicked()
     {
         NORMALMIDDLEWARE
 
-        // logger configuring
-        el::Configurations defaultConf;
-        defaultConf.setToDefault();
-        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
-        defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
-        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
-
-        // logs file clearing
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
-        el::Loggers::reconfigureLogger("default", defaultConf);
-        LOG(INFO) << "Log file cleared";
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
-        el::Loggers::reconfigureLogger("default", defaultConf);
+        clearLogFile();
 
         try
         {
@@ -568,8 +573,7 @@ void MainWindow::on_analysisbtn_clicked()
             if (file.open(QIODevice::ReadOnly))
             {
                 QTextStream in(&file);
-                QString text = "ddfdf"; // ?)
-                text = file.readAll();
+                QString text = file.readAll();
                 ui->debuglineEdit->clear();
                 ui->logwindow->clear();
                 ui->logwindow->appendPlainText(text);
@@ -601,20 +605,7 @@ void MainWindow::on_emulationbtn_clicked()
     {
         NORMALMIDDLEWARE
 
-        // logger configuring
-        el::Configurations defaultConf;
-        defaultConf.setToDefault();
-        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
-        defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
-        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
-
-        // logs file clearing
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
-        el::Loggers::reconfigureLogger("default", defaultConf);
-        LOG(INFO) << "Log file cleared";
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
-        el::Loggers::reconfigureLogger("default", defaultConf);
+        clearLogFile();
 
         try
         {
@@ -674,20 +665,7 @@ void MainWindow::on_quickstartbtn_clicked()
 
         on_actionSave_triggered();
 
-        // logger configuring
-        el::Configurations defaultConf;
-        defaultConf.setToDefault();
-        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
-        defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
-        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
-
-        // logs file clearing
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "1");
-        el::Loggers::reconfigureLogger("default", defaultConf);
-        LOG(INFO) << "Log file cleared";
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
-        el::Loggers::reconfigureLogger("default", defaultConf);
+        clearLogFile();
 
         try
         {
@@ -730,8 +708,7 @@ void MainWindow::on_quickstartbtn_clicked()
         if (file.open(QIODevice::ReadOnly))
         {
             QTextStream in(&file);
-            QString text = "ddfdf";
-            text = file.readAll();
+            QString text = file.readAll();
             ui->logwindow->clear();
             ui->logwindow->appendPlainText(text);
             file.close();
@@ -792,8 +769,6 @@ void MainWindow::on_debugnextbtn_clicked()
     if (debugMode)
     {
         ui->debugnextbtn->setEnabled(false);
-
-        ui->logwindow->appendPlainText("Debugger step.");
 
         MachineState result;
         try
