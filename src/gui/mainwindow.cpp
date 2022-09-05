@@ -461,12 +461,10 @@ void MainWindow::NormalMiddleware()
         catch (const char *message)
         {
             ui->logwindow->appendPlainText(message);
-            cout << message << endl;
         }
         catch (string message)
         {
             ui->logwindow->appendPlainText(message.c_str());
-            cout << message << endl;
         }
     }
     ui->debuglineEdit->clear();
@@ -773,6 +771,7 @@ void MainWindow::on_debugnextbtn_clicked()
         MachineState result;
         try
         {
+            _debugger.setLambda(ui->lambdacheckBox->isChecked());
             result = _debugger.lazyDebug(true);
             currentLineHighlight(std::stoi(result.line));
             ui->debuglineEdit->setText(result.current_strip.c_str());
@@ -813,6 +812,7 @@ void MainWindow::on_skipButton_clicked()
         MachineState result;
         try
         {
+            _debugger.setLambda(ui->lambdacheckBox->isChecked());
             result = _debugger.lazyDebug();
             currentLineHighlight(std::stoi(result.line));
             ui->debuglineEdit->setText(result.current_strip.c_str());

@@ -51,6 +51,7 @@ class TuringMachine
 public:
     int execute(ProjectName &pname, bool lambda);
     void lazyStart(ProjectName &pname, bool lambda);
+    void setLambda(bool lambda) { this->lambda = lambda; };
     MachineState lazyDebug(bool step_by_step = 0);
     void lazyFinalize();
 };
