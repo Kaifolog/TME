@@ -143,6 +143,12 @@ int Command::datasection_fsm(string line_v)
 
 string Command::command_preprocessor(string line_v)
 {
+    // for windows CRLF encoding support
+    if (line_v.back() == '\r')
+    {
+        line_v.pop_back();
+    }
+
     for (int i = 0; i < line_v.size(); i++) // thats shit
     {
         if (line_v[i] == ';')
@@ -215,6 +221,12 @@ string Command::command_preprocessor(string line_v)
 
 string Command::sector_preprocessor(string line_v)
 {
+    // for windows CRLF encoding support
+    if (line_v.back() == '\r')
+    {
+        line_v.pop_back();
+    }
+
     for (int i = 0; i < line_v.size(); i++)
     {
         if (line_v[0] == ' ')
@@ -253,6 +265,12 @@ string Command::sector_preprocessor(string line_v)
 
 string Command::data_preprocessor(string line_v)
 {
+    // for windows CRLF encoding support
+    if (line_v.back() == '\r')
+    {
+        line_v.pop_back();
+    }
+
     int cursor_char = 0;
     for (int i = 0; i < line_v.size(); i++)
     {
@@ -290,6 +308,12 @@ string Command::data_preprocessor(string line_v)
 
 string Command::define_preprocessor(string line_v)
 {
+    // for windows CRLF encoding support
+    if (line_v.back() == '\r')
+    {
+        line_v.pop_back();
+    }
+
     for (int i = 0; i < line_v.size(); i++)
     {
         if (line_v[0] == ' ')
