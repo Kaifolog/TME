@@ -2,8 +2,7 @@
 
 using namespace std;
 
-inline bool
-space(char c)
+inline bool space(char c)
 {
     return isspace(c);
 }
@@ -13,10 +12,10 @@ inline bool notspace(char c)
     return !isspace(c);
 }
 
-vector<string> split(const string &s)
+list<string> split(const string &s)
 {
     typedef string::const_iterator iter;
-    vector<string> ret;
+    list<string> ret;
     iter i = s.begin();
     while (i != s.end())
     {
@@ -38,17 +37,18 @@ bool TuringMachine::is_end(string dir, bool lambda)
         ofstream fout;
         fout.open(dir);
 
-        for (int i = 0; i < strip.size(); i++)
+        std::list<string>::iterator it;
+        for (it = strip.begin(); it != strip.end(); ++it)
         {
-            if (strip[i] == "lambda" && lambda)
-                strip[i] = " ";
-            if (i != cursor)
+            if (*it == "lambda" && lambda)
+                *it = " ";
+            if (it != cursor)
             {
-                fout << strip[i] << " ";
+                fout << *it << " ";
             }
             else
             {
-                fout << "|" << strip[i] << "|"
+                fout << "|" << *it << "|"
                      << " ";
             }
         }
@@ -65,13 +65,16 @@ bool TuringMachine::load_strip(string dir)
     {
         getline(fin, buffer);
         strip = split(buffer);
-        for (int i = 0; i < strip.size(); i++)
-            if (test_for_primary_cursor(strip[i]))
+        std::list<string>::iterator it;
+        for (it = strip.begin(); it != strip.end(); ++it)
+        {
+            if (test_for_primary_cursor(*it))
             {
-                cursor = i;
-                strip[i].pop_back();
-                strip[i].erase(0, 1);
+                cursor = it;
+                it->pop_back();
+                it->erase(0, 1);
             }
+        }
         return 1;
     }
     else
@@ -82,15 +85,16 @@ bool TuringMachine::load_strip(string dir)
 string TuringMachine::get_strip()
 {
     string res;
-    for (int i = 0; i < strip.size(); i++)
+    std::list<string>::iterator it;
+    for (it = strip.begin(); it != strip.end(); ++it)
     {
-        if (i != cursor)
+        if (it != cursor)
         {
-            res = res + strip[i] + " ";
+            res = res + *it + " ";
         }
         else
         {
-            res = res + "|" + strip[i] + "|" + " ";
+            res = res + "|" + *it + "|" + " ";
         }
     }
     return res;
@@ -101,61 +105,48 @@ string TuringMachine::get_strip(bool lambda)
         return get_strip();
 
     string res;
-    for (int i = 0; i < strip.size(); i++)
+    std::list<string>::iterator it;
+    for (it = strip.begin(); it != strip.end(); ++it)
     {
-        if (i != cursor)
+        if (it != cursor)
         {
-            if (strip[i] == "lambda")
+            if (*it == "lambda")
                 res = res + " " + " ";
             else
-                res = res + strip[i] + " ";
+                res = res + *it + " ";
         }
         else
         {
-            if (strip[i] == "lambda")
+            if (*it == "lambda")
                 res = res + "|" + " " + "|" + " ";
             else
-                res = res + "|" + strip[i] + "|" + " ";
+                res = res + "|" + *it + "|" + " ";
         }
     }
     return res;
 }
-string TuringMachine::get_current_state()
-{
-    return statement;
-}
-string TuringMachine::get_current_word()
-{
-    return strip[cursor];
-}
-void TuringMachine::set_current_state(string a)
-{
-    statement = a;
-}
-void TuringMachine::set_current_word(string a)
-{
-    strip[cursor] = a;
-}
-bool TuringMachine::get_step(char a)
+
+void TuringMachine::get_step(char a)
 {
     a = tolower(a);
     switch (a)
     {
     case 's':
-        return 0;
+        return;
         break;
     case 'l':
-        if (cursor)
+        if (cursor != strip.begin())
         {
             cursor--;
         }
         else
         {
-            strip.insert(strip.begin(), "lambda");
+            strip.push_front("lambda");
+            cursor--;
         }
         break;
     case 'r':
-        if (cursor != strip.size() - 1)
+        if (cursor != (--strip.end()))
         {
             cursor++;
         }
@@ -208,13 +199,13 @@ int TuringMachine::execute(ProjectName &pname, bool lambda)
     string select_command;
     while (!this->is_end(this->output, lambda))
     {
-        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
+        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->statement + "\" AND initial_word=\"" + *(this->cursor) + "\"";
         sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);
 
         if (sqlite3_step(ppStmt) != SQLITE_DONE)
         {
-            this->set_current_state(string((char *)sqlite3_column_text(this->ppStmt, 2)));
-            this->set_current_word(string((char *)sqlite3_column_text(this->ppStmt, 3)));
+            this->statement = (string((char *)sqlite3_column_text(this->ppStmt, 2)));
+            *this->cursor = (string((char *)sqlite3_column_text(this->ppStmt, 3)));
             this->get_step(((char *)sqlite3_column_text(this->ppStmt, 4))[0]);
         }
         else
@@ -236,13 +227,13 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
     string select_command;
     while (!this->is_end(this->output, lambda))
     {
-        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->get_current_state() + "\" AND initial_word=\"" + this->get_current_word() + "\"";
+        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->statement + "\" AND initial_word=\"" + *(this->cursor) + "\"";
         sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);
 
         if (sqlite3_step(ppStmt) != SQLITE_DONE)
         {
-            this->set_current_state(string((char *)sqlite3_column_text(ppStmt, 2)));
-            this->set_current_word(string((char *)sqlite3_column_text(ppStmt, 3)));
+            this->statement = (string((char *)sqlite3_column_text(ppStmt, 2)));
+            *this->cursor = (string((char *)sqlite3_column_text(ppStmt, 3)));
             this->get_step(((char *)sqlite3_column_text(ppStmt, 4))[0]);
         }
         else
@@ -250,21 +241,28 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
             sqlite3_finalize(ppStmt);
             sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
             sqlite3_close(db);
-            throw "EMULATING ERROR : CANT FIND NEXT COMMAND\nWith last state " + this->get_current_state() + " and word " + this->get_current_word();
+            throw "EMULATING ERROR : CANT FIND NEXT COMMAND\nWith last state " + this->statement + " and word " + *(this->cursor);
         }
 
-        if (step_by_step || (string((char *)sqlite3_column_text(ppStmt, 5)) == "1" || this->get_current_state() == "end"))
+        if (step_by_step || (string((char *)sqlite3_column_text(ppStmt, 5)) == "1" || this->statement == "end"))
         {
             MachineState step;
             step.current_strip = this->get_strip(lambda);
-            step.current_state = this->get_current_state();
-            step.current_word = this->get_current_word();
+            step.current_state = this->statement;
+            step.current_word = *(this->cursor);
             step.line = string((char *)sqlite3_column_text(ppStmt, 6));
+            this->lastLine = step.line;
             sqlite3_finalize(ppStmt);
             return step;
         }
         sqlite3_finalize(ppStmt);
     }
+    MachineState step;
+    step.current_strip = this->get_strip(lambda);
+    step.current_state = this->statement;
+    step.current_word = *(this->cursor);
+    step.line = this->lastLine;
+    return step;
 }
 
 void TuringMachine::lazyFinalize()
