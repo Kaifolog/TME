@@ -61,7 +61,7 @@ void Command::command_fsm(string line_v)
 
     for (; i < line_v.size() - 1 && !(line_v[i] == '-' && line_v[i + 1] == '>'); i++) // w1
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%')
+        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%' || line_v[i] == '(' || line_v[i] == ')')
             this->initial_word.push_back(line_v[i]);
         else
         {
@@ -85,7 +85,7 @@ void Command::command_fsm(string line_v)
     i++;
     for (; i < line_v.size() - 1 && line_v[i] != ','; i++) // w2
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%')
+        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' || line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' || line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%' || line_v[i] == '(' || line_v[i] == ')')
             this->final_word.push_back(line_v[i]);
         else
         {
@@ -285,7 +285,7 @@ string Command::data_preprocessor(string line_v)
             line_v.erase(i, 1);
             i--;
         }
-        if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') && !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') && !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') && !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?') && !(line_v[i] == '>') && !(line_v[i] == '<') && !(line_v[i] == '%'))
+        if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') && !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') && !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') && !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?') && !(line_v[i] == '>') && !(line_v[i] == '<') && !(line_v[i] == '%') && !(line_v[i] == '(') && !(line_v[i] == ')'))
         {
             throw "at data section (you have to use only allowed symbols) at char #" + to_string(i + 1);
         }
