@@ -17,7 +17,7 @@ void Command::define_fsm(string line_v)
         i = 8;
     }
 
-    //стоим на пробеле и точно знаем что у нас сзади 6 знаков нужного идентифиатора
+    // the current symbol is a space after #define
     string *macros_name = new string;
     string *macros_value = new string;
     while (line_v[i] != ' ')
@@ -280,7 +280,7 @@ string Command::data_preprocessor(string line_v)
                 line_v.erase(j + 1, 1);
             line_v.erase(i, 1);
         }
-        if (line_v[i] == ' ' && line_v[i + 1] == '\0') // spacet at end of the line
+        if (line_v[i] == ' ' && line_v[i + 1] == '\0') // space at end of the line
         {
             line_v.erase(i, 1);
             i--;
@@ -290,11 +290,19 @@ string Command::data_preprocessor(string line_v)
             throw "at data section (you have to use only allowed symbols) at char #" + to_string(i + 1);
         }
         if (line_v[i] == '|')
-            if (i < line_v.size() && i > 0)
-                if (line_v[i + 1] != ' ' && line_v[i - 1] != ' ' && line_v[i + 1] != '\0')
+        {
+            if (i < line_v.size() && i > 0) // " | lambda | " error
+            {
+                if ((line_v[i + 1] == ' ' && line_v[i - 1] == ' ') || (line_v[i - 1] == ' ' && line_v[i + 1] == '\0'))
                 {
-                    throw "parse error (check space splits)  at line #" + to_string(parser->line_counter);
+                    throw "parse error (check space splits) at line #" + to_string(parser->line_counter);
                 }
+            }
+            if (i == 0 && line_v[i + 1] == ' ')
+            {
+                throw "parse error (check space splits) at line #" + to_string(parser->line_counter);
+            }
+        }
     }
     for (int i = 0; i < line_v.length(); i++)
         if (line_v[i] == '|')
@@ -345,11 +353,16 @@ Command::Command(string command, Parser *parser_)
 {
     parser = parser_;
     parser->line_counter++;
-    string line_v = command; //перепишем нашу строку из стека в выделенный для этого svwm-вектор
+    string line_v = command;
     if (line_v.size() > 1)
     {
-        switch (line_v[0]) //тк наш язык довольно прост, у нас есть всего 3 варианта событий. (1)описание макропеременной, (2)обозначение секции, (3)логических выражений,
-                           //все они имеют малую вариативность, откуда нам потребуется 3 конечных автомата.
+        // There are only 3 kinds of rows that translator can understand:
+        // (1) a definition of macros
+        // (2) a section definition
+        // (3) a command definition
+        // So, to parse them there are three final state machines.
+
+        switch (line_v[0])
         {
         case '#':
             line_v = define_preprocessor(line_v);
