@@ -140,7 +140,7 @@ int App::execute()
             return 1;
         }
         fin.close();
-        LOG(ERROR) << "File exists.";
+        LOG(INFO) << "File exists.";
 
         // so, we have 2+ arguments and the argv[2] is not "-v":
         if (debug)

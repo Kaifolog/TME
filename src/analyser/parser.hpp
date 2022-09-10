@@ -15,7 +15,7 @@ class Parser
 {
         string section = "";
         int line_counter = 0;
-        vector<vector<string *> *> macros_table;
+        vector<vector<string>> macros_table;
         friend class Command;
 
         sqlite3 *db = 0;

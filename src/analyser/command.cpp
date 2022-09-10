@@ -17,22 +17,21 @@ void Command::define_fsm(string line_v)
         i = 8;
     }
 
-    // the current symbol is a space after #define
-    string *macros_name = new string;
-    string *macros_value = new string;
+    // the current symbol is a space after '#define'
+    string macros_name;
+    string macros_value;
     while (line_v[i] != ' ')
     {
-        macros_name->push_back(line_v[i++]);
+        macros_name.push_back(line_v[i++]);
     }
-    macros_name->push_back('\0');
     i++;
     while (line_v[i] != '\0')
     {
-        macros_value->push_back(line_v[i++]);
+        macros_value.push_back(line_v[i++]);
     }
-    vector<string *> *macros = new vector<string *>;
-    macros->push_back(macros_name);
-    macros->push_back(macros_value);
+    vector<string> macros;
+    macros.push_back(macros_name);
+    macros.push_back(macros_value);
 
     parser->macros_table.push_back(macros);
 }
@@ -149,7 +148,9 @@ string Command::command_preprocessor(string line_v)
         line_v.pop_back();
     }
 
-    for (int i = 0; i < line_v.size(); i++) // thats shit
+    // processing of comments
+
+    for (int i = 0; i < line_v.size(); i++)
     {
         if (line_v[i] == ';')
         {
@@ -186,21 +187,26 @@ string Command::command_preprocessor(string line_v)
         return line_v;
     }
 
-    //макроподстановки
+    // macroses
 
     for (int k = 0; k != parser->macros_table.size(); k++)
     {
-        vector<string *> macros = parser->macros_table[k][0];
+        vector<string> macros = parser->macros_table[k];
         int m_len = 0, st = -1;
         for (int p = 0; p < line_v.size() - 1; p++)
         {
-            if (line_v[p] == macros[0][0][m_len])
+            if (line_v[p] == macros[0][m_len])
             {
                 m_len++;
                 if (st == -1)
+                {
                     st = p;
-                if (m_len == macros[0][0].size() - 1)
+                }
+                if (m_len == macros[0].size())
+                {
+                    st;
                     break;
+                }
             }
             else
             {
@@ -208,10 +214,11 @@ string Command::command_preprocessor(string line_v)
                 m_len = 0;
             }
         }
-        if (m_len == macros[0][0].size() - 1)
+
+        if (m_len == macros[0].size())
         {
             line_v.erase(st, m_len);
-            line_v = line_v.insert(st++, macros[1][0]);
+            line_v = line_v.insert(st, macros[1]);
             k = k - 1;
         }
     }
