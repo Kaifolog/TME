@@ -148,6 +148,42 @@ string Command::command_preprocessor(string line_v)
         line_v.pop_back();
     }
 
+    // macroses
+
+    for (int k = 0; k != parser->macros_table.size(); k++)
+    {
+        vector<string> macros = parser->macros_table[k];
+        int m_len = 0, st = -1;
+        for (int p = 0; p < line_v.size() - 1; p++)
+        {
+            if (line_v[p] == macros[0][m_len])
+            {
+                m_len++;
+                if (st == -1)
+                {
+                    st = p;
+                }
+                if (m_len == macros[0].size())
+                {
+                    st;
+                    break;
+                }
+            }
+            else
+            {
+                st = -1;
+                m_len = 0;
+            }
+        }
+
+        if (m_len == macros[0].size())
+        {
+            line_v.erase(st, m_len);
+            line_v = line_v.insert(st, macros[1]);
+            k = k - 1;
+        }
+    }
+
     // processing of comments
 
     for (int i = 0; i < line_v.size(); i++)
@@ -185,42 +221,6 @@ string Command::command_preprocessor(string line_v)
     if (line_v.size() == 0)
     {
         return line_v;
-    }
-
-    // macroses
-
-    for (int k = 0; k != parser->macros_table.size(); k++)
-    {
-        vector<string> macros = parser->macros_table[k];
-        int m_len = 0, st = -1;
-        for (int p = 0; p < line_v.size() - 1; p++)
-        {
-            if (line_v[p] == macros[0][m_len])
-            {
-                m_len++;
-                if (st == -1)
-                {
-                    st = p;
-                }
-                if (m_len == macros[0].size())
-                {
-                    st;
-                    break;
-                }
-            }
-            else
-            {
-                st = -1;
-                m_len = 0;
-            }
-        }
-
-        if (m_len == macros[0].size())
-        {
-            line_v.erase(st, m_len);
-            line_v = line_v.insert(st, macros[1]);
-            k = k - 1;
-        }
     }
 
     return line_v;
