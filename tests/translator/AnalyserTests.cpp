@@ -2,27 +2,27 @@
 #include <string>
 #include <fstream>
 
-#include "../../src/analyser/parser.hpp"
+#include "../../src/translator/translator.hpp"
 
 TEST(ParsingTest, BasicTest)
 {
-        Parser parser;
+        Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/analyser/BasicTest.txt");
-        ASSERT_NO_THROW(parser.parse(pn));
+        ProjectName pn("../tests/translator/BasicTest.txt");
+        ASSERT_NO_THROW(translator.parse(pn));
 }
 
 TEST(ParsingTest, BasicFailTest)
 {
-        Parser parser;
+        Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/analyser/BasicFailTest.txt");
+        ProjectName pn("../tests/translator/BasicFailTest.txt");
         string output;
         try
         {
-                parser.parse(pn);
+                translator.parse(pn);
         }
         catch (const char *message)
         {
@@ -37,23 +37,23 @@ TEST(ParsingTest, BasicFailTest)
 
 TEST(ParsingTest, HardTest)
 {
-        Parser parser;
+        Translator translator;
 
         // you should start it from ./TME/build
         ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
-        ASSERT_NO_THROW(parser.parse(pn));
+        ASSERT_NO_THROW(translator.parse(pn));
 }
 
 TEST(ParsingTest, SectionDataTest)
 {
-        Parser parser;
+        Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/analyser/SectionDataTest.txt");
+        ProjectName pn("../tests/translator/SectionDataTest.txt");
         string output;
         try
         {
-                parser.parse(pn);
+                translator.parse(pn);
         }
         catch (const char *message)
         {
@@ -68,14 +68,14 @@ TEST(ParsingTest, SectionDataTest)
 
 TEST(ParsingTest, SectionTextTest)
 {
-        Parser parser;
+        Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/analyser/SectionTextTest.txt");
+        ProjectName pn("../tests/translator/SectionTextTest.txt");
         string output;
         try
         {
-                parser.parse(pn);
+                translator.parse(pn);
         }
         catch (const char *message)
         {
@@ -90,15 +90,15 @@ TEST(ParsingTest, SectionTextTest)
 
 TEST(AnalysisTest, StartTest)
 {
-        Parser parser;
+        Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/analyser/StartTest.txt");
+        ProjectName pn("../tests/translator/StartTest.txt");
         string output;
         try
         {
-                parser.parse(pn);
-                parser.analyse(pn);
+                translator.parse(pn);
+                translator.analyse(pn);
         }
         catch (const char *message)
         {
@@ -113,15 +113,15 @@ TEST(AnalysisTest, StartTest)
 
 TEST(AnalysisTest, EndTest)
 {
-        Parser parser;
+        Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/analyser/EndTest.txt");
+        ProjectName pn("../tests/translator/EndTest.txt");
         string output;
         try
         {
-                parser.parse(pn);
-                parser.analyse(pn);
+                translator.parse(pn);
+                translator.analyse(pn);
         }
         catch (const char *message)
         {

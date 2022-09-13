@@ -1,4 +1,4 @@
-#include "parser.hpp"
+#include "translator.hpp"
 
 #include <iostream>
 #include <exception>
@@ -356,7 +356,7 @@ string Command::define_preprocessor(string line_v)
     return line_v;
 }
 
-Command::Command(string command, Parser *parser_)
+Command::Command(string command, Translator *parser_)
 {
     parser = parser_;
     parser->line_counter++;

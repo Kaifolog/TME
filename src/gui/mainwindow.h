@@ -28,7 +28,7 @@ extern "C"
 }
 #include "../external/easyloggingpp/easylogging++.h"
 
-#include "../analyser/parser.hpp"
+#include "../translator/translator.hpp"
 #include "../machine/TuringMachine.hpp"
 #include "../tools/ProjectName.hpp"
 

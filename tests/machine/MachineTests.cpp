@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "../../src/machine/TuringMachine.hpp"
-#include "../../src/analyser/parser.hpp"
+#include "../../src/translator/translator.hpp"
 
 TEST(ExecutionTest, BasicTest)
 {

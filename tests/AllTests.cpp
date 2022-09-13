@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "analyser/AnalyserTests.cpp"
+#include "translator/AnalyserTests.cpp"
 #include "machine/MachineTests.cpp"
 
 int main(int argc, char **argv)

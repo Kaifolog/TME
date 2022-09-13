@@ -55,12 +55,12 @@ void App::handleArguments()
 
 void App::parse()
 {
-    Parser parser;
-    LOG(INFO) << "Parser started... ";
+    Translator translator;
+    LOG(INFO) << "Translating started... ";
 
-    parser.parse(_pname);
+    translator.parse(_pname);
 
-    LOG(INFO) << "Parsing ended.";
+    LOG(INFO) << "Translating ended.";
 };
 
 void App::emulate()
@@ -97,10 +97,10 @@ void App::emulate()
 
 void App::semantic_analysis()
 {
-    Parser parser;
-    LOG(INFO) << "Starting analyser...";
+    Translator translator;
+    LOG(INFO) << "Starting translator...";
 
-    parser.analyse(_pname);
+    translator.analyse(_pname);
 
     LOG(INFO) << "Analysis complete. All set for execution!";
 };

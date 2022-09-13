@@ -8,10 +8,10 @@ extern "C"
 
 using namespace std;
 
-#ifndef _PARSER
-#define _PARSER
+#ifndef _TRANSLATOR
+#define _TRANSLATOR
 
-class Parser
+class Translator
 {
         string section = "";
         int line_counter = 0;

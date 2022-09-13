@@ -12,11 +12,11 @@ using namespace std;
 #ifndef _COMMAND
 #define _COMMAND
 
-class Parser;
+class Translator;
 
 class Command
 {
-    Parser *parser;
+    Translator *parser;
 
     void define_fsm(string line_v);
     void command_fsm(string line_v);
@@ -36,7 +36,7 @@ public:
     string debug;
     string lineNumber;
 
-    Command(string command, Parser *parser_);
+    Command(string command, Translator *parser_);
     bool is_empty() // 0 if empty
     {
         return initial_state.empty() && initial_word.empty() && final_state.empty() && final_word.empty() && direction.empty();

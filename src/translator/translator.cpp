@@ -1,4 +1,4 @@
-#include "parser.hpp"
+#include "translator.hpp"
 
 void command_to_sqlite3(sqlite3 *db, Command *current_command, sqlite3_stmt *ppStmt)
 {
@@ -19,7 +19,7 @@ bool check_str_in_vec(vector<string> v, string s)
         return find(v.begin(), v.end(), s) == v.end();
 }
 
-void Parser::init(ProjectName &pname)
+void Translator::init(ProjectName &pname)
 {
         this->needsToFinalize = true;
 
@@ -55,7 +55,7 @@ void Parser::init(ProjectName &pname)
         sqlite3_prepare_v2(db, insert_bind, 256, &ppStmt, NULL);
 };
 
-void Parser::parse(ProjectName &pname)
+void Translator::parse(ProjectName &pname)
 {
         init(pname);
         Command *current_command;
@@ -85,7 +85,7 @@ void Parser::parse(ProjectName &pname)
         finalize();
 };
 
-void Parser::finalize()
+void Translator::finalize()
 {
         if (this->needsToFinalize)
         {
@@ -103,7 +103,7 @@ void Parser::finalize()
         }
 };
 
-void Parser::analyse(ProjectName &pname)
+void Translator::analyse(ProjectName &pname)
 {
         string a = pname.getDBFile();
         if (sqlite3_open(a.c_str(), &db))

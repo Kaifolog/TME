@@ -18,7 +18,7 @@ extern "C"
 #include "../machine/TuringMachine.hpp"
 #include "libs/text_functions.hpp"
 #include "../machine/MachineState.hpp"
-#include "../analyser/parser.hpp"
+#include "../translator/translator.hpp"
 #include "../tools/ProjectName.hpp"
 
 #ifndef _APP

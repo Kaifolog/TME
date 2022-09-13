@@ -512,12 +512,12 @@ void MainWindow::on_parsingbtn_clicked()
 
         try
         {
-            Parser parser;
-            LOG(INFO) << "Parser started... ";
+            Translator translator;
+            LOG(INFO) << "Translating started... ";
 
-            parser.parse(_pname);
+            translator.parse(_pname);
 
-            LOG(INFO) << "Parsing ended.";
+            LOG(INFO) << "Translating ended.";
         }
         catch (const char *message)
         {
@@ -560,10 +560,10 @@ void MainWindow::on_analysisbtn_clicked()
 
         try
         {
-            Parser parser;
-            LOG(INFO) << "Starting analyser...";
+            Translator translator;
+            LOG(INFO) << "Starting translator...";
 
-            parser.analyse(_pname);
+            translator.analyse(_pname);
 
             LOG(INFO) << "Analysis complete. All set for execution!";
 
@@ -667,10 +667,10 @@ void MainWindow::on_quickstartbtn_clicked()
 
         try
         {
-            Parser parser;
-            LOG(INFO) << "Parser started... ";
-            parser.parse(_pname);
-            LOG(INFO) << "Parsing ended.";
+            Translator translator;
+            LOG(INFO) << "Translating started... ";
+            translator.parse(_pname);
+            LOG(INFO) << "Translating ended.";
 
             TuringMachine tm;
             LOG(INFO) << "Starting emulator...";
