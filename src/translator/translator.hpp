@@ -1,9 +1,9 @@
-#include "./command.hpp"
 extern "C"
 {
 #include "../external/sqlite3/sqlite3.h"
 }
 
+#include "parser.hpp"
 #include "../tools/ProjectName.hpp"
 
 using namespace std;
@@ -13,11 +13,6 @@ using namespace std;
 
 class Translator
 {
-        string section = "";
-        int line_counter = 0;
-        vector<vector<string>> macros_table;
-        friend class Command;
-
         sqlite3 *db = 0;
         sqlite3_stmt *ppStmt = 0;
         char insert_bind[512];

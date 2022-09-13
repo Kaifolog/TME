@@ -1,14 +1,14 @@
 #include "translator.hpp"
 
-void command_to_sqlite3(sqlite3 *db, Command *current_command, sqlite3_stmt *ppStmt)
+void command_to_sqlite3(sqlite3 *db, Command current_command, sqlite3_stmt *ppStmt)
 {
-        sqlite3_bind_text(ppStmt, 1, current_command->initial_state.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(ppStmt, 2, current_command->initial_word.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(ppStmt, 3, current_command->final_state.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(ppStmt, 4, current_command->final_word.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(ppStmt, 5, current_command->direction.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(ppStmt, 6, current_command->debug.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(ppStmt, 7, current_command->lineNumber.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(ppStmt, 1, current_command.initial_state.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(ppStmt, 2, current_command.initial_word.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(ppStmt, 3, current_command.final_state.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(ppStmt, 4, current_command.final_word.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(ppStmt, 5, current_command.direction.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(ppStmt, 6, current_command.debug.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(ppStmt, 7, current_command.lineNumber.c_str(), -1, SQLITE_STATIC);
         sqlite3_step(ppStmt);
         sqlite3_clear_bindings(ppStmt);
         sqlite3_reset(ppStmt);
@@ -58,13 +58,14 @@ void Translator::init(ProjectName &pname)
 void Translator::parse(ProjectName &pname)
 {
         init(pname);
-        Command *current_command;
+        Parser parser;
+        Command current_command;
         string buffer;
         while (getline(fin, buffer))
         {
                 try
                 {
-                        current_command = new Command(buffer, this);
+                        current_command = parser.parse(buffer);
                 }
                 catch (const char *message)
                 {
@@ -76,11 +77,10 @@ void Translator::parse(ProjectName &pname)
                         finalize();
                         throw message;
                 }
-                if (!current_command->is_empty())
+                if (!current_command.lineNumber.empty())
                 {
                         command_to_sqlite3(db, current_command, ppStmt);
                 }
-                delete current_command;
         }
         finalize();
 };

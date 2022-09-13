@@ -14,20 +14,8 @@ using namespace std;
 
 class Translator;
 
-class Command
+struct Command
 {
-    Translator *parser;
-
-    void define_fsm(string line_v);
-    void command_fsm(string line_v);
-    void sector_fsm(string line_v);
-    int datasection_fsm(string line_v);
-    string command_preprocessor(string line_v);
-    string sector_preprocessor(string line_v);
-    string data_preprocessor(string line_v);
-    string define_preprocessor(string line_v);
-
-public:
     string initial_state;
     string initial_word;
     string final_state;
@@ -35,12 +23,6 @@ public:
     string direction;
     string debug;
     string lineNumber;
-
-    Command(string command, Translator *parser_);
-    bool is_empty() // 0 if empty
-    {
-        return initial_state.empty() && initial_word.empty() && final_state.empty() && final_word.empty() && direction.empty();
-    }
 };
 
 #endif
