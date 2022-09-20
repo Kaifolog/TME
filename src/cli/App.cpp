@@ -87,7 +87,8 @@ void App::emulate()
     {
         result = tm.lazyDebug();
         cout << result.current_strip << endl;
-        cout << "current_state: " << result.current_state << ", current_word: " << result.current_word << ", current line: " << result.line << endl;
+        cout << "current_state: " << result.current_state << ", current_word: " << result.current_word
+             << ", current line: " << result.line << endl;
         getline(cin, debug_line);
     } while (result.current_state != "end");
 
@@ -179,8 +180,7 @@ int App::execute()
     }
     catch (...)
     {
-        LOG(ERROR) << "Something went wrong." << endl
-                   << "Please tell about this to the developer." << endl;
+        LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
         cout << endl;
         return 1;
     }

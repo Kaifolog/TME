@@ -2,12 +2,12 @@ extern "C"
 {
 #include <stdio.h>
 }
+#include <algorithm>
+#include <chrono>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <chrono>
-#include <algorithm>
 
 extern "C"
 {
@@ -15,11 +15,11 @@ extern "C"
 }
 #include "../external/easyloggingpp/easylogging++.h"
 
-#include "../machine/TuringMachine.hpp"
-#include "libs/text_functions.hpp"
 #include "../machine/MachineState.hpp"
-#include "../translator/translator.hpp"
+#include "../machine/TuringMachine.hpp"
 #include "../tools/ProjectName.hpp"
+#include "../translator/translator.hpp"
+#include "libs/text_functions.hpp"
 
 #ifndef _APP
 #define _APP
@@ -41,7 +41,7 @@ class App
 
     App(){};
 
-public:
+  public:
     App(ProjectName pname, int _argc, char *_argv[])
     {
         _pname = pname;

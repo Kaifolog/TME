@@ -20,14 +20,14 @@ SOFTWARE.
 
 // The official repository: <https://github.com/Kaifolog/TME>.
 
+#include "App.hpp"
+#include <algorithm>
+#include <chrono>
+#include <exception>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <chrono>
-#include <algorithm>
-#include <exception>
-#include "App.hpp"
 
 extern "C"
 {
@@ -48,14 +48,10 @@ int main(int argc, char *argv[])
         // logger configuring
         el::Configurations defaultConf;
         defaultConf.setToDefault();
-        defaultConf.setGlobally(
-            el::ConfigurationType::Format, "%datetime :: %level %msg");
-        defaultConf.setGlobally(
-            el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(
-            el::ConfigurationType::Filename, pname.getLogFile());
-        defaultConf.setGlobally(
-            el::ConfigurationType::MaxLogFileSize, "104857600"); // 100mb
+        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime :: %level %msg");
+        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
+        defaultConf.setGlobally(el::ConfigurationType::Filename, pname.getLogFile());
+        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600"); // 100mb
         el::Loggers::reconfigureLogger("default", defaultConf);
 
         // clearing log file

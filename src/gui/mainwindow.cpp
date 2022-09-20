@@ -2,8 +2,7 @@
 
 /* keybinds slots */
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -209,7 +208,8 @@ void MainWindow::currentLineHighlight(int line)
 
     if (line > 24)
     {
-        QTextCursor cursor(ui->mainTextField->document()->findBlockByLineNumber(line - 1)); // (line - 1) because line number is starts from 0
+        QTextCursor cursor(ui->mainTextField->document()->findBlockByLineNumber(
+            line - 1)); // (line - 1) because line number is starts from 0
         ui->mainTextField->setTextCursor(cursor);
     }
 }
@@ -271,7 +271,8 @@ void MainWindow::on_actionOpen_triggered()
         text = file.readAll();
 
         // if user wants to use inputlineEdit we do it
-        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data" && ui->datacheckBox->isChecked())
+        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data" &&
+            ui->datacheckBox->isChecked())
         {
             QStringList list = text.split('\n');
             QString inputData = list[1];
@@ -313,7 +314,8 @@ void MainWindow::on_actionSave_triggered()
     if (!_pname.empty())
     {
         std::ofstream out;
-        // I think I don't need to check the state of the file. If the file does not exist, then ofstream should create it.
+        // I think I don't need to check the state of the file. If the file does not exist, then ofstream should create
+        // it.
         out.open(_pname.getOriginal());
         if (ui->inputlineEdit->text().size() && ui->datacheckBox->isChecked())
         {
@@ -352,11 +354,14 @@ void MainWindow::on_actioNew_triggered()
     QString fileText;
 
     if (_pname.empty())
-        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)")).toStdString());
+        _pname.setOriginal(
+            QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)")).toStdString());
     else
     {
-        fileText = QString::fromUtf8(_pname.getOriginal().c_str()).left(QString::fromUtf8(_pname.getOriginal().c_str()).lastIndexOf(QChar('/')));
-        _pname.setOriginal(QFileDialog::getSaveFileName(this, tr("Save File"), fileText, tr("Documents (*.tme *.txt)")).toStdString());
+        fileText = QString::fromUtf8(_pname.getOriginal().c_str())
+                       .left(QString::fromUtf8(_pname.getOriginal().c_str()).lastIndexOf(QChar('/')));
+        _pname.setOriginal(
+            QFileDialog::getSaveFileName(this, tr("Save File"), fileText, tr("Documents (*.tme *.txt)")).toStdString());
     }
     QFile mFile(QString::fromUtf8(_pname.getOriginal().c_str()));
     mFile.open(QIODevice::WriteOnly);
@@ -529,8 +534,7 @@ void MainWindow::on_parsingbtn_clicked()
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl
-                       << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -588,8 +592,7 @@ void MainWindow::on_analysisbtn_clicked()
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl
-                       << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
         }
     }
     AllButtonsSetEnabled(true);
@@ -635,8 +638,7 @@ void MainWindow::on_emulationbtn_clicked()
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl
-                       << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
         }
     }
 
@@ -698,8 +700,7 @@ void MainWindow::on_quickstartbtn_clicked()
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl
-                       << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));

@@ -1,11 +1,11 @@
 #include "../external/easyloggingpp/easylogging++.h"
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
-#include <stdio.h>
 #include <ctype.h>
-#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <string>
+#include <time.h>
+#include <vector>
 
 using namespace std;
 

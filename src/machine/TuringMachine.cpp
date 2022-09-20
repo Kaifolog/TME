@@ -199,7 +199,8 @@ int TuringMachine::execute(ProjectName &pname, bool lambda)
     string select_command;
     while (!this->is_end(this->output, lambda))
     {
-        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->statement + "\" AND initial_word=\"" + *(this->cursor) + "\"";
+        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->statement + "\" AND initial_word=\"" +
+                         *(this->cursor) + "\"";
         sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);
 
         if (sqlite3_step(ppStmt) != SQLITE_DONE)
@@ -227,7 +228,8 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
     string select_command;
     while (!this->is_end(this->output, lambda))
     {
-        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->statement + "\" AND initial_word=\"" + *(this->cursor) + "\"";
+        select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->statement + "\" AND initial_word=\"" +
+                         *(this->cursor) + "\"";
         sqlite3_prepare_v2(this->db, select_command.c_str(), 256, &ppStmt, NULL);
 
         if (sqlite3_step(ppStmt) != SQLITE_DONE)
@@ -241,7 +243,8 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
             sqlite3_finalize(ppStmt);
             sqlite3_exec(db, "END TRANSACTION", NULL, NULL, &err);
             sqlite3_close(db);
-            throw "EMULATING ERROR : CANT FIND NEXT COMMAND\nWith last state " + this->statement + " and word " + *(this->cursor);
+            throw "EMULATING ERROR : CANT FIND NEXT COMMAND\nWith last state " + this->statement + " and word " +
+                *(this->cursor);
         }
 
         if (step_by_step || (string((char *)sqlite3_column_text(ppStmt, 5)) == "1" || this->statement == "end"))

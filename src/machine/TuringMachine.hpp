@@ -1,9 +1,9 @@
-#include <iostream>
-#include <string>
-#include <list>
-#include <fstream>
-#include <chrono>
 #include <algorithm>
+#include <chrono>
+#include <fstream>
+#include <iostream>
+#include <list>
+#include <string>
 
 #include "MachineState.hpp"
 extern "C"
@@ -44,10 +44,13 @@ class TuringMachine
     string get_strip(bool lambda);
     void get_step(char a);
 
-public:
+  public:
     int execute(ProjectName &pname, bool lambda);
     void lazyStart(ProjectName &pname, bool lambda);
-    void setLambda(bool lambda) { this->lambda = lambda; };
+    void setLambda(bool lambda)
+    {
+        this->lambda = lambda;
+    };
     MachineState lazyDebug(bool step_by_step = 0);
     void lazyFinalize();
 };
