@@ -27,3 +27,5 @@ clang-format -style=Microsoft -dump-config > .clang-format
 ```
 find ./src/ -iname *.hpp -o -iname *.cpp | xargs clang-format -i
 ```
+
+The last step before committing is to try to build the current application version.

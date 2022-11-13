@@ -20,8 +20,8 @@ class ProjectName
     {
         original = new_original;
         std::string cutted_original = original;
-        if (cutted_original.substr(cutted_original.find_last_of(".") + 1) == "tme" ||
-            cutted_original.substr(cutted_original.find_last_of(".") + 1) == "txt")
+        if (cutted_original.substr(cutted_original.find_last_of('.') + 1) == "tme" ||
+            cutted_original.substr(cutted_original.find_last_of('.') + 1) == "txt")
         {
             cutted_original.pop_back();
             cutted_original.pop_back();

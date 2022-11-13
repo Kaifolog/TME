@@ -7,7 +7,7 @@ using namespace std;
 
 class Parser
 {
-    string section = "";
+    string section;
     int line_counter = 0;
     vector<vector<string>> macros_table;
 
