@@ -1,9 +1,7 @@
-extern "C"
-{
-#include <stdio.h>
-}
+#ifndef _APP
+#define _APP
+
 #include <algorithm>
-#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -21,40 +19,40 @@ extern "C"
 #include "../translator/translator.hpp"
 #include "libs/text_functions.hpp"
 
-#ifndef _APP
-#define _APP
-
-using namespace std;
+namespace cli
+{
 
 class App
 {
-    int argc;
-    char **argv;
+    int _argc;
+    char **_argv;
 
     ProjectName _pname;
 
-    bool noLambda = false;
-    bool parsing = false;
-    bool semantic = false;
-    bool emulating = false;
-    bool debug = false;
+    bool _no_lambda = false;
+    bool _parsing = false;
+    bool _semantic = false;
+    bool _emulating = false;
+    bool _debug = false;
 
     App(){};
 
   public:
-    App(ProjectName pname, int _argc, char *_argv[])
+    App(ProjectName pname, int argc, char *argv[])
     {
-        _pname = pname;
-        argc = _argc;
-        argv = _argv;
+        _pname = std::move(pname);
+        _argc = argc;
+        _argv = argv;
         handleArguments();
     };
 
     void parse();
-    void semantic_analysis();
+    void semanticAnalysis();
     void emulate();
     void handleArguments();
     int execute();
 };
+
+} // namespace cli
 
 #endif

@@ -22,33 +22,34 @@ SOFTWARE.
 
 #include "App.hpp"
 
-using namespace std;
+namespace cli
+{
 
 void App::handleArguments()
 {
-    // i = 1 because argv[0] is a program path
-    for (int i = 1; i < argc; i++)
+    // i = 1 because _argv[0] is a program path
+    for (int i = 1; i < _argc; i++)
     {
-        string current = argv[i];
+        string current = _argv[i];
         if (current == "-l")
         {
-            this->noLambda = true;
+            this->_no_lambda = true;
         }
         if (current == "-g")
         {
-            this->parsing = true;
+            this->_parsing = true;
         }
         if (current == "-a")
         {
-            this->semantic = true;
+            this->_semantic = true;
         }
         if (current == "-e")
         {
-            this->emulating = true;
+            this->_emulating = true;
         }
         if (current == "-d")
         {
-            this->debug = true;
+            this->_debug = true;
         }
     }
 }
@@ -67,21 +68,21 @@ void App::emulate()
 {
     TuringMachine tm;
 
-    if (!debug)
+    if (!_debug)
     {
         LOG(INFO) << "Starting emulator...";
 
-        tm.execute(_pname, noLambda);
+        tm.execute(_pname, _no_lambda);
 
         LOG(INFO) << "Run complete";
         return;
     }
 
-    LOG(INFO) << "Starting debugger...";
+    LOG(INFO) << "Starting _debugger...";
     MachineState result;
 
     string debug_line;
-    tm.lazyStart(_pname, noLambda);
+    tm.lazyStart(_pname, _no_lambda);
 
     do
     {
@@ -96,7 +97,7 @@ void App::emulate()
     LOG(INFO) << "Run complete";
 };
 
-void App::semantic_analysis()
+void App::semanticAnalysis()
 {
     Translator translator;
     LOG(INFO) << "Starting translator...";
@@ -108,26 +109,26 @@ void App::semantic_analysis()
 
 int App::execute()
 {
-    if (argc == 1)
+    if (_argc == 1)
     {
-        text_start_func();
+        textStartFunc();
         cout << endl;
         return 0;
     }
-    if (argc == 2 && string(argv[1]) == string("-v"))
+    if (_argc == 2 && string(_argv[1]) == string("-v"))
     {
-        text_v_func();
+        textFuncVersion();
         cout << endl;
         return 0;
     }
 
     try
     {
-        // if there are only path to origin or path to origin + noLambda flag
-        if (argc == 2 || (argc == 3 && string(argv[2]) == "-l"))
+        // if there are only path to origin or path to origin + _no_lambda flag
+        if (_argc == 2 || (_argc == 3 && string(_argv[2]) == "-l"))
         {
             parse();
-            semantic_analysis();
+            semanticAnalysis();
             emulate();
             cout << endl;
             return 0;
@@ -143,25 +144,25 @@ int App::execute()
         fin.close();
         LOG(INFO) << "File exists.";
 
-        // so, we have 2+ arguments and the argv[2] is not "-v":
-        if (debug)
+        // so, we have 2+ arguments and the _argv[2] is not "-v":
+        if (_debug)
         {
             parse();
-            semantic_analysis();
+            semanticAnalysis();
             emulate();
             cout << endl;
             return 0;
         }
 
-        if (parsing)
+        if (_parsing)
         {
             parse();
         }
-        if (semantic)
+        if (_semantic)
         {
-            semantic_analysis();
+            semanticAnalysis();
         }
-        if (emulating)
+        if (_emulating)
         {
             emulate();
         }
@@ -187,3 +188,4 @@ int App::execute()
     cout << endl;
     return 0;
 };
+} // namespace cli

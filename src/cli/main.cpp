@@ -22,17 +22,11 @@ SOFTWARE.
 
 #include "App.hpp"
 #include <algorithm>
-#include <chrono>
 #include <exception>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-
-extern "C"
-{
-#include <stdio.h>
-}
 
 using namespace std;
 
@@ -60,7 +54,7 @@ int main(int argc, char *argv[])
         cleanLogs.close();
     }
 
-    App a(pname, argc, argv);
+    cli::App a(pname, argc, argv);
 
     return a.execute();
 }
