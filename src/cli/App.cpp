@@ -66,7 +66,7 @@ void App::parse()
 
 void App::emulate()
 {
-    TuringMachine tm;
+    Machine::TuringMachine tm;
 
     if (!_debug)
     {
@@ -79,7 +79,7 @@ void App::emulate()
     }
 
     LOG(INFO) << "Starting _debugger...";
-    MachineState result;
+    Machine::MachineState result;
 
     string debug_line;
     tm.lazyStart(_pname, _no_lambda);

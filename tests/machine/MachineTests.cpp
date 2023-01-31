@@ -7,7 +7,7 @@
 
 TEST(ExecutionTest, BasicTest)
 {
-        TuringMachine tm;
+        Machine::TuringMachine tm;
 
         // preparing test
         ofstream datasec;
@@ -28,7 +28,7 @@ TEST(ExecutionTest, BasicTest)
 
 TEST(ExecutionTest, LambdaTest)
 {
-        TuringMachine tm;
+        Machine::TuringMachine tm;
 
         // preparing test
         ofstream datasec;
@@ -49,7 +49,7 @@ TEST(ExecutionTest, LambdaTest)
 
 TEST(ExecutionTest, HardTest)
 {
-        TuringMachine tm;
+        Machine::TuringMachine tm;
 
         // preparing test
         ofstream datasec;
@@ -70,8 +70,8 @@ TEST(ExecutionTest, HardTest)
 
 TEST(DebuggingTest, LambdaTest)
 {
-        TuringMachine tm;
-        MachineState result;
+        Machine::TuringMachine tm;
+        Machine::MachineState result;
 
         ofstream datasec;
         datasec.open("datasection.tmp");

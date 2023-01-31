@@ -1,3 +1,6 @@
+#ifndef _TURINGMACHINE
+#define _TURINGMACHINE
+
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -13,46 +16,54 @@ extern "C"
 
 #include "../tools/ProjectName.hpp"
 
-#ifndef _TURINGMACHINE
-#define _TURINGMACHINE
-
-using namespace std;
+namespace Machine
+{
 
 class TuringMachine
 {
-    list<string> strip;
-    list<string>::iterator cursor;
-    string statement = "start";
-    string lastLine;
+    std::list<std::string> _strip;
+    std::list<std::string>::iterator _cursor;
+    std::string _statement;
+    std::string _last_line;
 
-    string dir;
-    string output;
-    bool lambda;
-    sqlite3 *db = 0;
-    sqlite3_stmt *ppStmt;
-    char *err = 0;
-    ifstream fin;
+    // connection parameters
+    std::string _dir;
+    std::string _output;
+    bool _lambda;
+    sqlite3 *_db;
+    sqlite3_stmt *_pp_stmt;
+    char *_err;
+    std::ifstream _fin;
 
-    inline bool test_for_primary_cursor(string cell)
+    inline bool testForPrimaryCursor(std::string cell)
     {
         return cell[0] == '|' && cell[cell.size() - 1] == '|';
     }
 
-    bool is_end(string dir, bool lambda);
-    bool load_strip(string dir);
-    string get_strip();
-    string get_strip(bool lambda);
-    void get_step(char a);
+    bool isEnd(std::string dir, bool lambda);
+    bool loadStrip(std::string dir);
+    std::string getStrip();
+    std::string getStrip(bool lambda);
+    void getStep(char a);
 
   public:
+    TuringMachine()
+    {
+        _statement = "start";
+        _db = nullptr;
+        _err = nullptr;
+        _lambda = false;
+    };
     int execute(ProjectName &pname, bool lambda);
     void lazyStart(ProjectName &pname, bool lambda);
     void setLambda(bool lambda)
     {
-        this->lambda = lambda;
+        this->_lambda = lambda;
     };
-    MachineState lazyDebug(bool step_by_step = 0);
+    MachineState lazyDebug(bool step_by_step = false);
     void lazyFinalize();
 };
+
+} // namespace Machine
 
 #endif
