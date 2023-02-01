@@ -20,12 +20,12 @@ class Translator
     ifstream fin;
     bool needsToFinalize = false;
 
-    void init(ProjectName &pname);
+    void init(Tools::ProjectName &pname);
     void finalize();
 
   public:
-    void parse(ProjectName &pname);
-    void analyse(ProjectName &pname);
+    void parse(Tools::ProjectName &pname);
+    void analyse(Tools::ProjectName &pname);
 };
 
 #endif

@@ -34,7 +34,7 @@ INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char *argv[])
 {
-    ProjectName pname;
+    Tools::ProjectName pname;
     if (argc > 1 && string(argv[1]) != string("-v"))
     {
         pname.setOriginal(string(argv[1]));

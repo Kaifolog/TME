@@ -16,7 +16,7 @@ TEST(ExecutionTest, BasicTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/machine/BasicTest.txt");
+        Tools::ProjectName pn("../tests/machine/BasicTest.txt");
         ASSERT_NO_THROW(tm.execute(pn, 0));
 
         // preparing test
@@ -37,7 +37,7 @@ TEST(ExecutionTest, LambdaTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/machine/BasicTest.txt");
+        Tools::ProjectName pn("../tests/machine/BasicTest.txt");
         ASSERT_NO_THROW(tm.execute(pn, 1));
 
         // preparing test
@@ -58,7 +58,7 @@ TEST(ExecutionTest, HardTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
+        Tools::ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
         ASSERT_NO_THROW(tm.execute(pn, 1));
 
         // preparing test
@@ -79,7 +79,7 @@ TEST(DebuggingTest, LambdaTest)
         datasec.close();
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/machine/BasicTest.txt");
+        Tools::ProjectName pn("../tests/machine/BasicTest.txt");
         ASSERT_NO_THROW(tm.lazyStart(pn, 0));
         ASSERT_NO_THROW(result = tm.lazyDebug(););
         ASSERT_EQ(result.line, "6");

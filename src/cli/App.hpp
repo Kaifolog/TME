@@ -27,7 +27,7 @@ class App
     int _argc;
     char **_argv;
 
-    ProjectName _pname;
+    Tools::ProjectName _pname;
 
     bool _no_lambda = false;
     bool _parsing = false;
@@ -38,7 +38,7 @@ class App
     App(){};
 
   public:
-    App(ProjectName pname, int argc, char *argv[])
+    App(Tools::ProjectName pname, int argc, char *argv[])
     {
         _pname = std::move(pname);
         _argc = argc;

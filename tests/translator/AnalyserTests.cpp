@@ -9,7 +9,7 @@ TEST(ParsingTest, BasicTest)
         Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/translator/BasicTest.txt");
+        Tools::ProjectName pn("../tests/translator/BasicTest.txt");
         ASSERT_NO_THROW(translator.parse(pn));
 }
 
@@ -18,7 +18,7 @@ TEST(ParsingTest, BasicFailTest)
         Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/translator/BasicFailTest.txt");
+        Tools::ProjectName pn("../tests/translator/BasicFailTest.txt");
         string output;
         try
         {
@@ -40,7 +40,7 @@ TEST(ParsingTest, HardTest)
         Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
+        Tools::ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
         ASSERT_NO_THROW(translator.parse(pn));
 }
 
@@ -49,7 +49,7 @@ TEST(ParsingTest, SectionDataTest)
         Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/translator/SectionDataTest.txt");
+        Tools::ProjectName pn("../tests/translator/SectionDataTest.txt");
         string output;
         try
         {
@@ -71,7 +71,7 @@ TEST(ParsingTest, SectionTextTest)
         Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/translator/SectionTextTest.txt");
+        Tools::ProjectName pn("../tests/translator/SectionTextTest.txt");
         string output;
         try
         {
@@ -93,7 +93,7 @@ TEST(AnalysisTest, StartTest)
         Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/translator/StartTest.txt");
+        Tools::ProjectName pn("../tests/translator/StartTest.txt");
         string output;
         try
         {
@@ -116,7 +116,7 @@ TEST(AnalysisTest, EndTest)
         Translator translator;
 
         // you should start it from ./TME/build
-        ProjectName pn("../tests/translator/EndTest.txt");
+        Tools::ProjectName pn("../tests/translator/EndTest.txt");
         string output;
         try
         {

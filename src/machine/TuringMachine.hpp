@@ -54,8 +54,8 @@ class TuringMachine
         _err = nullptr;
         _lambda = false;
     };
-    int execute(ProjectName &pname, bool lambda);
-    void lazyStart(ProjectName &pname, bool lambda);
+    int execute(Tools::ProjectName &pname, bool lambda);
+    void lazyStart(Tools::ProjectName &pname, bool lambda);
     void setLambda(bool lambda)
     {
         this->_lambda = lambda;

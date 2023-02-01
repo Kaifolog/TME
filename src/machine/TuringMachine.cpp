@@ -163,7 +163,7 @@ void TuringMachine::getStep(char a)
     }
 }
 
-void TuringMachine::lazyStart(ProjectName &pname, bool lambda)
+void TuringMachine::lazyStart(Tools::ProjectName &pname, bool lambda)
 {
     this->_lambda = lambda;
 
@@ -194,7 +194,7 @@ void TuringMachine::lazyStart(ProjectName &pname, bool lambda)
     }
 }
 
-int TuringMachine::execute(ProjectName &pname, bool lambda)
+int TuringMachine::execute(Tools::ProjectName &pname, bool lambda)
 {
     this->lazyStart(pname, lambda);
     std::string select_command;
