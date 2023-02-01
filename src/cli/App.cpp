@@ -56,7 +56,7 @@ void App::handleArguments()
 
 void App::parse()
 {
-    Translator translator;
+    translator::Translator translator;
     LOG(INFO) << "Translating started... ";
 
     translator.parse(_pname);
@@ -99,7 +99,7 @@ void App::emulate()
 
 void App::semanticAnalysis()
 {
-    Translator translator;
+    translator::Translator translator;
     LOG(INFO) << "Starting translator...";
 
     translator.analyse(_pname);

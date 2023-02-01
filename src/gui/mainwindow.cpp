@@ -517,7 +517,7 @@ void MainWindow::on_parsingbtn_clicked()
 
         try
         {
-            Translator translator;
+            translator::Translator translator;
             LOG(INFO) << "Translating started... ";
 
             translator.parse(_pname);
@@ -564,7 +564,7 @@ void MainWindow::on_analysisbtn_clicked()
 
         try
         {
-            Translator translator;
+            translator::Translator translator;
             LOG(INFO) << "Starting translator...";
 
             translator.analyse(_pname);
@@ -669,7 +669,7 @@ void MainWindow::on_quickstartbtn_clicked()
 
         try
         {
-            Translator translator;
+            translator::Translator translator;
             LOG(INFO) << "Translating started... ";
             translator.parse(_pname);
             LOG(INFO) << "Translating ended.";
