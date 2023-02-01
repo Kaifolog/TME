@@ -1,25 +1,23 @@
 #include "parser.hpp"
 
-#include <exception>
-#include <iostream>
+namespace translator
+{
 
-using namespace std;
-
-void Parser::define_fsm(string line_v)
+void Parser::defineFsm(std::string line_v)
 {
     int i;
-    if (strstr(line_v.c_str(), "#define ") == NULL)
-    {
-        throw "parse error at line #" + to_string(this->line_counter);
-    }
-    else
+    if (strstr(line_v.c_str(), "#define ") != nullptr)
     {
         i = 8;
     }
+    else
+    {
+        throw "parse error at line #" + std::to_string(this->_line_counter);
+    }
 
     // the current symbol is a space after '#define'
-    string macros_name;
-    string macros_value;
+    std::string macros_name;
+    std::string macros_value;
     while (line_v[i] != ' ')
     {
         macros_name.push_back(line_v[i++]);
@@ -29,18 +27,18 @@ void Parser::define_fsm(string line_v)
     {
         macros_value.push_back(line_v[i++]);
     }
-    vector<string> macros;
+    std::vector<std::string> macros;
     macros.push_back(macros_name);
     macros.push_back(macros_value);
 
-    this->macros_table.push_back(macros);
+    this->_macros_table.push_back(macros);
 }
 
-Command Parser::command_fsm(string line_v)
+Command Parser::commandFsm(std::string line_v)
 {
     Command result;
 
-    if (line_v.size() == 0)
+    if (line_v.empty())
     {
         return Command();
     }
@@ -49,11 +47,13 @@ Command Parser::command_fsm(string line_v)
 
     for (; i < line_v.size() - 1 && line_v[i] != ','; i++) // st1
     {
-        if (isalnum(line_v[i]) || line_v[i] == '_')
+        if (isalnum(line_v[i]) != 0 || line_v[i] == '_')
+        {
             result.initial_state.push_back(line_v[i]);
+        }
         else
         {
-            throw "parse error at line #" + to_string(this->line_counter);
+            throw "parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.initial_state.push_back('\0');
@@ -61,14 +61,16 @@ Command Parser::command_fsm(string line_v)
 
     for (; i < line_v.size() - 1 && !(line_v[i] == '-' && line_v[i + 1] == '>'); i++) // w1
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' ||
+        if (isalnum(line_v[i]) != 0 || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' ||
             line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' ||
             line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%' ||
             line_v[i] == '(' || line_v[i] == ')')
+        {
             result.initial_word.push_back(line_v[i]);
+        }
         else
         {
-            throw "parse error at line #" + to_string(this->line_counter);
+            throw "parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.initial_word.push_back('\0');
@@ -77,35 +79,41 @@ Command Parser::command_fsm(string line_v)
     i++;
     for (; i < line_v.size() - 1 && line_v[i] != ','; i++) // st2
     {
-        if (isalnum(line_v[i]) || line_v[i] == '_')
+        if (isalnum(line_v[i]) != 0 || line_v[i] == '_')
+        {
             result.final_state.push_back(line_v[i]);
+        }
         else
         {
-            throw "parse error at line #" + to_string(this->line_counter);
+            throw "parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.final_state.push_back('\0');
     i++;
     for (; i < line_v.size() - 1 && line_v[i] != ','; i++) // w2
     {
-        if (isalnum(line_v[i]) || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' ||
+        if (isalnum(line_v[i]) != 0 || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' ||
             line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' ||
             line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%' ||
             line_v[i] == '(' || line_v[i] == ')')
+        {
             result.final_word.push_back(line_v[i]);
+        }
         else
         {
-            throw "parse error at line #" + to_string(this->line_counter);
+            throw "parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.final_word.push_back('\0');
     i++;
     if (line_v[i] == 'r' || line_v[i] == 'R' || line_v[i] == 's' || line_v[i] == 'S' || line_v[i] == 'l' ||
         line_v[i] == 'L')
+    {
         result.direction = line_v[i];
+    }
     else
     {
-        throw "parse error at line #" + to_string(this->line_counter);
+        throw "parse error at line #" + std::to_string(this->_line_counter);
     }
     i++;
     if (line_v[i] == '\0')
@@ -116,40 +124,40 @@ Command Parser::command_fsm(string line_v)
     {
         result.debug = "1";
     }
-    result.lineNumber = to_string(this->line_counter);
+    result.lineNumber = std::to_string(this->_line_counter);
     return result;
 }
 
-void Parser::sector_fsm(string line_v)
+void Parser::sectorFsm(std::string line_v)
 {
-    if (!strcmp(line_v.c_str(), "section .data"))
+    if (strcmp(line_v.c_str(), "section .data") == 0)
     {
-        this->section = 'd';
+        this->_section = 'd';
         return;
     }
-    else if (!strcmp(line_v.c_str(), "section .text"))
+    else if (strcmp(line_v.c_str(), "section .text") == 0)
     {
-        this->section = 't';
+        this->_section = 't';
         return;
     }
 
-    throw "SECTION parse error at line #" + to_string(this->line_counter);
+    throw "SECTION parse error at line #" + std::to_string(this->_line_counter);
 }
 
-int Parser::datasection_fsm(string line_v)
+void Parser::datasectionFsm(std::string line_v)
 {
-    FILE *datasection;
-    if (datasection = fopen("datasection.tmp", "w"))
+    std::ofstream datasection;
+    datasection.open("datasection.tmp", std::ios::out);
+    if (!datasection.is_open())
     {
-        fputs(line_v.c_str(), datasection);
-        this->section = "";
-        fclose(datasection);
-        return '\0';
+        throw "Can't open datasection.tmp";
     }
-    throw "Temple file error";
+    datasection << line_v;
+    this->_section = "";
+    datasection.close();
 }
 
-string Parser::command_preprocessor(string line_v)
+std::string Parser::commandPreprocessor(std::string line_v)
 {
     // for windows CRLF encoding support
     if (line_v.back() == '\r')
@@ -159,10 +167,11 @@ string Parser::command_preprocessor(string line_v)
 
     // macroses
 
-    for (int k = 0; k != this->macros_table.size(); k++)
+    for (int k = 0; k != this->_macros_table.size(); k++)
     {
-        vector<string> macros = this->macros_table[k];
-        int m_len = 0, st = -1;
+        std::vector<std::string> macros = this->_macros_table[k];
+        int m_len = 0;
+        int st = -1;
         for (int p = 0; p < line_v.size() - 1; p++)
         {
             if (line_v[p] == macros[0][m_len])
@@ -174,7 +183,6 @@ string Parser::command_preprocessor(string line_v)
                 }
                 if (m_len == macros[0].size())
                 {
-                    st;
                     break;
                 }
             }
@@ -227,7 +235,7 @@ string Parser::command_preprocessor(string line_v)
         line_v = "";
     }
 
-    if (line_v.size() == 0)
+    if (line_v.empty())
     {
         return line_v;
     }
@@ -235,7 +243,7 @@ string Parser::command_preprocessor(string line_v)
     return line_v;
 }
 
-string Parser::sector_preprocessor(string line_v)
+std::string Parser::sectorPreprocessor(std::string line_v)
 {
     // for windows CRLF encoding support
     if (line_v.back() == '\r')
@@ -258,7 +266,9 @@ string Parser::sector_preprocessor(string line_v)
         if (line_v[i] == ';')
         {
             for (int j = i; line_v[j + 1] != '\0';)
+            {
                 line_v.erase(j + 1, 1);
+            }
             line_v.erase(i, 1);
         }
         if (line_v[i] == ' ' && line_v[i + 1] == ',')
@@ -279,7 +289,7 @@ string Parser::sector_preprocessor(string line_v)
     return line_v;
 }
 
-string Parser::data_preprocessor(string line_v)
+std::string Parser::dataPreprocessor(std::string line_v)
 {
     // for windows CRLF encoding support
     if (line_v.back() == '\r')
@@ -293,7 +303,9 @@ string Parser::data_preprocessor(string line_v)
         if (line_v[i] == ';') // comments
         {
             for (int j = i; line_v[j + 1] != '\0';)
+            {
                 line_v.erase(j + 1, 1);
+            }
             line_v.erase(i, 1);
         }
         if (line_v[i] == ' ' && line_v[i + 1] == '\0') // space at end of the line
@@ -301,14 +313,14 @@ string Parser::data_preprocessor(string line_v)
             line_v.erase(i, 1);
             i--;
         }
-        if (!isalnum(line_v[i]) && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') &&
+        if (isalnum(line_v[i]) == 0 && !(line_v[i] == '_') && !(line_v[i] == '|') && !(line_v[i] == ':') &&
             !(line_v[i] == ' ') && !(line_v[i] == '+') && !(line_v[i] == '-') && !(line_v[i] == '*') &&
             !(line_v[i] == '=') && !(line_v[i] == '/') && !(line_v[i] == '\0') && !(line_v[i] == '#') &&
             !(line_v[i] == '^') && !(line_v[i] == '!') && !(line_v[i] == '&') && !(line_v[i] == '?') &&
             !(line_v[i] == '>') && !(line_v[i] == '<') && !(line_v[i] == '%') && !(line_v[i] == '(') &&
             !(line_v[i] == ')'))
         {
-            throw "at data section (you have to use only allowed symbols) at char #" + to_string(i + 1);
+            throw "at data section (you have to use only allowed symbols) at char #" + std::to_string(i + 1);
         }
         if (line_v[i] == '|')
         {
@@ -316,26 +328,30 @@ string Parser::data_preprocessor(string line_v)
             {
                 if ((line_v[i + 1] == ' ' && line_v[i - 1] == ' ') || (line_v[i - 1] == ' ' && line_v[i + 1] == '\0'))
                 {
-                    throw "parse error (check space splits) at line #" + to_string(this->line_counter);
+                    throw "parse error (check space splits) at line #" + std::to_string(this->_line_counter);
                 }
             }
             if (i == 0 && line_v[i + 1] == ' ')
             {
-                throw "parse error (check space splits) at line #" + to_string(this->line_counter);
+                throw "parse error (check space splits) at line #" + std::to_string(this->_line_counter);
             }
         }
     }
-    for (int i = 0; i < line_v.length(); i++)
-        if (line_v[i] == '|')
+    for (char i : line_v)
+    {
+        if (i == '|')
+        {
             cursor_char++;
+        }
+    }
     if (cursor_char != 2)
     {
-        throw "parse error at (data section) line #" + to_string(this->line_counter);
+        throw "parse error at (data section) line #" + std::to_string(this->_line_counter);
     }
     return line_v;
 }
 
-string Parser::define_preprocessor(string line_v)
+std::string Parser::definePreprocessor(std::string line_v)
 {
     // for windows CRLF encoding support
     if (line_v.back() == '\r')
@@ -358,7 +374,9 @@ string Parser::define_preprocessor(string line_v)
         if (line_v[i] == ';')
         {
             for (int j = i; line_v[j + 1] != '\0';)
+            {
                 line_v.erase(j + 1, 1);
+            }
             line_v.erase(i, 1);
         }
         if (line_v[i] == ' ' && line_v[i + 1] == '\0')
@@ -370,10 +388,10 @@ string Parser::define_preprocessor(string line_v)
     return line_v;
 }
 
-Command Parser::parse(string command)
+Command Parser::parse(std::string command)
 {
-    this->line_counter++;
-    string line_v = command;
+    this->_line_counter++;
+    std::string line_v = command;
     if (line_v.size() > 1)
     {
         // There are only 3 kinds of rows that translator can understand:
@@ -385,32 +403,34 @@ Command Parser::parse(string command)
         switch (line_v[0])
         {
         case '#':
-            line_v = define_preprocessor(line_v);
-            define_fsm(line_v);
+            line_v = definePreprocessor(line_v);
+            defineFsm(line_v);
             line_v = "";
             break;
         case ';':
             break;
         case 's':
-            if (this->section == "")
+            if (this->_section.empty())
             {
-                line_v = sector_preprocessor(line_v);
-                sector_fsm(line_v);
+                line_v = sectorPreprocessor(line_v);
+                sectorFsm(line_v);
                 break;
             }
         default:
-            if (this->section == "d")
+            if (this->_section == "d")
             {
-                line_v = data_preprocessor(line_v);
-                datasection_fsm(line_v);
+                line_v = dataPreprocessor(line_v);
+                datasectionFsm(line_v);
                 break;
             }
-            if (this->section == "t" || this->section == "")
+            if (this->_section == "t" || this->_section.empty())
             {
-                line_v = command_preprocessor(line_v);
-                return command_fsm(line_v);
+                line_v = commandPreprocessor(line_v);
+                return commandFsm(line_v);
             }
         };
     }
     return Command();
 }
+
+} // namespace translator

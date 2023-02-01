@@ -1,28 +1,25 @@
-#include "../external/easyloggingpp/easylogging++.h"
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <string>
-#include <time.h>
-#include <vector>
-
-using namespace std;
-
 #ifndef _COMMAND
 #define _COMMAND
+
+#include "../external/easyloggingpp/easylogging++.h"
+#include <string>
+
+namespace translator
+{
 
 class Translator;
 
 struct Command
 {
-    string initial_state;
-    string initial_word;
-    string final_state;
-    string final_word;
-    string direction;
-    string debug;
-    string lineNumber;
+    std::string initial_state;
+    std::string initial_word;
+    std::string final_state;
+    std::string final_word;
+    std::string direction;
+    std::string debug;
+    std::string lineNumber;
 };
+
+} // namespace translator
 
 #endif

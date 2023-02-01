@@ -1,6 +1,6 @@
 #include "translator.hpp"
 
-void command_to_sqlite3(sqlite3 *db, Command current_command, sqlite3_stmt *ppStmt)
+void command_to_sqlite3(sqlite3 *db, translator::Command current_command, sqlite3_stmt *ppStmt)
 {
     sqlite3_bind_text(ppStmt, 1, current_command.initial_state.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(ppStmt, 2, current_command.initial_word.c_str(), -1, SQLITE_STATIC);
@@ -58,8 +58,8 @@ void Translator::init(Tools::ProjectName &pname)
 void Translator::parse(Tools::ProjectName &pname)
 {
     init(pname);
-    Parser parser;
-    Command current_command;
+    translator::Parser parser;
+    translator::Command current_command;
     string buffer;
     while (getline(fin, buffer))
     {

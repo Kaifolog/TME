@@ -1,27 +1,41 @@
-#include "command.hpp"
 
-using namespace std;
 
 #ifndef _PARSER
 #define _PARSER
 
+#include <ctype.h>
+#include <exception>
+#include <fstream>
+#include <iostream>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
+#include <vector>
+
+#include "command.hpp"
+
+namespace translator
+{
+
 class Parser
 {
-    string section;
-    int line_counter = 0;
-    vector<vector<string>> macros_table;
+    std::string _section;
+    int _line_counter = 0;
+    std::vector<std::vector<std::string>> _macros_table;
 
-    void define_fsm(string line_v);
-    Command command_fsm(string line_v);
-    void sector_fsm(string line_v);
-    int datasection_fsm(string line_v);
-    string command_preprocessor(string line_v);
-    string sector_preprocessor(string line_v);
-    string data_preprocessor(string line_v);
-    string define_preprocessor(string line_v);
+    void defineFsm(std::string line_v);
+    Command commandFsm(std::string line_v);
+    void sectorFsm(std::string line_v);
+    void datasectionFsm(std::string line_v);
+    std::string commandPreprocessor(std::string line_v);
+    std::string sectorPreprocessor(std::string line_v);
+    std::string dataPreprocessor(std::string line_v);
+    std::string definePreprocessor(std::string line_v);
 
   public:
-    Command parse(string command);
+    Command parse(std::string command);
 };
+
+} // namespace translator
 
 #endif
