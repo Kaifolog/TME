@@ -11,7 +11,7 @@ extern "C"
 }
 
 #include "../tools/ProjectName.hpp"
-#include "parser.hpp"
+#include "Parser.hpp"
 
 namespace translator
 {

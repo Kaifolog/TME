@@ -30,7 +30,7 @@ extern "C"
 
 #include "../machine/TuringMachine.hpp"
 #include "../tools/ProjectName.hpp"
-#include "../translator/translator.hpp"
+#include "../translator/Translator.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

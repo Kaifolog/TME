@@ -3,7 +3,7 @@
 #include <string>
 
 #include "../../src/machine/TuringMachine.hpp"
-#include "../../src/translator/translator.hpp"
+#include "../../src/translator/Translator.hpp"
 
 TEST(ExecutionTest, BasicTest)
 {

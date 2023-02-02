@@ -16,7 +16,7 @@ extern "C"
 #include "../machine/MachineState.hpp"
 #include "../machine/TuringMachine.hpp"
 #include "../tools/ProjectName.hpp"
-#include "../translator/translator.hpp"
+#include "../translator/Translator.hpp"
 #include "libs/text_functions.hpp"
 
 namespace cli

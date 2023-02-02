@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <string>
 
-#include "../../src/translator/translator.hpp"
+#include "../../src/translator/Translator.hpp"
 
 TEST(ParsingTest, BasicTest)
 {

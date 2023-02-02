@@ -1,4 +1,4 @@
-#include "translator.hpp"
+#include "Translator.hpp"
 namespace translator
 {
 
