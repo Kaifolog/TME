@@ -40,38 +40,38 @@ void MainWindow::slotShortcutCtrlTab()
 {
     if (ui->rowNumberLabel->text().length())
     {
-        int rawNumber = ui->rowNumberLabel->text().toInt();
+        int raw_number = ui->rowNumberLabel->text().toInt();
 
         if (ui->datacheckBox->isChecked())
         {
-            rawNumber -= 2;
+            raw_number -= 2;
         }
 
-        QString str = ui->mainTextField->toPlainText();
-        QStringList strList = str.split('\n');           // splits textEdit text by \n
-        QString originalStr = strList.at(rawNumber - 1); // gets a second result of the split
+        QString main_textField = ui->mainTextField->toPlainText();
+        QStringList str_list = main_textField.split('\n');  // splits textEdit text by \n
+        QString original_str = str_list.at(raw_number - 1); // gets a second result of the split
 
-        QStringList commaTest = originalStr.split(',');
-        QStringList arrowTest = originalStr.split("->");
+        QStringList comma_test = original_str.split(',');
+        QStringList arrow_test = original_str.split("->");
 
         QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
 
         // getts cursor to the current row
-        for (int i = 0; i < rawNumber - 1; i++)
+        for (int i = 0; i < raw_number - 1; i++)
             text_cursor.movePosition(QTextCursor::Down);
 
         text_cursor.movePosition(QTextCursor::EndOfLine);
 
         // appends punctuation
-        if (commaTest.length() == 1)
+        if (comma_test.length() == 1)
             text_cursor.insertText(",");
-        if (commaTest.length() == 2 && arrowTest.length() == 1)
+        if (comma_test.length() == 2 && arrow_test.length() == 1)
             text_cursor.insertText("->");
-        if (commaTest.length() == 2 && arrowTest.length() == 2)
+        if (comma_test.length() == 2 && arrow_test.length() == 2)
             text_cursor.insertText(",");
-        if (commaTest.length() == 3 && arrowTest.length() == 2)
+        if (comma_test.length() == 3 && arrow_test.length() == 2)
             text_cursor.insertText(",");
-        if (commaTest.length() == 4 && arrowTest.length() == 2)
+        if (comma_test.length() == 4 && arrow_test.length() == 2)
             text_cursor.insertText("\n");
     }
 }
@@ -80,35 +80,35 @@ void MainWindow::slotShortcutCtrlD()
 {
     if (ui->rowNumberLabel->text().length())
     {
-        int rawNumber = ui->rowNumberLabel->text().toInt();
+        int raw_number = ui->rowNumberLabel->text().toInt();
 
         if (ui->datacheckBox->isChecked())
         {
-            rawNumber -= 2;
+            raw_number -= 2;
         }
 
-        QString str = ui->mainTextField->toPlainText();
-        QStringList strList = str.split('\n'); // splits textEdit text by \n
-        str = strList.at(rawNumber - 1);       // gets a second result of the split
+        QString main_textField = ui->mainTextField->toPlainText();
+        QStringList str_list = main_textField.split('\n'); // splits textEdit text by \n
+        main_textField = str_list.at(raw_number - 1);      // gets a second result of the split
 
-        strList = str.split(";#d");
+        str_list = main_textField.split(";#d");
 
         QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
 
         // get s cursor to the current row
-        for (int i = 0; i < rawNumber - 1; i++)
+        for (int i = 0; i < raw_number - 1; i++)
             text_cursor.movePosition(QTextCursor::Down);
 
         text_cursor.movePosition(QTextCursor::EndOfLine);
 
         // appends punctuation
-        if (strList.size() == 1)
+        if (str_list.size() == 1)
         {
             text_cursor.insertText("\t;#d");
         }
         else
         {
-            for (int i = 0; i < strList[(strList.size() - 1)].size() + 4; i++)
+            for (int i = 0; i < str_list[(str_list.size() - 1)].size() + 4; i++)
             {
                 text_cursor.movePosition(QTextCursor::Left);
                 text_cursor.deleteChar();
@@ -131,14 +131,14 @@ void MainWindow::breakpointHighlightON()
     if (!_pname.empty())
     {
 
-        sqlite3 *db = 0;
-        char *err = 0;
+        sqlite3 *db = nullptr;
+        char *err = nullptr;
         sqlite3_stmt *ppStmt;
 
         sqlite3_open(_pname.getDBFile().c_str(), &db);
         sqlite3_exec(db, "BEGIN TRANSACTION", NULL, NULL, &err);
 
-        string select_command;
+        std::string select_command;
         select_command = "SELECT * FROM commands WHERE debug=\"1\"";
         sqlite3_prepare_v2(db, select_command.c_str(), 256, &ppStmt, NULL);
         int resultSqlite3 = sqlite3_step(ppStmt);
@@ -146,7 +146,7 @@ void MainWindow::breakpointHighlightON()
         while (resultSqlite3 == SQLITE_ROW)
         {
             QTextCursor cur = ui->mainTextField->textCursor();
-            int linenumber = atoi(string((char *)sqlite3_column_text(ppStmt, 6)).c_str());
+            int linenumber = atoi(std::string((char *)sqlite3_column_text(ppStmt, 6)).c_str());
             cur.movePosition(QTextCursor::Start);
             if (ui->inputlineEdit->text().length())
             {
@@ -154,11 +154,11 @@ void MainWindow::breakpointHighlightON()
             }
             for (int i = 0; i < linenumber - 1; i++)
                 cur.movePosition(QTextCursor::Down);
-            QTextBlockFormat f;
+            QTextBlockFormat formater;
             // no theme color switcher
-            f.setBackground(QBrush("#550e12"));
+            formater.setBackground(QBrush("#550e12"));
             cur.select(QTextCursor::LineUnderCursor);
-            cur.setBlockFormat(f);
+            cur.setBlockFormat(formater);
 
             resultSqlite3 = sqlite3_step(ppStmt);
         }
@@ -181,17 +181,17 @@ void MainWindow::currentLineHighlight(int line)
     cur.movePosition(QTextCursor::Start);
     for (int i = 0; i < highlightedLine - 1; i++)
         cur.movePosition(QTextCursor::Down);
-    QTextBlockFormat f;
+    QTextBlockFormat formater;
     if (isDarkMode)
     {
-        f.setBackground(QBrush("#2a2931"));
+        formater.setBackground(QBrush("#2a2931"));
     }
     else
     {
-        f.setBackground(QBrush("#ffffff"));
+        formater.setBackground(QBrush("#ffffff"));
     }
     cur.select(QTextCursor::LineUnderCursor);
-    cur.setBlockFormat(f);
+    cur.setBlockFormat(formater);
 
     highlightedLine = line;
 
@@ -201,12 +201,13 @@ void MainWindow::currentLineHighlight(int line)
     cur1.movePosition(QTextCursor::Start);
     for (int i = 0; i < line - 1; i++)
         cur1.movePosition(QTextCursor::Down);
-    QTextBlockFormat f1;
-    f1.setBackground(QBrush("#4b4b18"));
+    QTextBlockFormat formater1;
+    formater1.setBackground(QBrush("#4b4b18"));
     cur1.select(QTextCursor::LineUnderCursor);
-    cur1.setBlockFormat(f1);
+    cur1.setBlockFormat(formater1);
 
-    if (line > 24)
+    const int EDITOR_WIDTH_IN_ROWS = 24;
+    if (line > EDITOR_WIDTH_IN_ROWS)
     {
         QTextCursor cursor(ui->mainTextField->document()->findBlockByLineNumber(
             line - 1)); // (line - 1) because line number is starts from 0
@@ -221,18 +222,18 @@ void MainWindow::breakpointHighlightOFF()
     cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     cursor.select(QTextCursor::Document);
-    QTextBlockFormat f1;
+    QTextBlockFormat formater1;
     if (isDarkMode)
     {
-        f1.setBackground(QBrush("#2a2931"));
+        formater1.setBackground(QBrush("#2a2931"));
     }
     else
     {
-        f1.setBackground(QBrush("#ffffff"));
+        formater1.setBackground(QBrush("#ffffff"));
     }
     // #2a2931 // #550e12 // #4b4b18
     // cur1.select(QTextCursor::LineUnderCursor);
-    cursor.setBlockFormat(f1);
+    cursor.setBlockFormat(formater1);
 }
 
 void MainWindow::AllButtonsSetEnabled(bool state)
@@ -275,11 +276,11 @@ void MainWindow::on_actionOpen_triggered()
             ui->datacheckBox->isChecked())
         {
             QStringList list = text.split('\n');
-            QString inputData = list[1];
+            QString input_data = list[1];
             list.removeFirst();
             list.removeFirst();
             text = list.join('\n');
-            ui->inputlineEdit->setText(inputData);
+            ui->inputlineEdit->setText(input_data);
         }
         else
             ui->inputlineEdit->clear();
@@ -392,11 +393,11 @@ void MainWindow::on_datacheckBox_clicked()
         if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data")
         {
             QStringList list = text.split('\n');
-            QString inputData = list[1];
+            QString input_data = list[1];
             list.removeFirst();
             list.removeFirst();
             text = list.join('\n');
-            ui->inputlineEdit->setText(inputData);
+            ui->inputlineEdit->setText(input_data);
             ui->mainTextField->clear();
             ui->mainTextField->setPlainText(text);
         }
@@ -467,7 +468,7 @@ void MainWindow::NormalMiddleware()
         {
             ui->logwindow->appendPlainText(message);
         }
-        catch (string message)
+        catch (std::string message)
         {
             ui->logwindow->appendPlainText(message.c_str());
         }
@@ -494,7 +495,7 @@ void MainWindow::DebugMiddleware()
         {
             ui->logwindow->appendPlainText(message);
         }
-        catch (string message)
+        catch (std::string message)
         {
             ui->logwindow->appendPlainText(message.c_str());
         }
@@ -528,13 +529,14 @@ void MainWindow::on_parsingbtn_clicked()
         {
             LOG(ERROR) << message;
         }
-        catch (string message)
+        catch (std::string message)
         {
             LOG(ERROR) << message;
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << std::endl
+                       << "Please tell about this to the developer." << std::endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -586,13 +588,14 @@ void MainWindow::on_analysisbtn_clicked()
         {
             LOG(ERROR) << message;
         }
-        catch (string message)
+        catch (std::string message)
         {
             LOG(ERROR) << message;
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << std::endl
+                       << "Please tell about this to the developer." << std::endl;
         }
     }
     AllButtonsSetEnabled(true);
@@ -610,7 +613,7 @@ void MainWindow::on_emulationbtn_clicked()
 
         try
         {
-            TuringMachine tm;
+            Machine::TuringMachine tm;
             LOG(INFO) << "Starting emulator...";
 
             tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
@@ -632,13 +635,14 @@ void MainWindow::on_emulationbtn_clicked()
         {
             LOG(ERROR) << message;
         }
-        catch (string message)
+        catch (std::string message)
         {
             LOG(ERROR) << message;
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << std::endl
+                       << "Please tell about this to the developer." << std::endl;
         }
     }
 
@@ -674,7 +678,7 @@ void MainWindow::on_quickstartbtn_clicked()
             translator.parse(_pname);
             LOG(INFO) << "Translating ended.";
 
-            TuringMachine tm;
+            Machine::TuringMachine tm;
             LOG(INFO) << "Starting emulator...";
             tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
             LOG(INFO) << "Run complete";
@@ -694,13 +698,14 @@ void MainWindow::on_quickstartbtn_clicked()
         {
             LOG(ERROR) << message;
         }
-        catch (string message)
+        catch (std::string message)
         {
             LOG(ERROR) << message;
         }
         catch (...)
         {
-            LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
+            LOG(ERROR) << "Something went wrong." << std::endl
+                       << "Please tell about this to the developer." << std::endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -733,7 +738,7 @@ void MainWindow::on_debugbtn_clicked()
 
         ui->logwindow->appendPlainText("Starting debugger...");
 
-        MachineState result;
+        Machine::MachineState result;
         try
         {
             _debugger.lazyStart(_pname, ui->lambdacheckBox->isChecked());
@@ -747,7 +752,7 @@ void MainWindow::on_debugbtn_clicked()
         {
             ui->logwindow->appendPlainText(message);
         }
-        catch (string message)
+        catch (std::string message)
         {
             ui->logwindow->appendPlainText(message.c_str());
         }
@@ -769,7 +774,7 @@ void MainWindow::on_debugnextbtn_clicked()
     {
         ui->debugnextbtn->setEnabled(false);
 
-        MachineState result;
+        Machine::MachineState result;
         try
         {
             _debugger.setLambda(ui->lambdacheckBox->isChecked());
@@ -784,7 +789,7 @@ void MainWindow::on_debugnextbtn_clicked()
             ui->logwindow->appendPlainText(message);
             NORMALMIDDLEWARE
         }
-        catch (string message)
+        catch (std::string message)
         {
             ui->logwindow->appendPlainText(message.c_str());
             NORMALMIDDLEWARE
@@ -810,7 +815,7 @@ void MainWindow::on_skipButton_clicked()
 
         ui->logwindow->appendPlainText("Debugger continue.");
 
-        MachineState result;
+        Machine::MachineState result;
         try
         {
             _debugger.setLambda(ui->lambdacheckBox->isChecked());
@@ -825,7 +830,7 @@ void MainWindow::on_skipButton_clicked()
             ui->logwindow->appendPlainText(message);
             NORMALMIDDLEWARE
         }
-        catch (string message)
+        catch (std::string message)
         {
             ui->logwindow->appendPlainText(message.c_str());
             NORMALMIDDLEWARE

@@ -1,13 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include <QShortcut>
-#include <QMessageBox>
-#include <QtGui>
-#include <QMainWindow>
-#include <QFileDialog>
-#include <QMenuBar>
-#include <QTextStream>
 #include <QFile>
+#include <QFileDialog>
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QShortcut>
+#include <QTextStream>
+#include <QtGui>
 
 #include "./ui_mainwindow.h"
 
@@ -15,12 +15,12 @@ extern "C"
 {
 #include <stdio.h>
 }
+#include <algorithm>
+#include <chrono>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <chrono>
-#include <algorithm>
 
 extern "C"
 {
@@ -28,14 +28,14 @@ extern "C"
 }
 #include "../external/easyloggingpp/easylogging++.h"
 
-#include "../translator/translator.hpp"
 #include "../machine/TuringMachine.hpp"
 #include "../tools/ProjectName.hpp"
+#include "../translator/translator.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
-    class MainWindow;
+class MainWindow;
 }
 QT_END_NAMESPACE
 
@@ -43,11 +43,11 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-private:
+  private:
     bool debugMode = false;
     int highlightedLine = false;
     Tools::ProjectName _pname;
-    TuringMachine _debugger;
+    Machine::TuringMachine _debugger;
 
     Ui::MainWindow *ui;
 
@@ -59,7 +59,7 @@ private:
     QShortcut *CtrlTab;    // |
     QShortcut *CtrlSpace;  //_|
 
-private slots:
+  private slots:
     // keybinds slots
     void slotShortcutCtrlS()
     {
@@ -116,7 +116,7 @@ private slots:
     void NormalMiddleware(); //_  middleware functions
     void DebugMiddleware();  //_|
 
-public:
+  public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow()
     {
