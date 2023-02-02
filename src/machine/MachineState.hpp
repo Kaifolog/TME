@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace Machine
+namespace machine
 {
 
 struct MachineState
@@ -20,6 +20,6 @@ struct MachineState
     }
 };
 
-} // namespace Machine
+} // namespace machine
 
 #endif

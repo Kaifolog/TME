@@ -46,8 +46,8 @@ class MainWindow : public QMainWindow
   private:
     bool debugMode = false;
     int highlightedLine = false;
-    Tools::ProjectName _pname;
-    Machine::TuringMachine _debugger;
+    tools::ProjectName _pname;
+    machine::TuringMachine _debugger;
 
     Ui::MainWindow *ui;
 

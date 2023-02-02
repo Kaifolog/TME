@@ -30,7 +30,7 @@ void App::handleArguments()
     // i = 1 because _argv[0] is a program path
     for (int i = 1; i < _argc; i++)
     {
-        string current = _argv[i];
+        std::string current = _argv[i];
         if (current == "-l")
         {
             this->_no_lambda = true;
@@ -66,7 +66,7 @@ void App::parse()
 
 void App::emulate()
 {
-    Machine::TuringMachine tm;
+    machine::TuringMachine tm;
 
     if (!_debug)
     {
@@ -79,18 +79,18 @@ void App::emulate()
     }
 
     LOG(INFO) << "Starting _debugger...";
-    Machine::MachineState result;
+    machine::MachineState result;
 
-    string debug_line;
+    std::string debug_line;
     tm.lazyStart(_pname, _no_lambda);
 
     do
     {
         result = tm.lazyDebug();
-        cout << result.current_strip << endl;
-        cout << "current_state: " << result.current_state << ", current_word: " << result.current_word
-             << ", current line: " << result.line << endl;
-        getline(cin, debug_line);
+        std::cout << result.current_strip << std::endl;
+        std::cout << "current_state: " << result.current_state << ", current_word: " << result.current_word
+                  << ", current line: " << result.line << std::endl;
+        getline(std::cin, debug_line);
     } while (result.current_state != "end");
 
     tm.lazyFinalize();
@@ -112,33 +112,33 @@ int App::execute()
     if (_argc == 1)
     {
         textStartFunc();
-        cout << endl;
+        std::cout << std::endl;
         return 0;
     }
-    if (_argc == 2 && string(_argv[1]) == string("-v"))
+    if (_argc == 2 && std::string(_argv[1]) == std::string("-v"))
     {
         textFuncVersion();
-        cout << endl;
+        std::cout << std::endl;
         return 0;
     }
 
     try
     {
         // if there are only path to origin or path to origin + _no_lambda flag
-        if (_argc == 2 || (_argc == 3 && string(_argv[2]) == "-l"))
+        if (_argc == 2 || (_argc == 3 && std::string(_argv[2]) == "-l"))
         {
             parse();
             semanticAnalysis();
             emulate();
-            cout << endl;
+            std::cout << std::endl;
             return 0;
         }
 
-        ifstream fin(_pname.getOriginal());
+        std::ifstream fin(_pname.getOriginal());
         if (!fin.is_open())
         {
             LOG(ERROR) << "File opening exception";
-            cout << endl;
+            std::cout << std::endl;
             return 1;
         }
         fin.close();
@@ -150,7 +150,7 @@ int App::execute()
             parse();
             semanticAnalysis();
             emulate();
-            cout << endl;
+            std::cout << std::endl;
             return 0;
         }
 
@@ -170,22 +170,22 @@ int App::execute()
     catch (const char *message)
     {
         LOG(ERROR) << message;
-        cout << endl;
+        std::cout << std::endl;
         return 1;
     }
-    catch (string message)
+    catch (std::string message)
     {
         LOG(ERROR) << message;
-        cout << endl;
+        std::cout << std::endl;
         return 1;
     }
     catch (...)
     {
-        LOG(ERROR) << "Something went wrong." << endl << "Please tell about this to the developer." << endl;
-        cout << endl;
+        LOG(ERROR) << "Something went wrong." << std::endl << "Please tell about this to the developer." << std::endl;
+        std::cout << std::endl;
         return 1;
     }
-    cout << endl;
+    std::cout << std::endl;
     return 0;
 };
 } // namespace cli

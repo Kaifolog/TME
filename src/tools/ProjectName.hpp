@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>
 
-namespace Tools
+namespace tools
 {
 
 class ProjectName
@@ -68,6 +68,6 @@ class ProjectName
     };
 };
 
-} // namespace Tools
+} // namespace tools
 
 #endif

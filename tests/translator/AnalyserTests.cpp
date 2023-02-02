@@ -9,7 +9,7 @@ TEST(ParsingTest, BasicTest)
     translator::Translator translator;
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/translator/BasicTest.txt");
+    tools::ProjectName pn("../tests/translator/BasicTest.txt");
     ASSERT_NO_THROW(translator.parse(pn));
 }
 
@@ -18,7 +18,7 @@ TEST(ParsingTest, BasicFailTest)
     translator::Translator translator;
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/translator/BasicFailTest.txt");
+    tools::ProjectName pn("../tests/translator/BasicFailTest.txt");
     std::string output;
     try
     {
@@ -40,7 +40,7 @@ TEST(ParsingTest, HardTest)
     translator::Translator translator;
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
+    tools::ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
     ASSERT_NO_THROW(translator.parse(pn));
 }
 
@@ -49,7 +49,7 @@ TEST(ParsingTest, SectionDataTest)
     translator::Translator translator;
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/translator/SectionDataTest.txt");
+    tools::ProjectName pn("../tests/translator/SectionDataTest.txt");
     std::string output;
     try
     {
@@ -71,7 +71,7 @@ TEST(ParsingTest, SectionTextTest)
     translator::Translator translator;
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/translator/SectionTextTest.txt");
+    tools::ProjectName pn("../tests/translator/SectionTextTest.txt");
     std::string output;
     try
     {
@@ -93,7 +93,7 @@ TEST(AnalysisTest, StartTest)
     translator::Translator translator;
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/translator/StartTest.txt");
+    tools::ProjectName pn("../tests/translator/StartTest.txt");
     std::string output;
     try
     {
@@ -116,7 +116,7 @@ TEST(AnalysisTest, EndTest)
     translator::Translator translator;
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/translator/EndTest.txt");
+    tools::ProjectName pn("../tests/translator/EndTest.txt");
     std::string output;
     try
     {

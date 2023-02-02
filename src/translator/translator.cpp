@@ -21,7 +21,7 @@ bool check_str_in_vec(std::vector<std::string> v, std::string s)
     return find(v.begin(), v.end(), s) == v.end();
 }
 
-void Translator::init(Tools::ProjectName &pname)
+void Translator::init(tools::ProjectName &pname)
 {
     this->_needs_to_finalize = true;
 
@@ -57,7 +57,7 @@ void Translator::init(Tools::ProjectName &pname)
     sqlite3_prepare_v2(_db, _insert_bind, 256, &_pp_stmt, NULL);
 };
 
-void Translator::parse(Tools::ProjectName &pname)
+void Translator::parse(tools::ProjectName &pname)
 {
     init(pname);
     translator::Parser parser;
@@ -105,7 +105,7 @@ void Translator::finalize()
     }
 };
 
-void Translator::analyse(Tools::ProjectName &pname)
+void Translator::analyse(tools::ProjectName &pname)
 {
     std::string a = pname.getDBFile();
     if (sqlite3_open(a.c_str(), &_db))

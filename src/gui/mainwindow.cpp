@@ -613,7 +613,7 @@ void MainWindow::on_emulationbtn_clicked()
 
         try
         {
-            Machine::TuringMachine tm;
+            machine::TuringMachine tm;
             LOG(INFO) << "Starting emulator...";
 
             tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
@@ -678,7 +678,7 @@ void MainWindow::on_quickstartbtn_clicked()
             translator.parse(_pname);
             LOG(INFO) << "Translating ended.";
 
-            Machine::TuringMachine tm;
+            machine::TuringMachine tm;
             LOG(INFO) << "Starting emulator...";
             tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
             LOG(INFO) << "Run complete";
@@ -738,7 +738,7 @@ void MainWindow::on_debugbtn_clicked()
 
         ui->logwindow->appendPlainText("Starting debugger...");
 
-        Machine::MachineState result;
+        machine::MachineState result;
         try
         {
             _debugger.lazyStart(_pname, ui->lambdacheckBox->isChecked());
@@ -774,7 +774,7 @@ void MainWindow::on_debugnextbtn_clicked()
     {
         ui->debugnextbtn->setEnabled(false);
 
-        Machine::MachineState result;
+        machine::MachineState result;
         try
         {
             _debugger.setLambda(ui->lambdacheckBox->isChecked());
@@ -815,7 +815,7 @@ void MainWindow::on_skipButton_clicked()
 
         ui->logwindow->appendPlainText("Debugger continue.");
 
-        Machine::MachineState result;
+        machine::MachineState result;
         try
         {
             _debugger.setLambda(ui->lambdacheckBox->isChecked());

@@ -1,6 +1,6 @@
 #include "TuringMachine.hpp"
 
-namespace Machine
+namespace machine
 {
 
 inline bool space(char c)
@@ -163,7 +163,7 @@ void TuringMachine::getStep(char a)
     }
 }
 
-void TuringMachine::lazyStart(Tools::ProjectName &pname, bool lambda)
+void TuringMachine::lazyStart(tools::ProjectName &pname, bool lambda)
 {
     this->_lambda = lambda;
 
@@ -194,7 +194,7 @@ void TuringMachine::lazyStart(Tools::ProjectName &pname, bool lambda)
     }
 }
 
-int TuringMachine::execute(Tools::ProjectName &pname, bool lambda)
+int TuringMachine::execute(tools::ProjectName &pname, bool lambda)
 {
     this->lazyStart(pname, lambda);
     std::string select_command;
@@ -284,4 +284,4 @@ void TuringMachine::lazyFinalize()
     _err = 0;
 }
 
-} // namespace Machine
+} // namespace machine

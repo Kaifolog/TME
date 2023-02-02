@@ -7,7 +7,7 @@
 
 TEST(ExecutionTest, BasicTest)
 {
-    Machine::TuringMachine tm;
+    machine::TuringMachine tm;
 
     // preparing test
     std::ofstream datasec;
@@ -16,7 +16,7 @@ TEST(ExecutionTest, BasicTest)
     datasec.close();
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/machine/BasicTest.txt");
+    tools::ProjectName pn("../tests/machine/BasicTest.txt");
     ASSERT_NO_THROW(tm.execute(pn, 0));
 
     // preparing test
@@ -28,7 +28,7 @@ TEST(ExecutionTest, BasicTest)
 
 TEST(ExecutionTest, LambdaTest)
 {
-    Machine::TuringMachine tm;
+    machine::TuringMachine tm;
 
     // preparing test
     std::ofstream datasec;
@@ -37,7 +37,7 @@ TEST(ExecutionTest, LambdaTest)
     datasec.close();
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/machine/BasicTest.txt");
+    tools::ProjectName pn("../tests/machine/BasicTest.txt");
     ASSERT_NO_THROW(tm.execute(pn, 1));
 
     // preparing test
@@ -49,7 +49,7 @@ TEST(ExecutionTest, LambdaTest)
 
 TEST(ExecutionTest, HardTest)
 {
-    Machine::TuringMachine tm;
+    machine::TuringMachine tm;
 
     // preparing test
     std::ofstream datasec;
@@ -58,7 +58,7 @@ TEST(ExecutionTest, HardTest)
     datasec.close();
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
+    tools::ProjectName pn("../examples/ZhegalkinOfDualFunc.txt");
     ASSERT_NO_THROW(tm.execute(pn, 1));
 
     // preparing test
@@ -73,8 +73,8 @@ TEST(ExecutionTest, HardTest)
 
 TEST(DebuggingTest, LambdaTest)
 {
-    Machine::TuringMachine tm;
-    Machine::MachineState result;
+    machine::TuringMachine tm;
+    machine::MachineState result;
 
     std::ofstream datasec;
     datasec.open("datasection.tmp");
@@ -82,7 +82,7 @@ TEST(DebuggingTest, LambdaTest)
     datasec.close();
 
     // you should start it from ./TME/build
-    Tools::ProjectName pn("../tests/machine/BasicTest.txt");
+    tools::ProjectName pn("../tests/machine/BasicTest.txt");
     ASSERT_NO_THROW(tm.lazyStart(pn, 0));
     ASSERT_NO_THROW(result = tm.lazyDebug(););
     ASSERT_EQ(result.line, "6");

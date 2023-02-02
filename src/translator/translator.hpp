@@ -27,12 +27,12 @@ class Translator
     std::ifstream _fin;
     bool _needs_to_finalize = false;
 
-    void init(Tools::ProjectName &pname);
+    void init(tools::ProjectName &pname);
     void finalize();
 
   public:
-    void parse(Tools::ProjectName &pname);
-    void analyse(Tools::ProjectName &pname);
+    void parse(tools::ProjectName &pname);
+    void analyse(tools::ProjectName &pname);
 };
 
 } // namespace translator

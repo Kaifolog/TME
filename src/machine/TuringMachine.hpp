@@ -16,7 +16,7 @@ extern "C"
 
 #include "../tools/ProjectName.hpp"
 
-namespace Machine
+namespace machine
 {
 
 class TuringMachine
@@ -54,8 +54,8 @@ class TuringMachine
         _err = nullptr;
         _lambda = false;
     };
-    int execute(Tools::ProjectName &pname, bool lambda);
-    void lazyStart(Tools::ProjectName &pname, bool lambda);
+    int execute(tools::ProjectName &pname, bool lambda);
+    void lazyStart(tools::ProjectName &pname, bool lambda);
     void setLambda(bool lambda)
     {
         this->_lambda = lambda;
@@ -64,6 +64,6 @@ class TuringMachine
     void lazyFinalize();
 };
 
-} // namespace Machine
+} // namespace machine
 
 #endif
