@@ -1,22 +1,38 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.3] - ```Unreleased```
+## [2.0.0b] - ```Unreleased```
 ### Added
-- Flag for cleaning temporary files after closing.
-- clang-format, clang-tidy.
-- Linux&Mac gui version support.
-- Tests
-- Logo for executable file.
+- Application settings
+- Runtime theme changing
+- New themes
+- Logo for executable file
 - .pro file.
+- Static builded release
+- Version deprecation notice
 
 ### Changed
-- Code refactoring.
+- Redesigned interface
 - instruction.pdf
 - README.md
 
+## [1.3] - 03-02-2023
+### Added
+- clang-format, clang-tidy
+- Linux&Mac gui version support
+- Tests
+- Multi-word macroses
+- True modular architecture
+- CONTRIBUTION.md
+
+### Changed
+- Code has been largely refactored
+- README.md
+- Small improvements and bug fixes
+- Beautify cmake
+
 ### Removed
--
+- Dependency libraries removed from repository
 
 ## [1.2.1] - 31-01-2022
 ### Added

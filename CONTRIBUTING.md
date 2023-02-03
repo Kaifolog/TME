@@ -29,3 +29,9 @@ find ./src/ -iname *.hpp -o -iname *.cpp | xargs clang-format -i
 ```
 
 The last step before committing is to try to build the current application version.
+
+Project primarly (except names of files and include guards) uses the google c++ code style :
+
+```
+user@machine:~/.../TME$ clang-tidy ./src/gui/mainwindow.cpp
+```
