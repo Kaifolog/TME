@@ -1,10 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
+#include <QCloseEvent>
+#include <QCoreApplication>
 #include <QFile>
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QSettings>
 #include <QShortcut>
 #include <QTextStream>
 #include <QtGui>
@@ -15,6 +19,7 @@ extern "C"
 {
 #include <stdio.h>
 }
+
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -111,7 +116,10 @@ class MainWindow : public QMainWindow
     void breakpointHighlightOFF();       // |
     void AllButtonsSetEnabled(bool);     // |
     void currentLineHighlight(int line); // |
+    void openInEditor();                 // |
     void clearLogFile();                 //_|
+
+    void closeEvent(QCloseEvent *bar);
 
     void NormalMiddleware(); //_  middleware functions
     void DebugMiddleware();  //_|
@@ -122,6 +130,8 @@ class MainWindow : public QMainWindow
     {
         delete ui;
     };
+    void writeSettings();
+    void readSettings();
     bool isDarkMode = 0;
 };
 

@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 
-/* keybinds slots */
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -34,90 +32,105 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     CtrlD = new QShortcut(this);
     CtrlD->setKey(Qt::CTRL + Qt::Key_D);
     connect(CtrlD, SIGNAL(activated()), this, SLOT(slotShortcutCtrlD()));
+
+    // seting settings
+    QCoreApplication::setOrganizationName("Bulak R&D");
+    QCoreApplication::setOrganizationDomain("kaifolog.github.io");
+    QCoreApplication::setApplicationName("TME");
+
+    MainWindow::readSettings();
 }
 
-void MainWindow::slotShortcutCtrlTab()
+/* settings */
+
+void MainWindow::readSettings()
 {
-    if (ui->rowNumberLabel->text().length())
+    QSettings settings;
+
+    if (settings.value("global/version") != "2.0.0a")
     {
-        int raw_number = ui->rowNumberLabel->text().toInt();
-
-        if (ui->datacheckBox->isChecked())
-        {
-            raw_number -= 2;
-        }
-
-        QString main_textField = ui->mainTextField->toPlainText();
-        QStringList str_list = main_textField.split('\n');  // splits textEdit text by \n
-        QString original_str = str_list.at(raw_number - 1); // gets a second result of the split
-
-        QStringList comma_test = original_str.split(',');
-        QStringList arrow_test = original_str.split("->");
-
-        QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
-
-        // getts cursor to the current row
-        for (int i = 0; i < raw_number - 1; i++)
-            text_cursor.movePosition(QTextCursor::Down);
-
-        text_cursor.movePosition(QTextCursor::EndOfLine);
-
-        // appends punctuation
-        if (comma_test.length() == 1)
-            text_cursor.insertText(",");
-        if (comma_test.length() == 2 && arrow_test.length() == 1)
-            text_cursor.insertText("->");
-        if (comma_test.length() == 2 && arrow_test.length() == 2)
-            text_cursor.insertText(",");
-        if (comma_test.length() == 3 && arrow_test.length() == 2)
-            text_cursor.insertText(",");
-        if (comma_test.length() == 4 && arrow_test.length() == 2)
-            text_cursor.insertText("\n");
+        settings.beginGroup("global");
+        settings.setValue("version", "2.0.0a");
+        settings.endGroup();
+        settings.beginGroup("editor");
+        settings.setValue("last_path", "");
+        settings.endGroup();
     }
+    _pname.setOriginal(settings.value("editor/last_path").toString().toStdString());
+    if (not _pname.empty())
+    {
+        ui->logwindow->appendPlainText(
+            QString::fromStdString(std::string("Opened the last file of the previous session:\n")) +
+            settings.value("editor/last_path").toString());
+    }
+    openInEditor();
 }
 
-void MainWindow::slotShortcutCtrlD()
+void MainWindow::writeSettings()
 {
-    if (ui->rowNumberLabel->text().length())
-    {
-        int raw_number = ui->rowNumberLabel->text().toInt();
+    QSettings settings;
 
-        if (ui->datacheckBox->isChecked())
-        {
-            raw_number -= 2;
-        }
+    settings.setValue("editor/last_path", QString::fromStdString(_pname.getOriginal()));
+}
 
-        QString main_textField = ui->mainTextField->toPlainText();
-        QStringList str_list = main_textField.split('\n'); // splits textEdit text by \n
-        main_textField = str_list.at(raw_number - 1);      // gets a second result of the split
-
-        str_list = main_textField.split(";#d");
-
-        QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
-
-        // get s cursor to the current row
-        for (int i = 0; i < raw_number - 1; i++)
-            text_cursor.movePosition(QTextCursor::Down);
-
-        text_cursor.movePosition(QTextCursor::EndOfLine);
-
-        // appends punctuation
-        if (str_list.size() == 1)
-        {
-            text_cursor.insertText("\t;#d");
-        }
-        else
-        {
-            for (int i = 0; i < str_list[(str_list.size() - 1)].size() + 4; i++)
-            {
-                text_cursor.movePosition(QTextCursor::Left);
-                text_cursor.deleteChar();
-            }
-        }
-    }
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    writeSettings();
 }
 
 /* utility functions */
+
+void MainWindow::openInEditor()
+{
+    QFile file(QString::fromUtf8(_pname.getOriginal().c_str()));
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&file);
+        QString text;
+        text = file.readAll();
+
+        // if user wants to use inputlineEdit we do it
+        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data" &&
+            ui->datacheckBox->isChecked())
+        {
+            QStringList list = text.split('\n');
+            QString input_data = list[1];
+            list.removeFirst();
+            list.removeFirst();
+            text = list.join('\n');
+            ui->inputlineEdit->setText(input_data);
+        }
+        else
+            ui->inputlineEdit->clear();
+
+        // sets text to the mainfield
+        ui->mainTextField->clear();
+        ui->mainTextField->setPlainText(text);
+        file.close();
+
+        // sets name of the current file
+        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
+        ui->filestatuslbl->setText("Opened");
+
+        file.close();
+
+        // logger configuring
+        el::Configurations defaultConf;
+        defaultConf.setToDefault();
+        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime : %msg");
+        defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
+        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
+        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
+        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
+        el::Loggers::reconfigureLogger("default", defaultConf);
+
+        clearLogFile();
+    }
+    else
+    {
+        ui->logwindow->appendPlainText("Path error");
+    }
+}
 
 void MainWindow::clearLogFile()
 {
@@ -245,6 +258,89 @@ void MainWindow::AllButtonsSetEnabled(bool state)
     ui->debugbtn->setEnabled(state);
 }
 
+/* keybinds slots */
+
+void MainWindow::slotShortcutCtrlTab()
+{
+    if (ui->rowNumberLabel->text().length())
+    {
+        int raw_number = ui->rowNumberLabel->text().toInt();
+
+        if (ui->datacheckBox->isChecked())
+        {
+            raw_number -= 2;
+        }
+
+        QString main_textField = ui->mainTextField->toPlainText();
+        QStringList str_list = main_textField.split('\n');  // splits textEdit text by \n
+        QString original_str = str_list.at(raw_number - 1); // gets a second result of the split
+
+        QStringList comma_test = original_str.split(',');
+        QStringList arrow_test = original_str.split("->");
+
+        QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
+
+        // getts cursor to the current row
+        for (int i = 0; i < raw_number - 1; i++)
+            text_cursor.movePosition(QTextCursor::Down);
+
+        text_cursor.movePosition(QTextCursor::EndOfLine);
+
+        // appends punctuation
+        if (comma_test.length() == 1)
+            text_cursor.insertText(",");
+        if (comma_test.length() == 2 && arrow_test.length() == 1)
+            text_cursor.insertText("->");
+        if (comma_test.length() == 2 && arrow_test.length() == 2)
+            text_cursor.insertText(",");
+        if (comma_test.length() == 3 && arrow_test.length() == 2)
+            text_cursor.insertText(",");
+        if (comma_test.length() == 4 && arrow_test.length() == 2)
+            text_cursor.insertText("\n");
+    }
+}
+
+void MainWindow::slotShortcutCtrlD()
+{
+    if (ui->rowNumberLabel->text().length())
+    {
+        int raw_number = ui->rowNumberLabel->text().toInt();
+
+        if (ui->datacheckBox->isChecked())
+        {
+            raw_number -= 2;
+        }
+
+        QString main_textField = ui->mainTextField->toPlainText();
+        QStringList str_list = main_textField.split('\n'); // splits textEdit text by \n
+        main_textField = str_list.at(raw_number - 1);      // gets a second result of the split
+
+        str_list = main_textField.split(";#d");
+
+        QTextCursor text_cursor = QTextCursor(ui->mainTextField->document());
+
+        // get s cursor to the current row
+        for (int i = 0; i < raw_number - 1; i++)
+            text_cursor.movePosition(QTextCursor::Down);
+
+        text_cursor.movePosition(QTextCursor::EndOfLine);
+
+        // appends punctuation
+        if (str_list.size() == 1)
+        {
+            text_cursor.insertText("\t;#d");
+        }
+        else
+        {
+            for (int i = 0; i < str_list[(str_list.size() - 1)].size() + 4; i++)
+            {
+                text_cursor.movePosition(QTextCursor::Left);
+                text_cursor.deleteChar();
+            }
+        }
+    }
+}
+
 /* triggers for files actions */
 
 void MainWindow::on_actionOpen_triggered()
@@ -264,50 +360,7 @@ void MainWindow::on_actionOpen_triggered()
     }
     if (newFile.length()) // if newFile is not empty
         _pname.setOriginal(newFile.toStdString());
-    QFile file(QString::fromUtf8(_pname.getOriginal().c_str()));
-    if (file.open(QIODevice::ReadOnly))
-    {
-        QTextStream in(&file);
-        QString text;
-        text = file.readAll();
-
-        // if user wants to use inputlineEdit we do it
-        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data" &&
-            ui->datacheckBox->isChecked())
-        {
-            QStringList list = text.split('\n');
-            QString input_data = list[1];
-            list.removeFirst();
-            list.removeFirst();
-            text = list.join('\n');
-            ui->inputlineEdit->setText(input_data);
-        }
-        else
-            ui->inputlineEdit->clear();
-
-        // sets text to the mainfield
-        ui->mainTextField->clear();
-        ui->mainTextField->setPlainText(text);
-        file.close();
-
-        // sets name of the current file
-        ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
-        ui->filestatuslbl->setText("Opened");
-
-        file.close();
-
-        // logger configuring
-        el::Configurations defaultConf;
-        defaultConf.setToDefault();
-        defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime : %msg");
-        defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
-        defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-        defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
-        defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
-        el::Loggers::reconfigureLogger("default", defaultConf);
-
-        clearLogFile();
-    }
+    openInEditor();
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -315,8 +368,8 @@ void MainWindow::on_actionSave_triggered()
     if (!_pname.empty())
     {
         std::ofstream out;
-        // I think I don't need to check the state of the file. If the file does not exist, then ofstream should create
-        // it.
+        // I think I don't need to check the state of the file. If the file does not exist, then ofstream should
+        // create it.
         out.open(_pname.getOriginal());
         if (ui->inputlineEdit->text().size() && ui->datacheckBox->isChecked())
         {
