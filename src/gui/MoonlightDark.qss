@@ -76,26 +76,6 @@ QPushButton:disabled {
 
 }
 
-QToolButton {
-	border-style: solid;
-	border-color: #a8b3f0;
-	border-bottom-width: 1px;
-	border-style: solid;
-	color: #a9b7c6;
-	padding: 2px;
-	background-color: #202020;
-}
-
-QToolButton:hover {
-	border-style: solid;
-	border-color: #a8b3f0;
-	border-bottom-width: 2px;
-	border-style: solid;
-	color: #FFFFFF;
-	padding-bottom: 1px;
-	background-color: #333333;
-}
-
 QLineEdit {
 	border-width: 1px;
 	border-radius: 4px;
@@ -366,11 +346,6 @@ QToolBox::tab:selected {
 	background-color: #161616;
 }
 
-QScrollArea {
-	color: #FFFFFF;
-	background-color: #161616;
-}
-
 QSlider::groove:horizontal {
 	height: 5px;
 	background: #687df3;
@@ -413,29 +388,93 @@ QSlider::sub-page:vertical {
 	background: #687df3;
 }
 
-/****************************************************************/
-
-#line_8 {
-	background-color: #28292e;
-	border-color: #687df3;
+QScrollArea {
+	color: #333333;
+	background-color: #202020;
 }
 
-#line_6 {
-	background-color: #28292e;
-	color: #687df3;
+/* QScrollBar */
+
+QScrollBar:vertical {
+	background: rgb(32, 32, 32);
+	width: 15px;
+	padding-right: 1px;
 }
 
-#line_7 {
-	background-color: #28292e;
-	color: #687df3;
+QScrollBar::handle:vertical {
+	background: #444444;
+	min-height: 20px;
+	border-radius: 4px;
 }
 
-#line_3 {
-	background-color: #4c4959;
-	color: #687df3;
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical,
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+	background: transparent;
+	height: 0px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
 }
 
-#line_2 {
-	background-color: #4c4959;
-	color: #687df3;
+
+QScrollBar:horizontal {
+	height: 15px;
+	background: rgb(32, 32, 32);
+}
+
+QScrollBar::handle:horizontal {
+	background: #444444;
+	min-width: 30px;
+	border-radius: 4px;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal,
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+	background: transparent;
+	height: 0px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
+}
+
+/* Classes */
+
+#panel_line_dbg {
+	background-color: #687df3;
+}
+
+#panel_line_log {
+	background-color: #687df3;
+}
+
+#between_buttons_line {
+	background-color: #444444;
+}
+
+#debugstatelbl {
+	border: solid;
+	border-color: #333333;
+	border-width: 1px;
+	border-radius: 2px;
+	width: 100%;
+	padding: 5px 1px;
+}
+
+#debugwordlbl {
+	border: solid;
+	border-color: #333333;
+	border-width: 1px;
+	border-radius: 2px;
+	width: 100%;
+	padding: 5px 1px;
+}
+
+#debugnextbtn {
+	background-color: #333333;
+}
+
+#skipButton {
+	background-color: #333333;
 }

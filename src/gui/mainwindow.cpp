@@ -213,7 +213,7 @@ void MainWindow::currentLineHighlight(int line)
     QTextBlockFormat formater;
     if (isDarkMode)
     {
-        formater.setBackground(QBrush("#2a2931"));
+        formater.setBackground(QBrush("#202020"));
     }
     else
     {
@@ -254,13 +254,13 @@ void MainWindow::breakpointHighlightOFF()
     QTextBlockFormat formater1;
     if (isDarkMode)
     {
-        formater1.setBackground(QBrush("#2a2931"));
+        formater1.setBackground(QBrush("#202020"));
     }
     else
     {
         formater1.setBackground(QBrush("#ffffff"));
     }
-    // #2a2931 // #550e12 // #4b4b18
+    // #202020 // #550e12 // #4b4b18
     // cur1.select(QTextCursor::LineUnderCursor);
     cursor.setBlockFormat(formater1);
 }
