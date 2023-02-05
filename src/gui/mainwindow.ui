@@ -228,6 +228,12 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>340</height>
+        </size>
+       </property>
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
@@ -260,7 +266,7 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>30</height>
         </size>
        </property>
       </spacer>
