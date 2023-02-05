@@ -117,6 +117,7 @@ class MainWindow : public QMainWindow
     void AllButtonsSetEnabled(bool);     // |
     void currentLineHighlight(int line); // |
     void openInEditor();                 // |
+    void showStartMessage();             // |
     void clearLogFile();                 //_|
 
     void closeEvent(QCloseEvent *bar);

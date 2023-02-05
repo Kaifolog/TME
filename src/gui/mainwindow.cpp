@@ -39,6 +39,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     QCoreApplication::setApplicationName("TME");
 
     MainWindow::readSettings();
+
+    if (_pname.empty())
+    {
+        showStartMessage();
+    }
 }
 
 /* settings */
@@ -59,11 +64,12 @@ void MainWindow::readSettings()
     _pname.setOriginal(settings.value("editor/last_path").toString().toStdString());
     if (not _pname.empty())
     {
+        ui->logwindow->document()->setPlainText("");
         ui->logwindow->appendPlainText(
             QString::fromStdString(std::string("Opened the last file of the previous session:\n")) +
             settings.value("editor/last_path").toString());
+        openInEditor();
     }
-    openInEditor();
 }
 
 void MainWindow::writeSettings()
@@ -79,6 +85,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 /* utility functions */
+
+void MainWindow::showStartMessage()
+{
+    ui->mainTextField->document()->setPlainText(
+        "Hi! Firstly you should open a file.\n\n\nHotkeys:"
+        "\nCtrl+S - Save current file\nCtrl+O - Open the file\nCtrl+N - New file");
+    ui->logwindow->appendPlainText("Please, open the file.");
+    ui->mainTextField->setEnabled(false);
+}
 
 void MainWindow::openInEditor()
 {
@@ -125,6 +140,7 @@ void MainWindow::openInEditor()
         el::Loggers::reconfigureLogger("default", defaultConf);
 
         clearLogFile();
+        ui->mainTextField->setEnabled(true);
     }
     else
     {
@@ -359,7 +375,12 @@ void MainWindow::on_actionOpen_triggered()
         newFile = QFileDialog::getOpenFileName(this, tr("Open File"), fileText, tr("Documents (*.tme *.txt)"));
     }
     if (newFile.length()) // if newFile is not empty
+    {
         _pname.setOriginal(newFile.toStdString());
+    }
+
+    ui->logwindow->document()->setPlainText("");
+
     openInEditor();
 }
 
@@ -398,6 +419,7 @@ void MainWindow::on_actionClose_triggered()
     ui->filenamelbl->clear();
     ui->filestatuslbl->clear();
     ui->mainTextField->document()->clearUndoRedoStacks();
+    showStartMessage();
 }
 
 void MainWindow::on_actioNew_triggered()
@@ -420,20 +442,10 @@ void MainWindow::on_actioNew_triggered()
     QFile mFile(QString::fromUtf8(_pname.getOriginal().c_str()));
     mFile.open(QIODevice::WriteOnly);
     mFile.close();
-    ui->filenamelbl->setText(QString::fromUtf8(_pname.getOriginal().c_str()));
-    ui->filestatuslbl->setText("Opened");
 
-    // logger configuring
-    el::Configurations defaultConf;
-    defaultConf.setToDefault();
-    defaultConf.setGlobally(el::ConfigurationType::Format, "%datetime : %msg");
-    defaultConf.setGlobally(el::ConfigurationType::ToStandardOutput, "false");
-    defaultConf.setGlobally(el::ConfigurationType::ToFile, "true");
-    defaultConf.setGlobally(el::ConfigurationType::Filename, _pname.getLogFile());
-    defaultConf.setGlobally(el::ConfigurationType::MaxLogFileSize, "104857600");
-    el::Loggers::reconfigureLogger("default", defaultConf);
+    ui->logwindow->document()->setPlainText("");
 
-    clearLogFile();
+    openInEditor();
 }
 
 /* triggers for textfields */
@@ -470,10 +482,6 @@ void MainWindow::on_datacheckBox_clicked()
 void MainWindow::on_mainTextField_textChanged()
 {
     ui->filestatuslbl->setText("Changed");
-    if (_pname.empty())
-    {
-        ui->logwindow->appendPlainText("Please, open the file.");
-    }
 }
 
 void MainWindow::on_mainTextField_cursorPositionChanged()
