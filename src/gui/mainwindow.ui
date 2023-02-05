@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
-    <height>600</height>
+    <width>1300</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1012</width>
-    <height>600</height>
+    <width>1300</width>
+    <height>700</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1012</width>
-    <height>600</height>
+    <width>1300</width>
+    <height>700</height>
    </size>
   </property>
   <property name="font">
@@ -47,23 +47,35 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>120</y>
-      <width>151</width>
+      <width>212</width>
       <height>231</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="leftMargin">
-      <number>7</number>
+      <number>0</number>
      </property>
      <item>
       <widget class="QLabel" name="label_8">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>22</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>12</height>
+         <height>22</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
        </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
@@ -85,6 +97,12 @@
      </item>
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Current state</string>
        </property>
@@ -95,6 +113,18 @@
      </item>
      <item>
       <widget class="QLabel" name="debugstatelbl">
+       <property name="minimumSize">
+        <size>
+         <width>210</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>210</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -105,6 +135,12 @@
      </item>
      <item>
       <widget class="QLabel" name="label_4">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Current word</string>
        </property>
@@ -115,6 +151,18 @@
      </item>
      <item>
       <widget class="QLabel" name="debugwordlbl">
+       <property name="minimumSize">
+        <size>
+         <width>210</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>210</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>MS Shell Dlg 2</family>
@@ -134,6 +182,18 @@
      </item>
      <item>
       <widget class="QPushButton" name="debugnextbtn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Next</string>
        </property>
@@ -141,6 +201,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="skipButton">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Continue</string>
        </property>
@@ -154,7 +220,7 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>10</height>
         </size>
        </property>
       </spacer>
@@ -164,23 +230,35 @@
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>1050</x>
       <y>120</y>
-      <width>191</width>
-      <height>441</height>
+      <width>242</width>
+      <height>463</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="rightMargin">
-      <number>7</number>
+      <number>0</number>
      </property>
      <item>
       <widget class="QLabel" name="label_6">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>12</height>
+         <height>20</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>Log panel</string>
@@ -202,10 +280,16 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>240</width>
+         <height>350</height>
+        </size>
+       </property>
        <property name="maximumSize">
         <size>
-         <width>16777215</width>
-         <height>340</height>
+         <width>240</width>
+         <height>350</height>
         </size>
        </property>
        <property name="focusPolicy">
@@ -233,17 +317,10 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>20</height>
+         <height>70</height>
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="rowNumberLabel">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
      </item>
     </layout>
    </widget>
@@ -252,7 +329,7 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>991</width>
+      <width>1281</width>
       <height>20</height>
      </rect>
     </property>
@@ -266,18 +343,24 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>80</y>
+      <x>850</x>
+      <y>75</y>
       <width>441</width>
-      <height>32</height>
+      <height>51</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="topMargin">
-      <number>8</number>
+      <number>0</number>
      </property>
      <item>
       <widget class="QPushButton" name="parsingbtn">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Parsing</string>
        </property>
@@ -285,6 +368,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="analysisbtn">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Analysis</string>
        </property>
@@ -292,6 +381,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="emulationbtn">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Emulation</string>
        </property>
@@ -299,6 +394,18 @@
      </item>
      <item>
       <widget class="Line" name="between_buttons_line">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -306,6 +413,13 @@
      </item>
      <item>
       <widget class="QPushButton" name="quickstartbtn">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+         <stylestrategy>PreferAntialias</stylestrategy>
+        </font>
+       </property>
        <property name="text">
         <string>Quick start</string>
        </property>
@@ -313,6 +427,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="debugbtn">
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Debug</string>
        </property>
@@ -325,7 +445,7 @@
      <rect>
       <x>10</x>
       <y>60</y>
-      <width>991</width>
+      <width>1281</width>
       <height>20</height>
      </rect>
     </property>
@@ -351,8 +471,32 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>Output/Debug line:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <property name="margin">
+     <number>0</number>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -361,20 +505,42 @@
       <x>10</x>
       <y>0</y>
       <width>121</width>
-      <height>16</height>
+      <height>20</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>9</pointsize>
+      <stylestrategy>PreferAntialias</stylestrategy>
+     </font>
     </property>
     <property name="text">
      <string>Input data line:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>12</x>
-      <y>510</y>
-      <width>20</width>
-      <height>21</height>
+      <x>9</x>
+      <y>610</y>
+      <width>41</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -384,10 +550,10 @@
    <widget class="QLabel" name="filestatuslbl">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>530</y>
-      <width>111</width>
-      <height>16</height>
+      <x>90</x>
+      <y>630</y>
+      <width>131</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -400,9 +566,9 @@
    <widget class="QLabel" name="filenamelbl">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>510</y>
-      <width>111</width>
+      <x>60</x>
+      <y>610</y>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
@@ -416,11 +582,23 @@
    <widget class="QPlainTextEdit" name="mainTextField">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>230</x>
       <y>120</y>
-      <width>651</width>
-      <height>436</height>
+      <width>811</width>
+      <height>540</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>490</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>540</height>
+     </size>
     </property>
     <property name="font">
      <font>
@@ -440,9 +618,15 @@
      <rect>
       <x>10</x>
       <y>90</y>
-      <width>121</width>
+      <width>161</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>9</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>lambda as space</string>
@@ -451,14 +635,45 @@
    <widget class="QCheckBox" name="datacheckBox">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>180</x>
       <y>90</y>
-      <width>131</width>
+      <width>151</width>
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>.data to data line</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="rowNumberLabel">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>630</y>
+      <width>231</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>20</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>20</height>
+     </size>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
@@ -467,7 +682,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1012</width>
+     <width>1300</width>
      <height>21</height>
     </rect>
    </property>
@@ -482,7 +697,7 @@
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
-     <string>Як працювати?</string>
+     <string>Help</string>
     </property>
     <addaction name="action"/>
     <addaction name="action_2"/>
@@ -499,7 +714,6 @@
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>

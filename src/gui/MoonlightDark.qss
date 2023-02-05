@@ -45,7 +45,6 @@ QPushButton {
 	color: #FFFFFF;
 	padding: 5px;
 	background-color: #5c73f2;
-	font-size: 11px;
 }
 
 QPushButton:hover {
@@ -73,7 +72,6 @@ QPushButton:disabled {
 	color: #FFFFFF;
 	padding: 5px;
 	background-color: #333333;
-
 }
 
 QLineEdit {
@@ -138,8 +136,6 @@ QMenu::item {
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 7px;
-
-	width: 150px;
 }
 
 QMenu::item:selected {
