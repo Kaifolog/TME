@@ -112,13 +112,14 @@ class MainWindow : public QMainWindow
     void on_action_5_triggered(); // |
     void on_action_4_triggered(); //_|
 
-    void breakpointHighlightON();        //_  utility functions
-    void breakpointHighlightOFF();       // |
-    void AllButtonsSetEnabled(bool);     // |
-    void currentLineHighlight(int line); // |
-    void openInEditor();                 // |
-    void showStartMessage();             // |
-    void clearLogFile();                 //_|
+    void breakpointHighlightON();          //_  utility functions
+    void breakpointHighlightOFF();         // |
+    void AllButtonsSetEnabled(bool);       // |
+    void currentLineHighlight(int line);   // |
+    void openInEditor();                   // |
+    void showStartMessage();               // |
+    void debugPanelHighlightEnabled(bool); // |
+    void clearLogFile();                   //_|
 
     void closeEvent(QCloseEvent *bar);
 

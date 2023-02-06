@@ -86,6 +86,26 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 /* utility functions */
 
+void MainWindow::debugPanelHighlightEnabled(bool enabled)
+{
+    if (enabled)
+    {
+        ui->debugnextbtn->setStyleSheet(
+            "QPushButton { background-color: #5c73f2;} QPushButton:hover { background-color: #333333 }");
+        ui->skipButton->setStyleSheet(
+            "QPushButton { background-color: #5c73f2;} QPushButton:hover { background-color: #333333 }");
+        ui->debugstatelbl->setStyleSheet("QLabel { border-color: #5c73f2 }");
+        ui->debugwordlbl->setStyleSheet("QLabel { border-color: #5c73f2 }");
+    }
+    else
+    {
+        ui->debugnextbtn->setStyleSheet("QPushButton { background-color: #333333 }");
+        ui->skipButton->setStyleSheet("QPushButton { background-color: #333333 }");
+        ui->debugstatelbl->setStyleSheet("QLabel { border-color: #333333 }");
+        ui->debugwordlbl->setStyleSheet("QLabel { border-color: #333333 }");
+    }
+}
+
 void MainWindow::showStartMessage()
 {
     ui->mainTextField->document()->setPlainText(
@@ -533,6 +553,8 @@ void MainWindow::NormalMiddleware()
         {
             ui->logwindow->appendPlainText(message.c_str());
         }
+
+        debugPanelHighlightEnabled(false);
     }
     ui->debuglineEdit->clear();
     ui->debugstatelbl->clear();
@@ -560,6 +582,7 @@ void MainWindow::DebugMiddleware()
         {
             ui->logwindow->appendPlainText(message.c_str());
         }
+        debugPanelHighlightEnabled(false);
     }
 }
 
@@ -808,6 +831,8 @@ void MainWindow::on_debugbtn_clicked()
             ui->debuglineEdit->setText(result.current_strip.c_str());
             ui->debugstatelbl->setText(result.current_state.c_str());
             ui->debugwordlbl->setText(result.current_word.c_str());
+
+            debugPanelHighlightEnabled(true);
         }
         catch (const char *message)
         {
