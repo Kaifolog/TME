@@ -656,17 +656,6 @@ void MainWindow::on_analysisbtn_clicked()
             translator.analyse(_pname);
 
             LOG(INFO) << "Analysis complete. All set for execution!";
-
-            QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
-            if (file.open(QIODevice::ReadOnly))
-            {
-                QTextStream in(&file);
-                QString text = file.readAll();
-                ui->debuglineEdit->clear();
-                ui->logwindow->clear();
-                ui->logwindow->appendPlainText(text);
-            }
-            file.close();
         }
         catch (const char *message)
         {
@@ -681,6 +670,16 @@ void MainWindow::on_analysisbtn_clicked()
             LOG(ERROR) << "Something went wrong." << std::endl
                        << "Please tell about this to the developer." << std::endl;
         }
+        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
+        if (file.open(QIODevice::ReadOnly))
+        {
+            QTextStream in(&file);
+            QString text = file.readAll();
+            ui->debuglineEdit->clear();
+            ui->logwindow->clear();
+            ui->logwindow->appendPlainText(text);
+        }
+        file.close();
     }
     AllButtonsSetEnabled(true);
 }
@@ -728,17 +727,16 @@ void MainWindow::on_emulationbtn_clicked()
             LOG(ERROR) << "Something went wrong." << std::endl
                        << "Please tell about this to the developer." << std::endl;
         }
-    }
-
-    QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
-    if (file.open(QIODevice::ReadOnly))
-    {
-        QTextStream in(&file);
-        QString text;
-        text = file.readAll();
-        ui->logwindow->clear();
-        ui->logwindow->appendPlainText(text);
-        file.close();
+        QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
+        if (file.open(QIODevice::ReadOnly))
+        {
+            QTextStream in(&file);
+            QString text;
+            text = file.readAll();
+            ui->logwindow->clear();
+            ui->logwindow->appendPlainText(text);
+            file.close();
+        }
     }
     AllButtonsSetEnabled(true);
 }

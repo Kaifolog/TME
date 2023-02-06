@@ -145,6 +145,9 @@ void Translator::analyse(tools::ProjectName &pname)
             }
             else
             {
+                sqlite3_finalize(_pp_stmt);
+                sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
+                sqlite3_free(_err);
                 sqlite3_close(_db);
                 throw "ANALYSER FATAL ERROR! There are \"end\" at the left side of command.";
             }
@@ -154,12 +157,18 @@ void Translator::analyse(tools::ProjectName &pname)
 
     if (check_str_in_vec(statements, "start"))
     {
+        sqlite3_finalize(_pp_stmt);
+        sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
+        sqlite3_free(_err);
         sqlite3_close(_db);
         throw "ANALYSER FATAL ERROR! There are no \"start\" command.";
     }
 
     if (check_str_in_vec(statements, "end"))
     {
+        sqlite3_finalize(_pp_stmt);
+        sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
+        sqlite3_free(_err);
         sqlite3_close(_db);
         throw "ANALYSER FATAL ERROR! There are no \"end\" command.";
     }
@@ -177,6 +186,9 @@ void Translator::analyse(tools::ProjectName &pname)
                     std::string a = "ANALYSER FATAL ERROR!!! There are two or more commands with same left side. " +
                                     std::string((char *)sqlite3_column_text(_pp_stmt, 0)) + " " +
                                     std::string((char *)sqlite3_column_text(_pp_stmt, 1));
+                    sqlite3_finalize(_pp_stmt);
+                    sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
+                    sqlite3_free(_err);
                     sqlite3_close(_db);
                     throw a;
                 }
@@ -188,6 +200,9 @@ void Translator::analyse(tools::ProjectName &pname)
             }
         }
 
+    sqlite3_finalize(_pp_stmt);
+    sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
+    sqlite3_free(_err);
     sqlite3_close(_db);
 };
 
