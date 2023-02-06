@@ -90,4 +90,8 @@ void MainWindow::on_about_triggered()
 
 void MainWindow::on_settings_triggered()
 {
+    // this->setEnabled(false);
+    SettingsWindow settingswindow;
+    settingswindow.exec();
+    // this->setEnabled(true);
 }

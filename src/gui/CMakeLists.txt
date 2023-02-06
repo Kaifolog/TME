@@ -17,6 +17,9 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        settingswindow.cpp
+        settingswindow.h
+        settingswindow.ui
         triggers/title_bar.cpp
 )
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

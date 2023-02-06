@@ -13,6 +13,7 @@
 #include <QTextStream>
 #include <QtGui>
 
+#include "./settingswindow.h"
 #include "./ui_mainwindow.h"
 
 extern "C"
