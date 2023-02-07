@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 2.9...3.16)
 
 project(TME LANGUAGES CXX C)
 
@@ -9,6 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(GUI FALSE CACHE BOOL "An option that defines whether CLI or GUI app would you build.")
 
-set(TEST FALSE CACHE BOOL "An option that manages compilation flow between building test and release version of the program.")
+set(AUTOTEST FALSE CACHE BOOL "An option that manages compilation flow between building test and release version of the program.")
 
 add_subdirectory(src)

@@ -1,7 +1,7 @@
 
 add_subdirectory(external)
 
-if(TEST)
+if(AUTOTEST)
         add_subdirectory(../tests ./tests)
 else()
         add_subdirectory(translator) 
