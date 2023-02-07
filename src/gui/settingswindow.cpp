@@ -10,6 +10,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QDialog(parent), ui(new Ui::Se
     ui->version_label->setText(QString::fromStdString("version ") + settings.value("global/version").toString());
 
     ui->reopen_checkbox->setChecked(settings.value("editor/save_last_path").toBool());
+    ui->delete_tmp_checkbox->setChecked(settings.value("editor/clear_tmp_files").toBool());
 }
 
 SettingsWindow::~SettingsWindow()
@@ -22,6 +23,7 @@ void SettingsWindow::on_buttonBox_accepted()
     QSettings settings;
 
     settings.setValue("editor/save_last_path", QString::number(ui->reopen_checkbox->isChecked()));
+    settings.setValue("editor/clear_tmp_files", QString::number(ui->delete_tmp_checkbox->isChecked()));
 }
 
 void SettingsWindow::on_buttonBox_rejected()

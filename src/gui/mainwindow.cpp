@@ -60,14 +60,15 @@ void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.value("global/version") != "2.0.1a")
+    if (settings.value("global/version") != "2.0.2a")
     {
         settings.beginGroup("global");
-        settings.setValue("version", "2.0.1a");
+        settings.setValue("version", "2.0.2a");
         settings.endGroup();
         settings.beginGroup("editor");
         settings.setValue("save_last_path", "true");
         settings.setValue("last_path", "");
+        settings.setValue("clear_tmp_files", "true");
         settings.endGroup();
     }
 
@@ -96,6 +97,23 @@ void MainWindow::writeSettings()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     writeSettings();
+
+    QSettings settings;
+    if (settings.value("editor/clear_tmp_files").toBool() and not _pname.empty())
+    {
+        try
+        {
+            QFile datasection(QString("datasection.tmp"));
+            datasection.remove();
+            QFile db_file(QString::fromStdString(_pname.getDBFile()));
+            db_file.remove();
+            QFile out_file(QString::fromStdString(_pname.getOutFile()));
+            out_file.remove();
+        }
+        catch (...)
+        {
+        }
+    }
 }
 
 /* utility functions */
@@ -443,7 +461,24 @@ void MainWindow::on_actionClose_triggered()
 {
     NORMALMIDDLEWARE
 
+    QSettings settings;
+    if (settings.value("editor/clear_tmp_files").toBool() and not _pname.empty())
+    {
+        try
+        {
+            QFile datasection(QString("datasection.tmp"));
+            datasection.remove();
+            QFile db_file(QString::fromStdString(_pname.getDBFile()));
+            db_file.remove();
+            QFile out_file(QString::fromStdString(_pname.getOutFile()));
+            out_file.remove();
+        }
+        catch (...)
+        {
+        }
+    }
     _pname.clear();
+
     ui->debuglineEdit->clear();
     ui->mainTextField->clear();
     ui->inputlineEdit->clear();
@@ -682,6 +717,7 @@ void MainWindow::on_analysisbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
+                       << "Are you sure this file has already been parsed?" << std::endl
                        << "Please tell about this to the developer." << std::endl;
         }
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -739,6 +775,7 @@ void MainWindow::on_emulationbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
+                       << "Are you sure this file has already been parsed?" << std::endl
                        << "Please tell about this to the developer." << std::endl;
         }
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
