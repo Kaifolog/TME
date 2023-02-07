@@ -1,9 +1,12 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
+#include <QCoreApplication>
 #include <QDialog>
+#include <QSettings>
 
-namespace Ui {
+namespace Ui
+{
 class SettingsWindow;
 }
 
@@ -11,18 +14,18 @@ class SettingsWindow : public QDialog
 {
     Q_OBJECT
 
-public:
+  public:
     explicit SettingsWindow(QWidget *parent = nullptr);
     ~SettingsWindow();
 
-private slots:
+  private slots:
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();
 
     void on_reopen_checkbox_clicked();
 
-private:
+  private:
     Ui::SettingsWindow *ui;
 };
 

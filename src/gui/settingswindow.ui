@@ -22,11 +22,14 @@
      <height>41</height>
     </rect>
    </property>
+   <property name="locale">
+    <locale language="English" country="UnitedStates"/>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
    </property>
   </widget>
   <widget class="QLabel" name="settings_label">
@@ -54,13 +57,29 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>50</y>
+     <y>60</y>
      <width>201</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>Reopen last file</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="version_label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>221</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

@@ -60,23 +60,29 @@ void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.value("global/version") != "2.0.0a")
+    if (settings.value("global/version") != "2.0.1a")
     {
         settings.beginGroup("global");
-        settings.setValue("version", "2.0.0a");
+        settings.setValue("version", "2.0.1a");
         settings.endGroup();
         settings.beginGroup("editor");
+        settings.setValue("save_last_path", "true");
         settings.setValue("last_path", "");
         settings.endGroup();
     }
-    _pname.setOriginal(settings.value("editor/last_path").toString().toStdString());
-    if (not _pname.empty())
+
+    // opens last file of previuos session
+    if (settings.value("editor/save_last_path").toBool())
     {
-        ui->logwindow->document()->setPlainText("");
-        ui->logwindow->appendPlainText(
-            QString::fromStdString(std::string("Opened the last file of the previous session:\n")) +
-            settings.value("editor/last_path").toString());
-        openInEditor();
+        _pname.setOriginal(settings.value("editor/last_path").toString().toStdString());
+        if (not _pname.empty())
+        {
+            ui->logwindow->document()->setPlainText("");
+            ui->logwindow->appendPlainText(
+                QString::fromStdString(std::string("Opened the last file of the previous session:\n")) +
+                settings.value("editor/last_path").toString());
+            openInEditor();
+        }
     }
 }
 
