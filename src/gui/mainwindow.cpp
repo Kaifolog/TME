@@ -537,6 +537,7 @@ void MainWindow::on_datacheckBox_clicked()
             ui->inputlineEdit->setText(input_data);
             ui->mainTextField->clear();
             ui->mainTextField->setPlainText(text);
+            ui->mainTextField->moveCursor(QTextCursor::Start);
         }
         else
             ui->inputlineEdit->clear();
@@ -548,6 +549,7 @@ void MainWindow::on_datacheckBox_clicked()
         ui->mainTextField->appendPlainText("section .data\n" + ui->inputlineEdit->text());
         ui->inputlineEdit->clear();
         ui->mainTextField->appendPlainText(text);
+        ui->mainTextField->moveCursor(QTextCursor::Start);
     }
 }
 
