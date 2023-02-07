@@ -200,6 +200,12 @@ int TuringMachine::execute(tools::ProjectName &pname, bool lambda)
     std::string select_command;
     while (!this->isEnd(this->_output, _lambda))
     {
+        if (_max_steps != 0 and _steps_counter >= _max_steps)
+        {
+            throw "Emulating error : The step counter has reached the maximum number of steps. Perhaps you should "
+                  "change the limit in app settings.";
+        }
+
         select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->_statement + "\" AND initial_word=\"" +
                          *(this->_cursor) + "\"";
         sqlite3_prepare_v2(this->_db, select_command.c_str(), 256, &_pp_stmt, NULL);
@@ -209,6 +215,7 @@ int TuringMachine::execute(tools::ProjectName &pname, bool lambda)
             this->_statement = (std::string((char *)sqlite3_column_text(this->_pp_stmt, 2)));
             *this->_cursor = (std::string((char *)sqlite3_column_text(this->_pp_stmt, 3)));
             this->getStep(((char *)sqlite3_column_text(this->_pp_stmt, 4))[0]);
+            _steps_counter++;
         }
         else
         {
@@ -216,7 +223,7 @@ int TuringMachine::execute(tools::ProjectName &pname, bool lambda)
             sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
             sqlite3_close(_db);
 
-            throw "EMULATING ERROR : CANT FIND NEXT COMMAND";
+            throw "Emulating error : Can't find next command";
         }
 
         sqlite3_finalize(_pp_stmt);
@@ -227,9 +234,16 @@ int TuringMachine::execute(tools::ProjectName &pname, bool lambda)
 
 MachineState TuringMachine::lazyDebug(bool step_by_step)
 {
+    long long int debug_steps_counter = 0;
     std::string select_command;
     while (!this->isEnd(this->_output, _lambda))
     {
+
+        if (_max_steps != 0 and debug_steps_counter >= _max_steps)
+        {
+            throw "Emulating error : The step counter has reached the maximum number of steps.";
+        }
+
         select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->_statement + "\" AND initial_word=\"" +
                          *(this->_cursor) + "\"";
         sqlite3_prepare_v2(this->_db, select_command.c_str(), 256, &_pp_stmt, NULL);
@@ -239,6 +253,7 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
             this->_statement = (std::string((char *)sqlite3_column_text(_pp_stmt, 2)));
             *this->_cursor = (std::string((char *)sqlite3_column_text(_pp_stmt, 3)));
             this->getStep(((char *)sqlite3_column_text(_pp_stmt, 4))[0]);
+            debug_steps_counter++;
         }
         else
         {

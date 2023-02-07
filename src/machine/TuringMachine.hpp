@@ -25,6 +25,8 @@ class TuringMachine
     std::list<std::string>::iterator _cursor;
     std::string _statement;
     std::string _last_line;
+    long long int _max_steps;
+    long long int _steps_counter;
 
     // connection parameters
     std::string _dir;
@@ -53,7 +55,20 @@ class TuringMachine
         _db = nullptr;
         _err = nullptr;
         _lambda = false;
+        _max_steps = 0;
+        _steps_counter = 0;
     };
+
+    TuringMachine(long long int max_steps)
+    {
+        _statement = "start";
+        _db = nullptr;
+        _err = nullptr;
+        _lambda = false;
+        _max_steps = max_steps;
+        _steps_counter = 0;
+    };
+
     int execute(tools::ProjectName &pname, bool lambda);
     void lazyStart(tools::ProjectName &pname, bool lambda);
     void setLambda(bool lambda)
