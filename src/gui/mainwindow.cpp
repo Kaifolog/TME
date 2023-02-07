@@ -426,17 +426,17 @@ void MainWindow::on_actionOpen_triggered()
         newFile = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("Documents (*.tme *.txt)"));
     else
     {
-        newFile = QString::fromUtf8(_pname.getOriginal().c_str()).left(newFile.lastIndexOf(QChar('/')));
+        fileText = QString::fromUtf8(_pname.getOriginal().c_str()).left(newFile.lastIndexOf(QChar('/')));
         newFile = QFileDialog::getOpenFileName(this, tr("Open File"), fileText, tr("Documents (*.tme *.txt)"));
     }
-    if (newFile.length()) // if newFile is not empty
+    if (not newFile.isEmpty()) // if newFile is not empty
     {
         _pname.setOriginal(newFile.toStdString());
+
+        ui->logwindow->document()->setPlainText("");
+
+        openInEditor();
     }
-
-    ui->logwindow->document()->setPlainText("");
-
-    openInEditor();
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -498,26 +498,27 @@ void MainWindow::on_actioNew_triggered()
 {
     NORMALMIDDLEWARE
 
-    ui->mainTextField->clear();
+    QString newFile;
     QString fileText;
 
     if (_pname.empty())
-        _pname.setOriginal(
-            QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)")).toStdString());
+        newFile = QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("Documents (*.tme *.txt)"));
     else
     {
         fileText = QString::fromUtf8(_pname.getOriginal().c_str())
                        .left(QString::fromUtf8(_pname.getOriginal().c_str()).lastIndexOf(QChar('/')));
-        _pname.setOriginal(
-            QFileDialog::getSaveFileName(this, tr("Save File"), fileText, tr("Documents (*.tme *.txt)")).toStdString());
+        newFile = QFileDialog::getSaveFileName(this, tr("Save File"), fileText, tr("Documents (*.tme *.txt)"));
     }
-    QFile mFile(QString::fromUtf8(_pname.getOriginal().c_str()));
-    mFile.open(QIODevice::WriteOnly);
-    mFile.close();
+    if (not newFile.isEmpty()) // if newFile is not empty
+    {
+        _pname.setOriginal(newFile.toStdString());
+        QFile mFile(QString::fromUtf8(_pname.getOriginal().c_str()));
+        mFile.open(QIODevice::WriteOnly);
+        mFile.close();
 
-    ui->logwindow->document()->setPlainText("");
-
-    openInEditor();
+        openInEditor();
+        ui->logwindow->appendPlainText("File has been created.");
+    }
 }
 
 /* triggers for textfields */
