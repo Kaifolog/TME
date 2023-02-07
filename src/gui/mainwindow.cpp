@@ -60,15 +60,18 @@ void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.value("global/version") != "2.0.2a")
+    if (settings.value("global/version") != "2.0.3a")
     {
         settings.beginGroup("global");
-        settings.setValue("version", "2.0.2a");
+        settings.setValue("version", "2.0.3a");
         settings.endGroup();
         settings.beginGroup("editor");
         settings.setValue("save_last_path", "true");
         settings.setValue("last_path", "");
         settings.setValue("clear_tmp_files", "true");
+        settings.endGroup();
+        settings.beginGroup("machine");
+        settings.setValue("max_steps", "1000000");
         settings.endGroup();
     }
 
@@ -746,10 +749,11 @@ void MainWindow::on_emulationbtn_clicked()
 
         try
         {
-            machine::TuringMachine tm;
+            QSettings settings;
+            machine::TuringMachine tm(settings.value("machine/max_steps").toInt());
             LOG(INFO) << "Starting emulator...";
 
-            tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
+            tm.execute(_pname, ui->lambdacheckBox->isChecked());
 
             LOG(INFO) << "Run complete";
 
@@ -811,7 +815,8 @@ void MainWindow::on_quickstartbtn_clicked()
             translator.parse(_pname);
             LOG(INFO) << "Translating ended.";
 
-            machine::TuringMachine tm;
+            QSettings settings;
+            machine::TuringMachine tm(settings.value("machine/max_steps").toInt());
             LOG(INFO) << "Starting emulator...";
             tm.execute(_pname, (bool)ui->lambdacheckBox->isChecked());
             LOG(INFO) << "Run complete";
@@ -874,6 +879,8 @@ void MainWindow::on_debugbtn_clicked()
         machine::MachineState result;
         try
         {
+            QSettings settings;
+            _debugger.setMaxStep(settings.value("machine/max_steps").toInt());
             _debugger.lazyStart(_pname, ui->lambdacheckBox->isChecked());
             result = _debugger.lazyDebug(true);
             currentLineHighlight(std::stoi(result.line));

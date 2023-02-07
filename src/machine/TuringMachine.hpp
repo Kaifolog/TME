@@ -75,6 +75,10 @@ class TuringMachine
     {
         this->_lambda = lambda;
     };
+    void setMaxStep(long long int max_steps)
+    {
+        this->_max_steps = max_steps;
+    };
     MachineState lazyDebug(bool step_by_step = false);
     void lazyFinalize();
 };

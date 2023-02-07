@@ -202,8 +202,10 @@ int TuringMachine::execute(tools::ProjectName &pname, bool lambda)
     {
         if (_max_steps != 0 and _steps_counter >= _max_steps)
         {
-            throw "Emulating error : The step counter has reached the maximum number of steps. Perhaps you should "
-                  "change the limit in app settings.";
+            this->lazyFinalize();
+            throw std::string("Emulating error : The step counter has reached the maximum number of steps (") +
+                std::to_string(_steps_counter) +
+                std::string(").\nPerhaps you should change the limit in app settings.");
         }
 
         select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->_statement + "\" AND initial_word=\"" +
@@ -241,7 +243,9 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
 
         if (_max_steps != 0 and debug_steps_counter >= _max_steps)
         {
-            throw "Emulating error : The step counter has reached the maximum number of steps.";
+            sqlite3_finalize(_pp_stmt);
+            throw std::string("Emulating error : The step counter has reached the maximum number of steps (") +
+                std::to_string(debug_steps_counter) + std::string(").");
         }
 
         select_command = "SELECT *FROM commands WHERE initial_state=\"" + this->_statement + "\" AND initial_word=\"" +
