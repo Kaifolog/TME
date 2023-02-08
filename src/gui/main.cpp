@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-    a.setStyleSheet(themes::MoonlightTheme);
+    a.setStyleSheet(themes::BlackSeaSunriseTheme);
     w.isDarkMode = true;
 
     w.show();
