@@ -1,8 +1,9 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QApplication *app, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->app = app;
 
     // connects keybind CTRL + S
     keyCtrlS = new QShortcut(this);
@@ -80,6 +81,10 @@ void MainWindow::readSettings()
             openInEditor();
         }
     }
+
+    // setting theme
+    this->app->setStyleSheet(themes::BlackSeaSunriseTheme);
+    this->isDarkMode = true;
 }
 
 void MainWindow::writeSettings()

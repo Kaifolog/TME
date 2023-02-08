@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QApplication>
 #include <QCloseEvent>
 #include <QCoreApplication>
 #include <QFile>
@@ -15,6 +16,7 @@
 
 #include "./settingswindow.h"
 #include "./ui_mainwindow.h"
+#include "themes.h"
 
 extern "C"
 {
@@ -55,6 +57,7 @@ class MainWindow : public QMainWindow
     tools::ProjectName _pname;
     machine::TuringMachine _debugger;
 
+    QApplication *app;
     Ui::MainWindow *ui;
 
     QShortcut *keyCtrlS;   //_  keybinds objects
@@ -129,7 +132,7 @@ class MainWindow : public QMainWindow
     void DebugMiddleware();  //_|
 
   public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QApplication *app, QWidget *parent = nullptr);
     ~MainWindow()
     {
         delete ui;

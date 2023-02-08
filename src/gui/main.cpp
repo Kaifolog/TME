@@ -1,7 +1,4 @@
 #include "mainwindow.h"
-#include <iostream>
-
-#include "themes.h"
 #include <QApplication>
 
 INITIALIZE_EASYLOGGINGPP
@@ -9,11 +6,7 @@ INITIALIZE_EASYLOGGINGPP
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-
-    a.setStyleSheet(themes::BlackSeaSunriseTheme);
-    w.isDarkMode = true;
-
+    MainWindow w(&a);
     w.show();
     return a.exec();
 }
