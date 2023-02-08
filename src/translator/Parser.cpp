@@ -64,7 +64,7 @@ Command Parser::commandFsm(std::string line_v)
         if (isalnum(line_v[i]) != 0 || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' ||
             line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' ||
             line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%' ||
-            line_v[i] == '(' || line_v[i] == ')')
+            line_v[i] == '(' || line_v[i] == ')' || line_v[i] == '_')
         {
             result.initial_word.push_back(line_v[i]);
         }
@@ -95,7 +95,7 @@ Command Parser::commandFsm(std::string line_v)
         if (isalnum(line_v[i]) != 0 || line_v[i] == '+' || line_v[i] == '-' || line_v[i] == '*' || line_v[i] == '=' ||
             line_v[i] == '/' || line_v[i] == ':' || line_v[i] == '^' || line_v[i] == '#' || line_v[i] == '!' ||
             line_v[i] == '?' || line_v[i] == '&' || line_v[i] == '>' || line_v[i] == '<' || line_v[i] == '%' ||
-            line_v[i] == '(' || line_v[i] == ')')
+            line_v[i] == '(' || line_v[i] == ')' || line_v[i] == '_')
         {
             result.final_word.push_back(line_v[i]);
         }
