@@ -1,9 +1,9 @@
 #include "settingswindow.h"
-#include "ui_settingswindow.h"
 
-SettingsWindow::SettingsWindow(QWidget *parent) : QDialog(parent), ui(new Ui::SettingsWindow)
+SettingsWindow::SettingsWindow(QApplication *app, QWidget *parent) : QDialog(parent), ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
+    this->app = app;
 
     QSettings settings;
 
@@ -13,6 +13,14 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QDialog(parent), ui(new Ui::Se
     ui->delete_tmp_checkbox->setChecked(settings.value("editor/clear_tmp_files").toBool());
 
     ui->max_steps_spinbox->setValue(settings.value("machine/max_steps").toInt());
+    if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
+    {
+        ui->moonlight_theme_radioButton->setChecked(true);
+    }
+    if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
+    {
+        ui->bss_theme_radioButton->setChecked(true);
+    }
 }
 
 SettingsWindow::~SettingsWindow()
@@ -35,4 +43,18 @@ void SettingsWindow::on_buttonBox_rejected()
 
 void SettingsWindow::on_reopen_checkbox_clicked()
 {
+}
+
+void SettingsWindow::on_moonlight_theme_radioButton_clicked()
+{
+    QSettings settings;
+    this->app->setStyleSheet(themes::MoonlightTheme);
+    settings.setValue("appearance/theme", "moonlight");
+}
+
+void SettingsWindow::on_bss_theme_radioButton_clicked()
+{
+    QSettings settings;
+    this->app->setStyleSheet(themes::BlackSeaSunriseTheme);
+    settings.setValue("appearance/theme", "blackseasunrise");
 }

@@ -53,10 +53,13 @@ void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.value("global/version") != "2.0.3a")
+    if (settings.value("global/version") != "2.0.4a")
     {
         settings.beginGroup("global");
-        settings.setValue("version", "2.0.3a");
+        settings.setValue("version", "2.0.4a");
+        settings.endGroup();
+        settings.beginGroup("appearance");
+        settings.setValue("theme", "moonlight");
         settings.endGroup();
         settings.beginGroup("editor");
         settings.setValue("save_last_path", "true");
@@ -83,8 +86,15 @@ void MainWindow::readSettings()
     }
 
     // setting theme
-    this->app->setStyleSheet(themes::BlackSeaSunriseTheme);
     this->isDarkMode = true;
+    if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
+    {
+        this->app->setStyleSheet(themes::MoonlightTheme);
+    }
+    if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
+    {
+        this->app->setStyleSheet(themes::BlackSeaSunriseTheme);
+    }
 }
 
 void MainWindow::writeSettings()

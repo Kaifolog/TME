@@ -90,6 +90,6 @@ void MainWindow::on_actionAbout_program_triggered()
 
 void MainWindow::on_actionSettings_triggered()
 {
-    SettingsWindow settingswindow;
+    SettingsWindow settingswindow(this->app);
     settingswindow.exec();
 }
