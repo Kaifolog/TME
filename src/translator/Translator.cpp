@@ -157,7 +157,6 @@ void Translator::analyse(tools::ProjectName &pname)
 
     if (check_str_in_vec(statements, "start"))
     {
-        sqlite3_finalize(_pp_stmt);
         sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
         sqlite3_free(_err);
         sqlite3_close(_db);
@@ -166,7 +165,6 @@ void Translator::analyse(tools::ProjectName &pname)
 
     if (check_str_in_vec(statements, "end"))
     {
-        sqlite3_finalize(_pp_stmt);
         sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
         sqlite3_free(_err);
         sqlite3_close(_db);
