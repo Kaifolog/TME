@@ -704,8 +704,16 @@
     <addaction name="action_3"/>
     <addaction name="action_5"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="actionAbout_program"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menuSettings"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -750,6 +758,16 @@
   <action name="action_5">
    <property name="text">
     <string>Особливості емулятора</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionAbout_program">
+   <property name="text">
+    <string>About program</string>
    </property>
   </action>
  </widget>

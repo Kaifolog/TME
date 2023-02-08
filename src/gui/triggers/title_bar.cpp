@@ -77,7 +77,7 @@ void MainWindow::on_action_5_triggered()
                        "Читайте інструкцію.");
 }
 
-void MainWindow::on_about_triggered()
+void MainWindow::on_actionAbout_program_triggered()
 {
     QMessageBox::about(this, "Про программу\n\n",
                        "Присвячено Україні та всім моїм друзям і подругам, Kanye \"Ye\" West'у.\n"
@@ -88,7 +88,7 @@ void MainWindow::on_about_triggered()
     msgBox.exec();
 }
 
-void MainWindow::on_settings_triggered()
+void MainWindow::on_actionSettings_triggered()
 {
     SettingsWindow settingswindow;
     settingswindow.exec();

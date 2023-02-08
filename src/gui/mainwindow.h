@@ -107,12 +107,12 @@ class MainWindow : public QMainWindow
     void on_mainTextField_cursorPositionChanged(); // |
     void on_datacheckBox_clicked();                //_|
 
-    void on_action_triggered();   //_  trigger for a title bar
-    void on_action_2_triggered(); // |
-    void on_action_3_triggered(); // |
-    void on_action_5_triggered(); // |
-    void on_settings_triggered(); // |
-    void on_about_triggered();    //_|
+    void on_action_triggered();              //_  trigger for a title bar
+    void on_action_2_triggered();            // |
+    void on_action_3_triggered();            // |
+    void on_action_5_triggered();            // |
+    void on_actionSettings_triggered();      // |
+    void on_actionAbout_program_triggered(); //_|
 
     void breakpointHighlightON();          //_  utility functions
     void breakpointHighlightOFF();         // |

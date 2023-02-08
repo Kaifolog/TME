@@ -33,14 +33,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     CtrlD->setKey(Qt::CTRL + Qt::Key_D);
     connect(CtrlD, SIGNAL(activated()), this, SLOT(slotShortcutCtrlD()));
 
-    // tools bar initialising
-    QAction *settings_action;
-    settings_action = ui->menubar->addAction("Settings");
-    connect(settings_action, SIGNAL(triggered()), this, SLOT(on_settings_triggered()));
-    QAction *about_programm_action;
-    about_programm_action = ui->menubar->addAction("Про програму");
-    connect(about_programm_action, SIGNAL(triggered()), this, SLOT(on_about_triggered()));
-
     // seting settings
     QCoreApplication::setOrganizationName("Bulak R&D");
     QCoreApplication::setOrganizationDomain("kaifolog.github.io");
