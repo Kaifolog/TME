@@ -92,6 +92,6 @@ void MainWindow::on_actionSettings_triggered()
 {
     NORMALMIDDLEWARE
 
-    SettingsWindow settingswindow(this->app);
+    SettingsWindow settingswindow(this->app, this);
     settingswindow.exec();
 }

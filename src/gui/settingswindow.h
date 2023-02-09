@@ -1,6 +1,7 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
+#include "mainwindow.h"
 #include "themes.h"
 #include "ui_settingswindow.h"
 
@@ -14,12 +15,14 @@ namespace Ui
 class SettingsWindow;
 }
 
+class MainWindow;
+
 class SettingsWindow : public QDialog
 {
     Q_OBJECT
 
   public:
-    explicit SettingsWindow(QApplication *app, QWidget *parent = nullptr);
+    explicit SettingsWindow(QApplication *app, MainWindow *mainwindow, QWidget *parent = nullptr);
     ~SettingsWindow();
 
   private slots:
@@ -35,6 +38,7 @@ class SettingsWindow : public QDialog
 
   private:
     Ui::SettingsWindow *ui;
+    MainWindow *mainwindow;
     QApplication *app;
 };
 

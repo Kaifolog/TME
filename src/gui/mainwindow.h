@@ -117,14 +117,12 @@ class MainWindow : public QMainWindow
     void on_actionSettings_triggered();      // |
     void on_actionAbout_program_triggered(); //_|
 
-    void breakpointHighlightON();          //_  utility functions
-    void breakpointHighlightOFF();         // |
-    void AllButtonsSetEnabled(bool);       // |
-    void currentLineHighlight(int line);   // |
-    void openInEditor();                   // |
-    void showStartMessage();               // |
-    void debugPanelHighlightEnabled(bool); // |
-    void clearLogFile();                   //_|
+    void breakpointHighlightON();        //_  utility functions
+    void AllButtonsSetEnabled(bool);     // |
+    void currentLineHighlight(int line); // |
+    void openInEditor();                 // |
+    void showStartMessage();             // |
+    void clearLogFile();                 //_|
 
     void closeEvent(QCloseEvent *bar);
 
@@ -132,6 +130,9 @@ class MainWindow : public QMainWindow
     void DebugMiddleware();  //_|
 
   public:
+    void breakpointHighlightOFF();
+    void debugPanelHighlightEnabled(bool);
+
     MainWindow(QApplication *app, QWidget *parent = nullptr);
     ~MainWindow()
     {

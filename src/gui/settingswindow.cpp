@@ -1,9 +1,11 @@
 #include "settingswindow.h"
 
-SettingsWindow::SettingsWindow(QApplication *app, QWidget *parent) : QDialog(parent), ui(new Ui::SettingsWindow)
+SettingsWindow::SettingsWindow(QApplication *app, MainWindow *mainwindow, QWidget *parent)
+    : QDialog(parent), ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
     this->app = app;
+    this->mainwindow = mainwindow;
 
     QSettings settings;
 
@@ -50,6 +52,11 @@ void SettingsWindow::on_moonlight_theme_radioButton_clicked()
     QSettings settings;
     this->app->setStyleSheet(themes::MoonlightTheme);
     settings.setValue("appearance/theme", "moonlight");
+
+    // an ugly hack that uses mainwindow methods to apply colors to elements that has been changed by debugger
+    // highlighting and cant be simply rewritten by setStyleSheet methon
+    this->mainwindow->debugPanelHighlightEnabled(false);
+    this->mainwindow->breakpointHighlightOFF();
 }
 
 void SettingsWindow::on_bss_theme_radioButton_clicked()
@@ -57,4 +64,9 @@ void SettingsWindow::on_bss_theme_radioButton_clicked()
     QSettings settings;
     this->app->setStyleSheet(themes::BlackSeaSunriseTheme);
     settings.setValue("appearance/theme", "blackseasunrise");
+
+    // an ugly hack that uses mainwindow methods to apply colors to elements that has been changed by debugger
+    // highlighting and cant be simply rewritten by setStyleSheet methon
+    this->mainwindow->debugPanelHighlightEnabled(false);
+    this->mainwindow->breakpointHighlightOFF();
 }
