@@ -12,7 +12,7 @@ void Parser::defineFsm(std::string line_v)
     }
     else
     {
-        throw "parse error at line #" + std::to_string(this->_line_counter);
+        throw "Parse error at line #" + std::to_string(this->_line_counter);
     }
 
     // the current symbol is a space after '#define'
@@ -53,7 +53,7 @@ Command Parser::commandFsm(std::string line_v)
         }
         else
         {
-            throw "parse error at line #" + std::to_string(this->_line_counter);
+            throw "Parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.initial_state.push_back('\0');
@@ -70,7 +70,7 @@ Command Parser::commandFsm(std::string line_v)
         }
         else
         {
-            throw "parse error at line #" + std::to_string(this->_line_counter);
+            throw "Parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.initial_word.push_back('\0');
@@ -85,7 +85,7 @@ Command Parser::commandFsm(std::string line_v)
         }
         else
         {
-            throw "parse error at line #" + std::to_string(this->_line_counter);
+            throw "Parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.final_state.push_back('\0');
@@ -101,7 +101,7 @@ Command Parser::commandFsm(std::string line_v)
         }
         else
         {
-            throw "parse error at line #" + std::to_string(this->_line_counter);
+            throw "Parse error at line #" + std::to_string(this->_line_counter);
         }
     }
     result.final_word.push_back('\0');
@@ -113,7 +113,7 @@ Command Parser::commandFsm(std::string line_v)
     }
     else
     {
-        throw "parse error at line #" + std::to_string(this->_line_counter);
+        throw "Parse error at line #" + std::to_string(this->_line_counter);
     }
     i++;
     if (line_v[i] == '\0')
@@ -141,7 +141,7 @@ void Parser::sectorFsm(std::string line_v)
         return;
     }
 
-    throw "SECTION parse error at line #" + std::to_string(this->_line_counter);
+    throw "Section parse error at line #" + std::to_string(this->_line_counter);
 }
 
 void Parser::datasectionFsm(std::string line_v)
@@ -150,7 +150,7 @@ void Parser::datasectionFsm(std::string line_v)
     datasection.open("datasection.tmp", std::ios::out);
     if (!datasection.is_open())
     {
-        throw "Can't open datasection.tmp";
+        throw "Can't open datasection.tmp file";
     }
     datasection << line_v;
     this->_section = "";
@@ -328,12 +328,12 @@ std::string Parser::dataPreprocessor(std::string line_v)
             {
                 if ((line_v[i + 1] == ' ' && line_v[i - 1] == ' ') || (line_v[i - 1] == ' ' && line_v[i + 1] == '\0'))
                 {
-                    throw "parse error (check space splits) at line #" + std::to_string(this->_line_counter);
+                    throw "Parse error (check space splits) at line #" + std::to_string(this->_line_counter);
                 }
             }
             if (i == 0 && line_v[i + 1] == ' ')
             {
-                throw "parse error (check space splits) at line #" + std::to_string(this->_line_counter);
+                throw "Parse error (check space splits) at line #" + std::to_string(this->_line_counter);
             }
         }
     }
@@ -346,7 +346,7 @@ std::string Parser::dataPreprocessor(std::string line_v)
     }
     if (cursor_char != 2)
     {
-        throw "parse error at (data section) line #" + std::to_string(this->_line_counter);
+        throw "Parse error at (data section) line #" + std::to_string(this->_line_counter);
     }
     return line_v;
 }

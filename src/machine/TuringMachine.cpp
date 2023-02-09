@@ -225,7 +225,7 @@ int TuringMachine::execute(tools::ProjectName &pname, bool lambda)
             sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
             sqlite3_close(_db);
 
-            throw "Emulating error : Can't find next command";
+            throw "Emulating FATAL ERROR: Can't find next command.";
         }
 
         sqlite3_finalize(_pp_stmt);
@@ -264,8 +264,8 @@ MachineState TuringMachine::lazyDebug(bool step_by_step)
             sqlite3_finalize(_pp_stmt);
             sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
             sqlite3_close(_db);
-            throw "EMULATING ERROR : CANT FIND NEXT COMMAND\nWith last state " + this->_statement + " and word " +
-                *(this->_cursor);
+            throw "Emulating FATAL ERROR: Can't find next command.\nWith last state " + this->_statement +
+                " and word " + *(this->_cursor);
         }
 
         if (step_by_step || (std::string((char *)sqlite3_column_text(_pp_stmt, 5)) == "1" || this->_statement == "end"))

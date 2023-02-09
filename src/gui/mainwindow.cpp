@@ -719,6 +719,10 @@ void MainWindow::on_parsingbtn_clicked()
         {
             LOG(ERROR) << message;
         }
+        catch (char *message)
+        {
+            LOG(ERROR) << message;
+        }
         catch (std::string message)
         {
             LOG(ERROR) << message;
@@ -726,7 +730,7 @@ void MainWindow::on_parsingbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
-                       << "Please tell about this to the developer." << std::endl;
+                       << "If this happens often you should tell the developer about it." << std::endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -767,6 +771,10 @@ void MainWindow::on_analysisbtn_clicked()
         {
             LOG(ERROR) << message;
         }
+        catch (char *message)
+        {
+            LOG(ERROR) << message;
+        }
         catch (std::string message)
         {
             LOG(ERROR) << message;
@@ -774,8 +782,8 @@ void MainWindow::on_analysisbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
-                       << "Are you sure this file has already been parsed?" << std::endl
-                       << "Please tell about this to the developer." << std::endl;
+                       << "Are you sure this file has already been parsed? Then:" << std::endl
+                       << "If this happens often you should tell the developer about it." << std::endl;
         }
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
@@ -826,6 +834,10 @@ void MainWindow::on_emulationbtn_clicked()
         {
             LOG(ERROR) << message;
         }
+        catch (char *message)
+        {
+            LOG(ERROR) << message;
+        }
         catch (std::string message)
         {
             LOG(ERROR) << message;
@@ -833,8 +845,8 @@ void MainWindow::on_emulationbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
-                       << "Are you sure this file has already been parsed?" << std::endl
-                       << "Please tell about this to the developer." << std::endl;
+                       << "Are you sure this file has already been parsed? Then:" << std::endl
+                       << "If this happens often you should tell the developer about it." << std::endl;
         }
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
         if (file.open(QIODevice::ReadOnly))
@@ -890,6 +902,10 @@ void MainWindow::on_quickstartbtn_clicked()
         {
             LOG(ERROR) << message;
         }
+        catch (char *message)
+        {
+            LOG(ERROR) << message;
+        }
         catch (std::string message)
         {
             LOG(ERROR) << message;
@@ -897,7 +913,7 @@ void MainWindow::on_quickstartbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
-                       << "Please tell about this to the developer." << std::endl;
+                       << "If this happens often you should tell the developer about it." << std::endl;
         }
 
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));

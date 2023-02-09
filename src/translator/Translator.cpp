@@ -33,7 +33,7 @@ void Translator::init(tools::ProjectName &pname)
 
     if (sqlite3_open(pname.getDBFile().c_str(), &_db))
     {
-        throw "UNDEFINED ERROR : DATABASE UNAVAILABLE";
+        throw "UNDEFINED ERROR : database is unavailable";
     }
 
     const char *drop_table_query = "DROP TABLE IF EXISTS commands";
@@ -110,7 +110,7 @@ void Translator::analyse(tools::ProjectName &pname)
     std::string a = pname.getDBFile();
     if (sqlite3_open(a.c_str(), &_db))
     {
-        throw "UNDEFINED ERROR : DATABASE UNAVAILABLE";
+        throw "UNDEFINED ERROR : database is unavailable";
     }
     // sqlite3_exec(_db, "PRAGMA synchronous = OFF", NULL, NULL, &_err); //SO FUCKING RISKY
     std::string select_command;
@@ -149,7 +149,7 @@ void Translator::analyse(tools::ProjectName &pname)
                 sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
                 sqlite3_free(_err);
                 sqlite3_close(_db);
-                throw "ANALYSER FATAL ERROR! There are \"end\" at the left side of command.";
+                throw "Analyser FATAL ERROR: There are \"end\" at the left side of command.";
             }
         }
     }
@@ -160,7 +160,7 @@ void Translator::analyse(tools::ProjectName &pname)
         sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
         sqlite3_free(_err);
         sqlite3_close(_db);
-        throw "ANALYSER FATAL ERROR! There are no \"start\" command.";
+        throw "Analyser FATAL ERROR: There are no \"start\" command.";
     }
 
     if (check_str_in_vec(statements, "end"))
@@ -168,7 +168,7 @@ void Translator::analyse(tools::ProjectName &pname)
         sqlite3_exec(_db, "END TRANSACTION", NULL, NULL, &_err);
         sqlite3_free(_err);
         sqlite3_close(_db);
-        throw "ANALYSER FATAL ERROR! There are no \"end\" command.";
+        throw "Analyser FATAL ERROR: There are no \"end\" command.";
     }
 
     for (int i = 0; i < statements.size(); i++)
@@ -181,7 +181,7 @@ void Translator::analyse(tools::ProjectName &pname)
             {
                 if (sqlite3_step(_pp_stmt) != SQLITE_DONE)
                 {
-                    std::string a = "ANALYSER FATAL ERROR!!! There are two or more commands with same left side. " +
+                    std::string a = "Analyser FATAL ERROR! There are two or more commands with same left side. " +
                                     std::string((char *)sqlite3_column_text(_pp_stmt, 0)) + " " +
                                     std::string((char *)sqlite3_column_text(_pp_stmt, 1));
                     sqlite3_finalize(_pp_stmt);

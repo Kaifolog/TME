@@ -32,7 +32,7 @@ TEST(ParsingTest, BasicFailTest)
     {
         output = message;
     }
-    ASSERT_STREQ("parse error at line #6", output.c_str());
+    ASSERT_STREQ("Parse error at line #6", output.c_str());
 }
 
 TEST(ParsingTest, HardTest)
@@ -63,7 +63,7 @@ TEST(ParsingTest, SectionDataTest)
     {
         output = message;
     }
-    ASSERT_STREQ("SECTION parse error at line #1", output.c_str());
+    ASSERT_STREQ("Section parse error at line #1", output.c_str());
 }
 
 TEST(ParsingTest, SectionTextTest)
@@ -85,7 +85,7 @@ TEST(ParsingTest, SectionTextTest)
     {
         output = message;
     }
-    ASSERT_STREQ("SECTION parse error at line #4", output.c_str());
+    ASSERT_STREQ("Section parse error at line #4", output.c_str());
 }
 
 TEST(AnalysisTest, StartTest)
@@ -108,7 +108,7 @@ TEST(AnalysisTest, StartTest)
     {
         output = message;
     }
-    ASSERT_STREQ("ANALYSER FATAL ERROR! There are no \"start\" command.", output.c_str());
+    ASSERT_STREQ("Analyser FATAL ERROR: There are no \"start\" command.", output.c_str());
 }
 
 TEST(AnalysisTest, EndTest)
@@ -131,5 +131,5 @@ TEST(AnalysisTest, EndTest)
     {
         output = message;
     }
-    ASSERT_STREQ("ANALYSER FATAL ERROR! There are no \"end\" command.", output.c_str());
+    ASSERT_STREQ("Analyser FATAL ERROR: There are no \"end\" command.", output.c_str());
 }
