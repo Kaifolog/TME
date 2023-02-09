@@ -139,7 +139,6 @@ class MainWindow : public QMainWindow
     };
     void writeSettings();
     void readSettings();
-    bool isDarkMode = 0;
 };
 
 #define NORMALMIDDLEWARE NormalMiddleware();

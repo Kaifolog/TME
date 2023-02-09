@@ -86,7 +86,6 @@ void MainWindow::readSettings()
     }
 
     // setting theme
-    this->isDarkMode = true;
     if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
     {
         this->app->setStyleSheet(themes::MoonlightTheme);
@@ -130,21 +129,46 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::debugPanelHighlightEnabled(bool enabled)
 {
+    QSettings settings;
     if (enabled)
     {
-        ui->debugnextbtn->setStyleSheet(
-            "QPushButton { background-color: #5c73f2;} QPushButton:hover { background-color: #333333 }");
-        ui->skipButton->setStyleSheet(
-            "QPushButton { background-color: #5c73f2;} QPushButton:hover { background-color: #333333 }");
-        ui->debugstatelbl->setStyleSheet("QLabel { border-color: #5c73f2 }");
-        ui->debugwordlbl->setStyleSheet("QLabel { border-color: #5c73f2 }");
+        if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
+        {
+            ui->debugnextbtn->setStyleSheet(
+                "QPushButton { background-color: #5c73f2;} QPushButton:hover { background-color: #333333 }");
+            ui->skipButton->setStyleSheet(
+                "QPushButton { background-color: #5c73f2;} QPushButton:hover { background-color: #333333 }");
+            ui->debugstatelbl->setStyleSheet("QLabel { border-color: #5c73f2 }");
+            ui->debugwordlbl->setStyleSheet("QLabel { border-color: #5c73f2 }");
+        }
+        else if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
+        {
+            ui->debugnextbtn->setStyleSheet(
+                "QPushButton { background-color: #5eb5f7;} QPushButton:hover { background-color: #293a4c }");
+            ui->skipButton->setStyleSheet(
+                "QPushButton { background-color: #5eb5f7;} QPushButton:hover { background-color: #293a4c }");
+            ui->debugstatelbl->setStyleSheet("QLabel { border-color: #5eb5f7 }");
+            ui->debugwordlbl->setStyleSheet("QLabel { border-color: #5eb5f7 }");
+        }
     }
     else
     {
-        ui->debugnextbtn->setStyleSheet("QPushButton { background-color: #333333 }");
-        ui->skipButton->setStyleSheet("QPushButton { background-color: #333333 }");
-        ui->debugstatelbl->setStyleSheet("QLabel { border-color: #333333 }");
-        ui->debugwordlbl->setStyleSheet("QLabel { border-color: #333333 }");
+        if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
+        {
+            ui->mainTextField->setStyleSheet("QPlainTextEdit { background-color: #202020;}");
+            ui->debugnextbtn->setStyleSheet("QPushButton { background-color: #333333 }");
+            ui->skipButton->setStyleSheet("QPushButton { background-color: #333333 }");
+            ui->debugstatelbl->setStyleSheet("QLabel { border-color: #333333 }");
+            ui->debugwordlbl->setStyleSheet("QLabel { border-color: #333333 }");
+        }
+        else if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
+        {
+            ui->mainTextField->setStyleSheet("QPlainTextEdit { background-color: #ffffff;}");
+            ui->debugnextbtn->setStyleSheet("QPushButton { background-color: #c2dcf2 }");
+            ui->skipButton->setStyleSheet("QPushButton { background-color: #c2dcf2 }");
+            ui->debugstatelbl->setStyleSheet("QLabel { border-color: #c2dcf2 }");
+            ui->debugwordlbl->setStyleSheet("QLabel { border-color: #c2dcf2 }");
+        }
     }
 }
 
@@ -246,8 +270,17 @@ void MainWindow::breakpointHighlightON()
             for (int i = 0; i < linenumber - 1; i++)
                 cur.movePosition(QTextCursor::Down);
             QTextBlockFormat formater;
-            // no theme color switcher
-            formater.setBackground(QBrush("#550e12"));
+
+            QSettings settings;
+            if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
+            {
+                formater.setBackground(QBrush("#550e12"));
+            }
+            else if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
+            {
+                formater.setBackground(QBrush("#ff8787"));
+            }
+
             cur.select(QTextCursor::LineUnderCursor);
             cur.setBlockFormat(formater);
 
@@ -273,11 +306,12 @@ void MainWindow::currentLineHighlight(int line)
     for (int i = 0; i < highlightedLine - 1; i++)
         cur.movePosition(QTextCursor::Down);
     QTextBlockFormat formater;
-    if (isDarkMode)
+    QSettings settings;
+    if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
     {
         formater.setBackground(QBrush("#202020"));
     }
-    else
+    else if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
     {
         formater.setBackground(QBrush("#ffffff"));
     }
@@ -293,7 +327,16 @@ void MainWindow::currentLineHighlight(int line)
     for (int i = 0; i < line - 1; i++)
         cur1.movePosition(QTextCursor::Down);
     QTextBlockFormat formater1;
-    formater1.setBackground(QBrush("#4b4b18"));
+
+    if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
+    {
+        formater1.setBackground(QBrush("#4b4b18"));
+    }
+    else if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
+    {
+        formater1.setBackground(QBrush("#ffc347"));
+    }
+
     cur1.select(QTextCursor::LineUnderCursor);
     cur1.setBlockFormat(formater1);
 
@@ -314,11 +357,12 @@ void MainWindow::breakpointHighlightOFF()
     cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
     cursor.select(QTextCursor::Document);
     QTextBlockFormat formater1;
-    if (isDarkMode)
+    QSettings settings;
+    if (settings.value("appearance/theme").toString().toStdString() == std::string("moonlight"))
     {
         formater1.setBackground(QBrush("#202020"));
     }
-    else
+    else if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
     {
         formater1.setBackground(QBrush("#ffffff"));
     }
