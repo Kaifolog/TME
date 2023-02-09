@@ -757,7 +757,7 @@
   </action>
   <action name="action_5">
    <property name="text">
-    <string>Особливості емулятора</string>
+    <string>Опис інтерфейсу емулятора</string>
    </property>
   </action>
   <action name="actionSettings">
