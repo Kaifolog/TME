@@ -45,10 +45,6 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent) : QMainWindow(parent)
     {
         showStartMessage();
     }
-    QByteArray by = QByteArray::fromBase64(hk_base64);
-    QPixmap pix;
-    pix.loadFromData(by, "PNG");
-    ui->hello_kitty_label->setPixmap(pix);
 }
 
 /* settings */
@@ -57,13 +53,14 @@ void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.value("global/version") != "2.0.4a")
+    if (settings.value("global/version") != "2.0.5a")
     {
         settings.beginGroup("global");
-        settings.setValue("version", "2.0.4a");
+        settings.setValue("version", "2.0.5a");
         settings.endGroup();
         settings.beginGroup("appearance");
         settings.setValue("theme", "moonlight");
+        settings.setValue("hello_kitty", "false");
         settings.endGroup();
         settings.beginGroup("editor");
         settings.setValue("save_last_path", "true");
@@ -98,6 +95,8 @@ void MainWindow::readSettings()
     {
         this->app->setStyleSheet(themes::BlackSeaSunriseTheme);
     }
+
+    setHelloKitty(settings.value("appearance/hello_kitty").toBool());
 }
 
 void MainWindow::writeSettings()
@@ -130,6 +129,24 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 /* utility functions */
+
+void MainWindow::setHelloKitty(bool enabled)
+{
+    if (enabled)
+    {
+        QByteArray hk = QByteArray::fromBase64(hk_base64);
+        QPixmap pix;
+        pix.loadFromData(hk, "PNG");
+        ui->hello_kitty_label->setPixmap(pix);
+    }
+    else
+    {
+        QByteArray none;
+        QPixmap pix;
+        pix.loadFromData(none, "PNG");
+        ui->hello_kitty_label->setPixmap(pix);
+    }
+}
 
 void MainWindow::debugPanelHighlightEnabled(bool enabled)
 {

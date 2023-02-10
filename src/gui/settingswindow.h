@@ -36,7 +36,9 @@ class SettingsWindow : public QDialog
 
     void on_bss_theme_radioButton_clicked();
 
-  private:
+    void on_hello_kitty_checkBox_clicked();
+
+private:
     Ui::SettingsWindow *ui;
     MainWindow *mainwindow;
     QApplication *app;

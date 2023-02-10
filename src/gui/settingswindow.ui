@@ -178,6 +178,19 @@
     <string>Black sea sunrise (Light)</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="hello_kitty_checkBox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>230</y>
+     <width>201</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Hello kitty </string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>

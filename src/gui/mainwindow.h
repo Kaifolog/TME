@@ -131,6 +131,7 @@ class MainWindow : public QMainWindow
     void DebugMiddleware();  //_|
 
   public:
+    void setHelloKitty(bool enabled);
     void breakpointHighlightOFF();
     void debugPanelHighlightEnabled(bool);
 
