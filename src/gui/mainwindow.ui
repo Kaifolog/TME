@@ -656,7 +656,7 @@
      <rect>
       <x>1050</x>
       <y>630</y>
-      <width>231</width>
+      <width>151</width>
       <height>20</height>
      </rect>
     </property>
@@ -674,6 +674,22 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="hello_kitty_label">
+    <property name="geometry">
+     <rect>
+      <x>1210</x>
+      <y>600</y>
+      <width>81</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
     </property>
    </widget>
   </widget>

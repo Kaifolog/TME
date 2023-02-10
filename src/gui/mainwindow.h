@@ -16,6 +16,7 @@
 
 #include "./settingswindow.h"
 #include "./ui_mainwindow.h"
+#include "byte_images.h"
 #include "themes.h"
 
 extern "C"

@@ -45,6 +45,10 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent) : QMainWindow(parent)
     {
         showStartMessage();
     }
+    QByteArray by = QByteArray::fromBase64(hk_base64);
+    QPixmap pix;
+    pix.loadFromData(by, "PNG");
+    ui->hello_kitty_label->setPixmap(pix);
 }
 
 /* settings */
