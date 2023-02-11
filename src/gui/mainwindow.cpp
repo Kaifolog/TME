@@ -40,23 +40,49 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent) : QMainWindow(parent)
     QCoreApplication::setApplicationName("TME");
 
     MainWindow::readSettings();
-
-    if (_pname.empty())
-    {
-        showStartMessage();
-    }
 }
 
 /* settings */
+
+void MainWindow::versionReplyHandler(QNetworkReply *reply)
+{
+    if (QNetworkReply::NoError == reply->error())
+    {
+        QSettings settings;
+        QString html = reply->readAll();
+        if (settings.value("global/version").toString() != html)
+        {
+            ui->logwindow->appendPlainText("\nNew version " + html +
+                                           " is available. Download it from the product website.\n");
+
+            QMessageBox::about(this, "Update notification",
+                               "<h3> Нова версія емулятора (" + html +
+                                   ") вже доступна! </h3>"
+
+                                   "<h4> Завантажити можна на сайті проекту:"
+                                   "<div><a href=\"https://kaifolog.github.io/TME-website/\" "
+                                   "style=\"color:#0057b7\">https://kaifolog.github.io/TME-website/</a>");
+
+            settings.setValue("global/update_notified", "true");
+            settings.setValue("global/new_version", html);
+        }
+    }
+    else
+    {
+        ui->logwindow->appendPlainText("\nUnable to check for updates: nework is unavalable.\n");
+    }
+}
 
 void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.value("global/version") != "2.0.5a")
+    if (settings.value("global/version") != "2.0.6a")
     {
         settings.beginGroup("global");
-        settings.setValue("version", "2.0.5a");
+        settings.setValue("version", "2.0.6a");
+        settings.setValue("update_notified", "false");
+        settings.setValue("new_version", "2.0.0b");
         settings.endGroup();
         settings.beginGroup("appearance");
         settings.setValue("theme", "moonlight");
@@ -84,6 +110,10 @@ void MainWindow::readSettings()
                 settings.value("editor/last_path").toString());
             openInEditor();
         }
+        else
+        {
+            showStartMessage();
+        }
     }
 
     // setting theme
@@ -94,6 +124,20 @@ void MainWindow::readSettings()
     if (settings.value("appearance/theme").toString().toStdString() == std::string("blackseasunrise"))
     {
         this->app->setStyleSheet(themes::BlackSeaSunriseTheme);
+    }
+
+    // updater request
+    if (not settings.value("global/update_notified").toBool())
+    {
+        QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+        connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::versionReplyHandler);
+        manager->get(QNetworkRequest(QUrl("https://kaifolog.github.io/TME-website/version.html")));
+    }
+    else
+    {
+        ui->logwindow->appendPlainText(
+            "\nA new version of the emulator (" + settings.value("global/new_version").toString() +
+            ") is available. Download it from the product website, which can be found in Settings/About program.\n");
     }
 
     setHelloKitty(settings.value("appearance/hello_kitty").toBool());

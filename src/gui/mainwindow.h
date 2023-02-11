@@ -9,10 +9,15 @@
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QScopedPointer>
 #include <QSettings>
 #include <QShortcut>
 #include <QTextStream>
 #include <QtGui>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkConfigurationManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
 
 #include "./settingswindow.h"
 #include "./ui_mainwindow.h"
@@ -131,6 +136,7 @@ class MainWindow : public QMainWindow
     void DebugMiddleware();  //_|
 
   public:
+    void versionReplyHandler(QNetworkReply *reply);
     void setHelloKitty(bool enabled);
     void breakpointHighlightOFF();
     void debugPanelHighlightEnabled(bool);

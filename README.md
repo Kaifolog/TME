@@ -59,6 +59,7 @@ Moreover, you can choose between console and GUI version by -D IS_GUI=(True or F
 - MinGW toolchain
 - Cmake
 - Qt5
+- [OpenSSL 1.1](https://slproweb.com/products/Win32OpenSSL.html)
 ### **Building**
 ```
 mkdir build && cd build
@@ -71,6 +72,7 @@ mingw32-make
 - GNU gcc, g++, make
 - Cmake
 - Qt5
+- openssl openssl-dev
 #### **Qt5 Installation**
 ```
 sudo apt install qt5-default
@@ -88,6 +90,7 @@ To begin with, you need to install brew on your mac.
 - Clang
 - Cmake
 - Qt5
+- OpenSSL
 #### **Qt5 Installation**
 ```
 brew install qt@5
