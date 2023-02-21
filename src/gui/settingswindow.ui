@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
+    <width>350</width>
     <height>320</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>240</width>
+    <width>350</width>
     <height>320</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>240</width>
+    <width>350</width>
     <height>320</height>
    </size>
   </property>
@@ -28,7 +28,7 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>110</x>
      <y>270</y>
      <width>221</width>
      <height>41</height>
@@ -48,10 +48,16 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>221</width>
-     <height>31</height>
+     <y>0</y>
+     <width>331</width>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>331</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="font">
     <font>
@@ -70,9 +76,15 @@
     <rect>
      <x>20</x>
      <y>60</y>
-     <width>201</width>
-     <height>31</height>
+     <width>300</width>
+     <height>30</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="text">
     <string>Reopen last file</string>
@@ -82,10 +94,16 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>30</y>
-     <width>221</width>
+     <y>40</y>
+     <width>331</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>331</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="text">
     <string/>
@@ -99,9 +117,21 @@
     <rect>
      <x>20</x>
      <y>90</y>
-     <width>201</width>
-     <height>31</height>
+     <width>300</width>
+     <height>30</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>201</width>
+     <height>16777215</height>
+    </size>
    </property>
    <property name="text">
     <string>Clear temporary files after closing</string>
@@ -111,10 +141,16 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>140</y>
+     <y>150</y>
      <width>121</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>121</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="toolTip">
     <string notr="true"/>
@@ -131,9 +167,15 @@
     <rect>
      <x>20</x>
      <y>120</y>
-     <width>201</width>
-     <height>21</height>
+     <width>300</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="text">
     <string>Maximum number of steps:</string>
@@ -143,10 +185,16 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>165</y>
-     <width>201</width>
-     <height>21</height>
+     <y>168</y>
+     <width>300</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="text">
     <string>Color themes:</string>
@@ -156,10 +204,16 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>186</y>
-     <width>181</width>
-     <height>21</height>
+     <y>196</y>
+     <width>300</width>
+     <height>25</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="text">
     <string>Moonlight (Dark)</string>
@@ -169,10 +223,16 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>206</y>
-     <width>171</width>
-     <height>21</height>
+     <y>220</y>
+     <width>300</width>
+     <height>25</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>0</height>
+    </size>
    </property>
    <property name="text">
     <string>Black sea sunrise (Light)</string>
@@ -182,13 +242,19 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>230</y>
-     <width>201</width>
-     <height>21</height>
+     <y>240</y>
+     <width>300</width>
+     <height>35</height>
     </rect>
    </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>0</height>
+    </size>
+   </property>
    <property name="text">
-    <string>Hello kitty </string>
+    <string>Hello kitty miniature</string>
    </property>
   </widget>
  </widget>
