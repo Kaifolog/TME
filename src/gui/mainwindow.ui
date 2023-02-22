@@ -167,7 +167,6 @@
         <font>
          <family>MS Shell Dlg 2</family>
          <pointsize>8</pointsize>
-         <weight>50</weight>
          <bold>false</bold>
          <stylestrategy>PreferAntialias</stylestrategy>
         </font>
@@ -185,7 +184,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>20</height>
+         <height>23</height>
         </size>
        </property>
        <property name="font">
@@ -201,6 +200,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="skipButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>23</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Arial</family>
@@ -355,6 +360,12 @@
      </property>
      <item>
       <widget class="QPushButton" name="parsingbtn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>23</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Arial</family>
@@ -368,6 +379,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="analysisbtn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>23</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Arial</family>
@@ -381,6 +398,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="emulationbtn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>23</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Arial</family>
@@ -413,6 +436,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="quickstartbtn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>23</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Arial</family>
@@ -427,6 +456,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="debugbtn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>23</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Arial</family>
@@ -637,7 +672,7 @@
      <rect>
       <x>180</x>
       <y>90</y>
-      <width>151</width>
+      <width>171</width>
       <height>21</height>
      </rect>
     </property>
@@ -699,7 +734,7 @@
      <x>0</x>
      <y>0</y>
      <width>1300</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
