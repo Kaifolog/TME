@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(GUI FALSE CACHE BOOL "An option that defines whether CLI or GUI app would you build.")
 
+set(TME_GUI_WIN_STATIC FALSE CACHE BOOL "An option that defines whether GUI_WIN_STATIC app would you build.")
+
 set(AUTOTEST FALSE CACHE BOOL "An option that manages compilation flow between building test and release version of the program.")
 
 add_subdirectory(src)
