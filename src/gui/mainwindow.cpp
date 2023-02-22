@@ -77,10 +77,10 @@ void MainWindow::readSettings()
 {
     QSettings settings;
 
-    if (settings.value("global/version") != "2.0.6a")
+    if (settings.value("global/version") != "2.0.7a")
     {
         settings.beginGroup("global");
-        settings.setValue("version", "2.0.6a");
+        settings.setValue("version", "2.0.7a");
         settings.setValue("update_notified", "false");
         settings.setValue("new_version", "2.0.0b");
         settings.endGroup();
@@ -165,6 +165,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
             db_file.remove();
             QFile out_file(QString::fromStdString(_pname.getOutFile()));
             out_file.remove();
+            QFile log_file(QString::fromStdString(_pname.getLogFile()));
+            log_file.remove();
         }
         catch (...)
         {
