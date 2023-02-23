@@ -1,6 +1,7 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
+#include "byte_images.h"
 #include "mainwindow.h"
 #include "themes.h"
 #include "ui_settingswindow.h"
@@ -38,7 +39,7 @@ class SettingsWindow : public QDialog
 
     void on_hello_kitty_checkBox_clicked();
 
-private:
+  private:
     Ui::SettingsWindow *ui;
     MainWindow *mainwindow;
     QApplication *app;

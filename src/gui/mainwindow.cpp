@@ -5,6 +5,13 @@ MainWindow::MainWindow(QApplication *app, QWidget *parent) : QMainWindow(parent)
     ui->setupUi(this);
     this->app = app;
 
+    const QByteArray logo_base64_ba = QByteArray::fromBase64(logo_base64);
+
+    QPixmap pixmap;
+    pixmap.loadFromData(logo_base64_ba);
+
+    setWindowIcon(QIcon(pixmap));
+
     // connects keybind CTRL + S
     keyCtrlS = new QShortcut(this);
     keyCtrlS->setKey(Qt::CTRL + Qt::Key_S);

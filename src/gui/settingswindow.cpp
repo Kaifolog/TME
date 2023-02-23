@@ -7,6 +7,13 @@ SettingsWindow::SettingsWindow(QApplication *app, MainWindow *mainwindow, QWidge
     this->app = app;
     this->mainwindow = mainwindow;
 
+    const QByteArray logo_base64_ba = QByteArray::fromBase64(logo_base64);
+
+    QPixmap pixmap;
+    pixmap.loadFromData(logo_base64_ba);
+
+    setWindowIcon(QIcon(pixmap));
+
     QSettings settings;
 
     ui->version_label->setText(QString::fromStdString("TME version ") + settings.value("global/version").toString());
