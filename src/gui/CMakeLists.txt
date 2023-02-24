@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(TME_GUI_WIN_STATIC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
-        set(CMAKE_EXE_LINKER_FLAGS "-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive")
+        # set(CMAKE_EXE_LINKER_FLAGS "-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive")
 
         set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_SOURCE_DIR}/assets/tme.res")
 endif()
@@ -41,7 +41,7 @@ add_executable(TME WIN32
 endif()
 
 if(TME_GUI_WIN_STATIC)
-        target_link_libraries( TME PRIVATE PARSER easyloggingpp sqlite3 TuringMachine Qt5::Widgets Qt5::Network D:/utils/openssl_x64_static/lib/libssl.a D:/utils/openssl_x64_static/lib/libcrypto.a ${APP_ICON_RESOURCE_WINDOWS})
+        target_link_libraries( TME PRIVATE  ${APP_ICON_RESOURCE_WINDOWS} PARSER easyloggingpp sqlite3 TuringMachine Qt5::Widgets Qt5::Network D:/utils/openssl_x64_static/lib/libssl.a D:/utils/openssl_x64_static/lib/libcrypto.a -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive)
 else()
         target_link_libraries( TME PRIVATE PARSER easyloggingpp sqlite3 TuringMachine  Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network ${CMAKE_DL_LIBS} pthread)
 endif()
