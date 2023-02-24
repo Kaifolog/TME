@@ -458,7 +458,7 @@ void MainWindow::AllButtonsSetEnabled(bool state)
 
 void MainWindow::slotShortcutCtrlTab()
 {
-    if (ui->rowNumberLabel->text().length())
+    if (ui->rowNumberLabel->text().length() and ui->mainTextField->isEnabled())
     {
         int raw_number = ui->rowNumberLabel->text().toInt();
 
@@ -650,32 +650,36 @@ void MainWindow::on_actioNew_triggered()
 
 void MainWindow::on_datacheckBox_clicked()
 {
-    if (ui->datacheckBox->isChecked())
+    if (ui->mainTextField->isEnabled())
     {
-        QString text = ui->mainTextField->toPlainText();
-        if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() == "section.data")
+        if (ui->datacheckBox->isChecked())
         {
-            QStringList list = text.split('\n');
-            QString input_data = list[1];
-            list.removeFirst();
-            list.removeFirst();
-            text = list.join('\n');
-            ui->inputlineEdit->setText(input_data);
-            ui->mainTextField->clear();
-            ui->mainTextField->setPlainText(text);
-            ui->mainTextField->moveCursor(QTextCursor::Start);
+            QString text = ui->mainTextField->toPlainText();
+            if (text.left(text.indexOf(QChar('\n'))).remove(QRegularExpression("[\\s]+")).toStdString() ==
+                "section.data")
+            {
+                QStringList list = text.split('\n');
+                QString input_data = list[1];
+                list.removeFirst();
+                list.removeFirst();
+                text = list.join('\n');
+                ui->inputlineEdit->setText(input_data);
+                ui->mainTextField->clear();
+                ui->mainTextField->setPlainText(text);
+                ui->mainTextField->moveCursor(QTextCursor::Start);
+            }
+            else
+                ui->inputlineEdit->clear();
         }
         else
+        {
+            QString text = ui->mainTextField->toPlainText();
+            ui->mainTextField->clear();
+            ui->mainTextField->appendPlainText("section .data\n" + ui->inputlineEdit->text());
             ui->inputlineEdit->clear();
-    }
-    else
-    {
-        QString text = ui->mainTextField->toPlainText();
-        ui->mainTextField->clear();
-        ui->mainTextField->appendPlainText("section .data\n" + ui->inputlineEdit->text());
-        ui->inputlineEdit->clear();
-        ui->mainTextField->appendPlainText(text);
-        ui->mainTextField->moveCursor(QTextCursor::Start);
+            ui->mainTextField->appendPlainText(text);
+            ui->mainTextField->moveCursor(QTextCursor::Start);
+        }
     }
 }
 
