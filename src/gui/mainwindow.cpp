@@ -66,7 +66,7 @@ void MainWindow::versionReplyHandler(QNetworkReply *reply)
                                "<h3> Нова версія емулятора (" + html +
                                    ") вже доступна! </h3>"
 
-                                   "<h4> Завантажити можна на сайті проекту:"
+                                   "<h4> Завантажити її можна на сайті проекту:"
                                    "<div><a href=\"https://kaifolog.github.io/TME-website/\" "
                                    "style=\"color:#0057b7\">https://kaifolog.github.io/TME-website/</a>");
 
@@ -76,7 +76,7 @@ void MainWindow::versionReplyHandler(QNetworkReply *reply)
     }
     else
     {
-        ui->logwindow->appendPlainText("\nUnable to check for updates: nework is unavalable.\n");
+        ui->logwindow->appendPlainText("\nUnable to check for updates: network is unavalable.\n");
     }
 }
 
@@ -113,7 +113,7 @@ void MainWindow::readSettings()
         {
             ui->logwindow->document()->setPlainText("");
             ui->logwindow->appendPlainText(
-                QString::fromStdString(std::string("Opened the last file of the previous session:\n")) +
+                QString::fromStdString(std::string("The last file of the previous session is open:\n")) +
                 settings.value("editor/last_path").toString());
             openInEditor();
         }
@@ -249,8 +249,8 @@ void MainWindow::debugPanelHighlightEnabled(bool enabled)
 void MainWindow::showStartMessage()
 {
     ui->mainTextField->document()->setPlainText(
-        "Hi! Firstly you should open a file.\n\n\nHotkeys:"
-        "\nCtrl+S - Save current file\nCtrl+O - Open the file\nCtrl+N - New file");
+        "Hey! To start you have to open the file.\n\nSome hotkeys:"
+        "\nCtrl+N - New file\nCtrl+O - Open the file\nCtrl+S - Save current file");
     ui->logwindow->appendPlainText("Please, open the file.");
     ui->mainTextField->setEnabled(false);
 }
@@ -860,7 +860,7 @@ void MainWindow::on_analysisbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
-                       << "Are you sure this file has already been parsed? Then:" << std::endl
+                       << "Are you sure this file has already been parsed?" << std::endl
                        << "If this happens often you should tell the developer about it." << std::endl;
         }
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
@@ -923,7 +923,7 @@ void MainWindow::on_emulationbtn_clicked()
         catch (...)
         {
             LOG(ERROR) << "Something went wrong." << std::endl
-                       << "Are you sure this file has already been parsed? Then:" << std::endl
+                       << "Are you sure this file has already been parsed?" << std::endl
                        << "If this happens often you should tell the developer about it." << std::endl;
         }
         QFile file(QString::fromUtf8(_pname.getLogFile().c_str()));
