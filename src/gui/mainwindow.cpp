@@ -600,6 +600,8 @@ void MainWindow::on_actionClose_triggered()
             db_file.remove();
             QFile out_file(QString::fromStdString(_pname.getOutFile()));
             out_file.remove();
+            QFile log_file(QString::fromStdString(_pname.getLogFile()));
+            log_file.remove();
         }
         catch (...)
         {
