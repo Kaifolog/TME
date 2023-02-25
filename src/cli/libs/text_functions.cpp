@@ -7,14 +7,14 @@ namespace cli
 
 void textFuncVersion()
 {
-    std::cout << tm_pic << "TME - Turing Machine Emulator V1.2\n\n"
+    std::cout << tm_pic << "TME - Turing Machine Emulator v2.0.0b\n\n"
               << "(c)"
               << "Bulak A.S." << std::endl;
 }
 
 void textStartFunc()
 {
-    std::cout << "CTRL+C OR CTRL+D TO CLOSE" << std::endl << std::endl << "TME - Turing Machine Emulator V1.2\n\n";
+    std::cout << "CTRL+C OR CTRL+D TO CLOSE" << std::endl << std::endl << "TME - Turing Machine Emulator v2.0.0b\n\n";
 
     std::cout << "How to?" << std::endl
               << "Link to github repository with documentation and examples: https://github.com/Kaifolog/TME"

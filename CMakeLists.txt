@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.9...3.16)
 
 # project(TME LANGUAGES CXX C)
 project(TME
-        VERSION 2.0.7.1
+        VERSION 2.0.0.2
         DESCRIPTION "The best turing machine emulator for Windows"
         HOMEPAGE_URL "https://kaifolog.github.io/TME-website/"
         LANGUAGES CXX C)

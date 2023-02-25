@@ -1,20 +1,31 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0b] - ```Unreleased```
+## [2.0.1b] - ```Unreleased```
+### Changed
+- Bugs fixed
+
+## [2.0.0b] - 25-02-2023
 ### Added
-- Application settings
 - Runtime theme changing
 - New themes
+- Start message
+- Hello kitty miniature
+- Restoring prevoius session
+- Application settings
+- Debug panel highlight
+- An underscore ("_") to the inner alphabet
 - Logo for executable file
-- .pro file.
 - Static builded release
 - Version deprecation notice
 
 ### Changed
 - Redesigned interface
-- instruction.pdf
+- instruction
 - README.md
+- Refactored code
+- Logger messages
+- Bugs fixed
 
 ## [1.3] - 03-02-2023
 ### Added
