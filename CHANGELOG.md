@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.1b] - ```Unreleased```
+## [2.0.0b1] - ```Unreleased```
 ### Changed
 - Bugs fixed
 

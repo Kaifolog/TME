@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-<img src="./assets/logo.jpg" width="30%">
+<img src="./assets/icon.png" width="20%">
 </p>
 
 # Motivation
@@ -18,19 +18,21 @@ There are several similar emulators. What are their pros and cons?
 | Comments       | +                  |     +    |     -     |
 | Breakpoints    | +                  |     +    |     -     |
 | Macros         | +                  |     -    |     -     |
-| Dark theme     | +                  |     -    |     -     |
+| Themes         | +                  |     -    |     -     |
 | Stable         | +                  |     +    |     -     |
 | Open source    | +                  |     -    |     -     |
-| Software maintenance  | +                  |     -    |     -     |
-| UNIX version   | +                  |     -    |     -     |
-| console version   | +                  |     -    |     -     |
-| UNIX console version   | +                  |     -    |     -     |
+| Software maintenance  | +           |     -    |     -     |
+| UNIX version          | +           |     -    |     -     |
+| console version       | +           |     -    |     -     |
+| UNIX console version  | +           |     -    |     -     |
+| Hello kitty friendly  | +           |     -    |     -     |
 
 As you see,a large number of drawbacks of its counterparts is fixed.
 
-# **First of all**
-You **have to** read the <a href="https://github.com/Kaifolog/TME/blob/master/assets/LaTeX/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
-
+# Demo
+<p align="center">
+<img src="https://kaifolog.github.io/TME-website/assets/tme-demo-2-0-0b.gif" width="80%">
+</p>
 
 # Example
 [ [`examples/HelloWorld.txt`](examples/HelloWorld.txt) ]
@@ -48,27 +50,39 @@ exclamation, lambda -> end, !, r
 ```
 Hello World %username% !
 ```
-# Build & Launch
 
+- - -
+
+# **First of all**
+You **have to** read the <a href="https://github.com/Kaifolog/TME/blob/master/assets/LaTeX/instruction.pdf">instruction</a>. It describes emulator command language, building and many other important aspects.
+
+# Distribution
+
+The program has several distribution options:
+1. Portable or not, statically compiled binary that you can get in the Releases section of this page or on the [product site](https://kaifolog.github.io/TME-website/).
+2. You can build your own version of the program by following the instructions(for static linking) in [CONTRIBUTING.md](CONTRIBUTING.md) file or (for dynamic linking) below:
+
+## Build & Launch
 You probably want to keep your file system neet. So, you should make a directory ```build``` to separate source and temporary files.
 
 Moreover, you can choose between console and GUI version by -D IS_GUI=(True or False) flag. If you choose GUI version, you should set qt binary path by flag -D CMAKE_PREFIX_PATH.
 
-## **Windows:**
-### **Requirements**
+### **Windows:**
+#### **Requirements**
 - MinGW toolchain
 - Cmake
 - Qt5
 - [OpenSSL 1.1](https://slproweb.com/products/Win32OpenSSL.html)
-### **Building**
+
+#### **Building**
 ```
 mkdir build && cd build
-cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/Qt/5.15.2/mingw81_64" -DGUI=True -Wno-dev
+cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/utils/Qt/5.15.2/mingw81_64" -DGUI=True -Wno-dev
 mingw32-make
 ```
 
-## **Linux:**
-### **Requirements**
+### **Linux:**
+#### **Requirements**
 - GNU gcc, g++, make
 - Cmake
 - Qt5
@@ -77,16 +91,16 @@ mingw32-make
 ```
 sudo apt install qt5-default
 ```
-### **Building**
+#### **Building**
 ```
-mkdir build && cd build && cmake .. && make
+mkdir build && cd build && cmake .. -DGUI=True && make
 ```
-## **MacOS:**
+### **MacOS:**
 To begin with, you need to install brew on your mac.
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-### **Requirements**
+#### **Requirements**
 - Clang
 - Cmake
 - Qt5
@@ -109,7 +123,7 @@ The next step we need to do is to find Qt5 folder.
 **USE YOUR OWN QT5 PATH AND VERSION NUMER**
 
 Copy this path.
-### **Building**
+#### **Building**
 Let's start building:
 ```
 mkdir -p build && cd build && cmake .. -DIS_GUI=True -DCMAKE_PREFIX_PATH="$" && make
