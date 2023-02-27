@@ -63,49 +63,73 @@ The program has several distribution options:
 2. You can build your own version of the program by following the instructions(for static linking) in [CONTRIBUTING.md](CONTRIBUTING.md) file or (for dynamic linking) below:
 
 ## Build & Launch
+
+Firstly you should clone this repository:
+```
+git clone https://github.com/Kaifolog/TME.git
+```
+
+
+
 You probably want to keep your file system neet. So, you should make a directory ```build``` to separate source and temporary files.
 
-Moreover, you can choose between console and GUI version by -D IS_GUI=(True or False) flag. If you choose GUI version, you should set qt binary path by flag -D CMAKE_PREFIX_PATH.
+### CLI static build
 
-### **Windows:**
-#### **Requirements**
+You can choose between console and GUI version by -DIS_GUI=(True or False) flag. It's False by default.
+
+```
+mkdir build && cd build
+cmake .. -Wno-dev
+make
+```
+
+For Windows with MinGW you also should use ```-G "MinGW Makefiles"``` CMake option.
+
+Then get you executable file in build/src/cli directory.
+
+### GUI dynamic build
+
+If you choose GUI version, you should set qt binary path by flag -D CMAKE_PREFIX_PATH.
+
+#### **Windows:**
+##### **Requirements**
 - MinGW toolchain
 - Cmake
 - Qt5
 - [OpenSSL 1.1](https://slproweb.com/products/Win32OpenSSL.html)
 
-#### **Building**
+##### **Building**
 ```
 mkdir build && cd build
 cmake .. -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH="D:/utils/Qt/5.15.2/mingw81_64" -DGUI=True -Wno-dev
 mingw32-make
 ```
 
-### **Linux:**
-#### **Requirements**
+#### **Linux:**
+##### **Requirements**
 - GNU gcc, g++, make
 - Cmake
 - Qt5
 - openssl openssl-dev
-#### **Qt5 Installation**
+##### **Qt5 Installation**
 ```
 sudo apt install qt5-default
 ```
-#### **Building**
+##### **Building**
 ```
 mkdir build && cd build && cmake .. -DGUI=True && make
 ```
-### **MacOS:**
+#### **MacOS:**
 To begin with, you need to install brew on your mac.
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-#### **Requirements**
+##### **Requirements**
 - Clang
 - Cmake
 - Qt5
 - OpenSSL
-#### **Qt5 Installation**
+##### **Qt5 Installation**
 ```
 brew install qt@5
 ```
@@ -123,7 +147,7 @@ The next step we need to do is to find Qt5 folder.
 **USE YOUR OWN QT5 PATH AND VERSION NUMER**
 
 Copy this path.
-#### **Building**
+##### **Building**
 Let's start building:
 ```
 mkdir -p build && cd build && cmake .. -DIS_GUI=True -DCMAKE_PREFIX_PATH="$" && make
