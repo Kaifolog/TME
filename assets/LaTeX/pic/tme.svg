@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="tme.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="89.802561"
+     inkscape:cy="576.99913"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <rect
+       x="242"
+       y="403"
+       width="294"
+       height="117"
+       id="rect271" />
+  </defs>
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#000000;stroke-width:0.264583"
+       id="rect230"
+       width="158.75"
+       height="158.75"
+       x="28.554083"
+       y="53.935482"
+       ry="31.75"
+       rx="31.75" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text269"
+       style="white-space:pre;shape-inside:url(#rect271);display:inline;fill:#ff0000;paint-order:stroke markers fill" />
+    <text
+       xml:space="preserve"
+       style="font-size:97.0139px;fill:#ff0000;stroke-width:0.264583;paint-order:stroke markers fill"
+       x="29.721102"
+       y="164.26682"
+       id="text277"><tspan
+         sodipodi:role="line"
+         id="tspan275"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:97.0139px;font-family:Consolas;-inkscape-font-specification:'Consolas Bold';fill:#ffffff;stroke-width:0.264583"
+         x="29.721102"
+         y="164.26682">TME</tspan></text>
+  </g>
+</svg>
