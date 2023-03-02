@@ -2,7 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [2.0.0b1] - ```Unreleased```
+### Added
+- License to about tab
+
 ### Changed
+- Description in windows .rc file to "Turing machine emulator"
 - Bugs fixed
 
 ## [2.0.0b] - 25-02-2023
